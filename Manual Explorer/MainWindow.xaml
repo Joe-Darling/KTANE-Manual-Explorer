@@ -5,8 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Manual_Explorer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="300" Width="500">
+    <Grid Background="#FF979797">
+        <ComboBox HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="67" IsEditable="True" KeyDown="UpdateQuery" IsDropDownOpen="True" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="10,152,0,0" VerticalAlignment="Top" Click="ConvertPDFToImage"/>
+        <Image x:Name="Temp_Image" HorizontalAlignment="Left" Height="343" Margin="1122,215,0,0" VerticalAlignment="Top" Width="274"/>
+        <Button Content="Button" HorizontalAlignment="Left" Margin="88,152,0,0" VerticalAlignment="Top" Click="LoadImageOnScreen"/>
 
     </Grid>
 </Window>
