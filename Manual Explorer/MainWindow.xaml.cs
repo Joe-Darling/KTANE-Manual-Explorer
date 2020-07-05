@@ -34,7 +34,7 @@ namespace Manual_Explorer
         }
 
         private void UpdateQuery(object sender, KeyEventArgs e)
-        {   
+        {
             ComboBox comboBox = (ComboBox)sender;
             //if (e.Key == Key.Back)
 
@@ -45,31 +45,53 @@ namespace Manual_Explorer
 
                 Trace.WriteLine(userInput);
 
-                foreach (string moduleName in modules.Keys)
+                List<string> contains = new List<string>();
+                List<string> wordStarts = new List<string>();
+
+                foreach (string nameToCheck in modules.Keys)
                 {
-                    if (moduleName.Contains(userInput))
+                    if (nameToCheck.StartsWith(userInput))
                     {
-                        comboBox.Items.Add(moduleName);
+                        comboBox.Items.Add(nameToCheck);
                     }
 
+                    if (nameToCheck.Contains(" "))
+                    {
+                        string[] words = nameToCheck.Split(' ');
+                        for (int i = 1; i < words.Length; i++)
+                        {
+                            if (words[i].StartsWith(userInput))
+                            {
+                                wordStarts.Add(nameToCheck);
+                                //comboBox.Items.Add(nameToCheck);
+                            }
+                        }
 
+                    }
+
+                    else if (nameToCheck.Contains(userInput))
+                    {
+                        contains.Add(nameToCheck);
+                        //combobox.items.add(nametocheck);
+                    }
                 }
+
+                foreach (string moduleName in wordStarts)
+                {
+                    comboBox.Items.Add(moduleName);
+                }
+
+                foreach (string moduleName in contains)
+                {
+                    comboBox.Items.Add(moduleName);
+                }
+
             }
             else
             {
-
                 comboBox.Text = comboBox.Text.Substring(0, comboBox.Text.Length - 1);
                 Trace.WriteLine("A letter was NOT pressed");
             }
-
-            //if (e.Key == Key.LeftShift)
-            //{
-            //    Trace.WriteLine("Shift has been used");
-            //}
-
-           
-
-            
         }
 
         private void ConvertPDFToImage(object sender, RoutedEventArgs e)
