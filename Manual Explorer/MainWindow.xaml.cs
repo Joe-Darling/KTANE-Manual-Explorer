@@ -43,8 +43,6 @@ namespace Manual_Explorer
                 string userInput = comboBox.Text + e.Key.ToString().ToLower();
                 comboBox.Items.Clear();
 
-                Trace.WriteLine(userInput);
-
                 List<string> contains = new List<string>();
                 List<string> wordStarts = new List<string>();
 
@@ -87,11 +85,26 @@ namespace Manual_Explorer
                 }
 
             }
+            else if(e.Key == Key.LeftShift || e.Key == Key.Space)
+            {
+
+            }
             else
             {
                 comboBox.Text = comboBox.Text.Substring(0, comboBox.Text.Length - 1);
                 Trace.WriteLine("A letter was NOT pressed");
             }
+            comboBox.IsDropDownOpen = true;
+        }
+
+        private void OnSelected(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = (ComboBox)sender;
+            if(comboBox.SelectedItem != null)
+            {
+                LoadManual(comboBox.SelectedItem.ToString());
+            }
+            
         }
 
         private void ConvertPDFToImage(object sender, RoutedEventArgs e)
@@ -133,7 +146,7 @@ namespace Manual_Explorer
                 bitmap.UriSource = new Uri(file);
                 bitmap.EndInit();
                 string moduleName = file.Substring(0, file.LastIndexOf('.') - 2);
-                moduleName = moduleName.Split('\\').Last();
+                moduleName = moduleName.Split('\\').Last().ToLower();
                 if (modules.ContainsKey(moduleName))
                 {
                     modules[moduleName].Add(bitmap);
@@ -153,6 +166,7 @@ namespace Manual_Explorer
             Random rng = new Random();
             string file = allFiles[rng.Next(0, allFiles.Length - 1)];
             string moduleName = file.Substring(0, file.LastIndexOf('.') - 2);
+            moduleName = moduleName.ToLower();
             moduleName = moduleName.Split('\\').Last();
             LoadManual(moduleName);
         }
@@ -173,7 +187,7 @@ namespace Manual_Explorer
             }
             else
             {
-                Page_2.Source = modules["Blank Page"][0];
+                Page_2.Source = modules["blank page"][0];
             }
         }
     }
