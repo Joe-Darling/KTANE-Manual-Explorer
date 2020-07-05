@@ -25,7 +25,8 @@ namespace Manual_Explorer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string[] moduleNames = new string[] { "cheerleader", "hello world", "hello sofia", "test", "testing", "test123", "apple pie" };
+        private Dictionary<string, List<BitmapImage>> modules = new Dictionary<string, List<BitmapImage>>();
+        private int tempIndex = 0;
 
         public MainWindow()
         {
@@ -44,11 +45,11 @@ namespace Manual_Explorer
 
                 Trace.WriteLine(userInput);
 
-                for (int i = 0; i < moduleNames.Length - 1; i++)
+                foreach (string moduleName in modules.Keys)
                 {
-                    if (moduleNames[i].Contains(userInput) == true)
+                    if (moduleName.Contains(userInput))
                     {
-                        comboBox.Items.Add(moduleNames[i]);
+                        comboBox.Items.Add(moduleName);
                     }
 
 
@@ -79,38 +80,79 @@ namespace Manual_Explorer
             Trace.WriteLine("Files:");
             foreach(string file in allFiles)
             {
-                Trace.WriteLine(file);
-            }
-
-            string filePath = "";
-            PdfDocument manualPdf = new PdfDocument();
-            manualPdf.LoadFromFile(filePath);
-            System.Drawing.Image bmp = manualPdf.SaveAsImage(0);
-            try
-            {
-                bmp.Save("c:\\ManualHelper.Test\\Test.bmp");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("There was an error saving your file: " + ex.Message);
+                PdfDocument manualPdf = new PdfDocument();
+                manualPdf.LoadFromFile(file);
+                for (int page = 0; page < manualPdf.Pages.Count; page++)
+                {
+                    System.Drawing.Image bmp = manualPdf.SaveAsImage(page);
+                    string[] pathBreakup = file.Split('\\');
+                    bmp.Save("c:\\ManualHelper.Test\\" + pathBreakup[pathBreakup.Length - 1].Split('.')[0] + "-" + page + ".bmp");
+                }
             }
         }
 
-        private void LoadImageOnScreen(object sender, RoutedEventArgs e)
+        private void InitializeActiveModules(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = "c:\\";
-            openFileDialog.Filter = "pdf files (*.pdf)|*.pdf|All files (*.*)|*.*";
-            openFileDialog.FilterIndex = 2;
-            openFileDialog.RestoreDirectory = true;
-
-            openFileDialog.ShowDialog();
-            string filePath = openFileDialog.FileName;
+            // For now we will just initialize all modules.
+            string initialDirectory = "C:\\ManualHelper.Test";
+            string[] allFiles = Directory.GetFiles(initialDirectory, "*.bmp", SearchOption.AllDirectories);
             BitmapImage bitmap = new BitmapImage();
-            bitmap.BeginInit();
-            bitmap.UriSource = new Uri(filePath);
-            bitmap.EndInit();
-            Temp_Image.Source = bitmap;
+            if(modules.Keys.Count > 0)
+            {
+                Trace.WriteLine("Already initialized");
+                return;
+            }
+            modules = new Dictionary<string, List<BitmapImage>>();
+
+            foreach(string file in allFiles)
+            {
+                bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.UriSource = new Uri(file);
+                bitmap.EndInit();
+                string moduleName = file.Substring(0, file.LastIndexOf('.') - 2);
+                moduleName = moduleName.Split('\\').Last();
+                if (modules.ContainsKey(moduleName))
+                {
+                    modules[moduleName].Add(bitmap);
+                }
+                else
+                {
+                    modules[moduleName] = new List<BitmapImage>() { bitmap };
+                }
+                Trace.WriteLine(moduleName);
+            }
+        }
+
+        private void LoadRandomFile(object sender, RoutedEventArgs e)
+        {
+            string initialDirectory = "C:\\ManualHelper.Test";
+            string[] allFiles = Directory.GetFiles(initialDirectory, "*.bmp", SearchOption.AllDirectories);
+            Random rng = new Random();
+            string file = allFiles[rng.Next(0, allFiles.Length - 1)];
+            string moduleName = file.Substring(0, file.LastIndexOf('.') - 2);
+            moduleName = moduleName.Split('\\').Last();
+            LoadManual(moduleName);
+        }
+
+        private void LoadManual(string moduleName)
+        {
+            if (!modules.ContainsKey(moduleName))
+            {
+                throw new ArgumentException("This module name does not exist in the dictionary");
+            }
+
+            // TODO check if page is locked
+            Page_1.Source = modules[moduleName][0];
+
+            if (modules[moduleName].Count > 1)
+            {
+                Page_2.Source = modules[moduleName][1];
+            }
+            else
+            {
+                Page_2.Source = modules["Blank Page"][0];
+            }
         }
     }
 }
