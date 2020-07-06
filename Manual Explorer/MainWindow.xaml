@@ -12,6 +12,7 @@
         <Image x:Name="Page_1" HorizontalAlignment="Left" Height="550" Margin="280,44,0,0" VerticalAlignment="Top" Width="336"/>
         <Button Content="Button" HorizontalAlignment="Left" Margin="88,152,0,0" VerticalAlignment="Top" Click="LoadRandomFile"/>
         <Image x:Name="Page_2" HorizontalAlignment="Left" Height="550" Margin="638,44,0,0" VerticalAlignment="Top" Width="336"/>
+        <ListBox x:Name="History" Margin="10,200,819,40" SelectionChanged="History_Selected"/>
 
     </Grid>
 </Window>

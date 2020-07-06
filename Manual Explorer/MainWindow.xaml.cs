@@ -189,6 +189,19 @@ namespace Manual_Explorer
             {
                 Page_2.Source = modules["blank page"][0];
             }
+            if (!History.Items.Contains(moduleName))
+            {
+                History.Items.Add(moduleName);
+            }
+        }
+
+        private void History_Selected(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox comboBox = (ListBox)sender;
+            if (comboBox.SelectedItem != null)
+            {
+                LoadManual(comboBox.SelectedItem.ToString());
+            }
         }
     }
 }
