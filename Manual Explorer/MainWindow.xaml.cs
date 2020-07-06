@@ -109,12 +109,14 @@ namespace Manual_Explorer
 
         private void ConvertPDFToImage(object sender, RoutedEventArgs e)
         {
-            string initialDirectory = "C:\\Program Files (x86)\\Steam\\steamapps\\workshop\\content\\341800";
+            //string initialDirectory = "C:\\Program Files (x86)\\Steam\\steamapps\\workshop\\content\\341800";
+            string initialDirectory = "C:\\Manual PDFs";
             string[] allFiles = Directory.GetFiles(initialDirectory, "*.pdf", SearchOption.AllDirectories);
 
             Trace.WriteLine("Files:");
             foreach(string file in allFiles)
             {
+                Trace.WriteLine(file);
                 PdfDocument manualPdf = new PdfDocument();
                 manualPdf.LoadFromFile(file);
                 for (int page = 0; page < manualPdf.Pages.Count; page++)
