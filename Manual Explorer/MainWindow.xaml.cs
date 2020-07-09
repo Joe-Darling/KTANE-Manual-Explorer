@@ -26,6 +26,7 @@ namespace Manual_Explorer
     public partial class MainWindow : Window
     {
         private Dictionary<string, List<BitmapImage>> modules = new Dictionary<string, List<BitmapImage>>();
+        private string currentModule;
 
         public MainWindow()
         {
@@ -240,9 +241,18 @@ namespace Manual_Explorer
             LoadManual(moduleName);
         }
 
+        private void SaveCurrentModule(object sender, RoutedEventArgs e)
+        {
+            if (!History.Items.Contains(CapitilizeItem(currentModule)))
+            {
+                History.Items.Add(CapitilizeItem(currentModule));
+            }
+        }
+
         private void LoadManual(string moduleName)
         {
             moduleName = moduleName.ToLower();
+            currentModule = moduleName;
             if (!modules.ContainsKey(moduleName))
             {
                 throw new ArgumentException("This module name does not exist in the dictionary");
@@ -259,10 +269,7 @@ namespace Manual_Explorer
             {
                 Page_2.Source = modules["blank page"][0];
             }
-            if (!History.Items.Contains(CapitilizeItem(moduleName)))
-            {
-                History.Items.Add(CapitilizeItem(moduleName));
-            }
+            
         }
 
         private void History_Selected(object sender, SelectionChangedEventArgs e)
