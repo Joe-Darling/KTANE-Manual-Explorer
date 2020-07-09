@@ -26,7 +26,6 @@ namespace Manual_Explorer
     public partial class MainWindow : Window
     {
         private Dictionary<string, List<BitmapImage>> modules = new Dictionary<string, List<BitmapImage>>();
-        private int tempIndex = 0;
 
         public MainWindow()
         {
@@ -58,7 +57,7 @@ namespace Manual_Explorer
                 {
                     if (nameToCheck.StartsWith(userInput))
                     {
-                        comboBox.Items.Add(CapitilizeComboBoxItems(nameToCheck));
+                        comboBox.Items.Add(CapitilizeItem(nameToCheck));
                     }
 
                     else if (nameToCheck.Contains(" "))
@@ -82,19 +81,19 @@ namespace Manual_Explorer
 
                 foreach (string moduleName in wordStarts)
                 {
-                    comboBox.Items.Add(CapitilizeComboBoxItems(moduleName));
+                    comboBox.Items.Add(CapitilizeItem(moduleName));
                 }
 
                 foreach (string moduleName in contains)
                 {
-                    comboBox.Items.Add(CapitilizeComboBoxItems(moduleName));
+                    comboBox.Items.Add(CapitilizeItem(moduleName));
                 }
 
                 foreach (string item in modules.Keys)
                 {
                     if (Compute(item, userInput) <= 3)
                     {
-                        comboBox.Items.Add(CapitilizeComboBoxItems(item));
+                        comboBox.Items.Add(CapitilizeItem(item));
                     }
 
                 }
@@ -113,7 +112,7 @@ namespace Manual_Explorer
             comboBox.IsDropDownOpen = true;
         }
 
-        public string CapitilizeComboBoxItems(string item)
+        public string CapitilizeItem(string item)
         {
             return char.ToUpper(item[0]) + item.Substring(1);
         }
@@ -189,7 +188,9 @@ namespace Manual_Explorer
                 {
                     System.Drawing.Image bmp = manualPdf.SaveAsImage(page);
                     string[] pathBreakup = file.Split('\\');
-                    bmp.Save("c:\\ManualHelper.Test\\" + pathBreakup[pathBreakup.Length - 1].Split('.')[0] + "-" + page + ".bmp");
+                    string filename = pathBreakup[pathBreakup.Length - 1];
+                    filename = filename.Substring(0, filename.LastIndexOf('.'));
+                    bmp.Save("c:\\ManualHelper.Test\\" + filename + "-" + page + ".bmp");
                 }
             }
         }
@@ -213,7 +214,7 @@ namespace Manual_Explorer
                 bitmap.BeginInit();
                 bitmap.UriSource = new Uri(file);
                 bitmap.EndInit();
-                string moduleName = file.Substring(0, file.LastIndexOf('.') - 2);
+                string moduleName = file.Substring(0, file.LastIndexOf('-'));
                 moduleName = moduleName.Split('\\').Last().ToLower();
                 if (modules.ContainsKey(moduleName))
                 {
@@ -241,6 +242,7 @@ namespace Manual_Explorer
 
         private void LoadManual(string moduleName)
         {
+            moduleName = moduleName.ToLower();
             if (!modules.ContainsKey(moduleName))
             {
                 throw new ArgumentException("This module name does not exist in the dictionary");
@@ -257,9 +259,9 @@ namespace Manual_Explorer
             {
                 Page_2.Source = modules["blank page"][0];
             }
-            if (!History.Items.Contains(moduleName))
+            if (!History.Items.Contains(CapitilizeItem(moduleName)))
             {
-                History.Items.Add(moduleName);
+                History.Items.Add(CapitilizeItem(moduleName));
             }
         }
 
