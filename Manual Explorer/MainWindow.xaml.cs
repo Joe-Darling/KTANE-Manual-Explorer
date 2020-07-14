@@ -108,13 +108,125 @@ namespace Manual_Explorer
             {
 
             }
+            else if (e.Key == Key.Tab)
+            {
+                comboBox.IsDropDownOpen = false;
+                e.Handled = true;
+                History.Focus();
+            }
+
             else
             {
                 e.Handled = true;
                 Trace.WriteLine("A letter was NOT pressed");
             }
 
-            comboBox.IsDropDownOpen = true;
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                comboBox.IsDropDownOpen = false;
+            }
+            else
+            {
+                comboBox.IsDropDownOpen = true;
+            }
+        }
+
+        private void BackspaceUpdate(object sender, KeyEventArgs e)
+        {
+            ComboBox comboBox = (ComboBox)sender;
+
+
+
+            if (e.Key == Key.Back)
+            {
+                comboBox.Items.Clear();
+                string userInput = comboBox.Text.ToLower();
+
+                for (int i = 0; i < 10; i++)
+                {
+                    if (userInput.Contains(i.ToString()))
+                    {
+                        userInput = userInput.Remove(userInput.Length - 2, 1);
+                        break;
+                    }
+                }
+
+                List<string> contains = new List<string>();
+                List<string> wordStarts = new List<string>();
+
+                foreach (string nameToCheck in modules.Keys)
+                {
+                    if (nameToCheck.StartsWith(userInput))
+                    {
+                        comboBox.Items.Add(CapitilizeItem(nameToCheck));
+                    }
+
+                    else if (nameToCheck.Contains(" "))
+                    {
+                        string[] words = nameToCheck.Split(' ');
+                        for (int i = 1; i < words.Length; i++)
+                        {
+                            if (words[i].StartsWith(userInput))
+                            {
+                                wordStarts.Add(nameToCheck);
+                            }
+                        }
+                    }
+
+                    else if (nameToCheck.Contains(userInput))
+                    {
+                        contains.Add(nameToCheck);
+                    }
+                }
+
+
+                foreach (string moduleName in wordStarts)
+                {
+                    comboBox.Items.Add(CapitilizeItem(moduleName));
+                }
+
+                foreach (string moduleName in contains)
+                {
+                    comboBox.Items.Add(CapitilizeItem(moduleName));
+                }
+
+                foreach (string item in modules.Keys)
+                {
+                    if (Compute(item, userInput) <= 3)
+                    {
+                        comboBox.Items.Add(CapitilizeItem(item));
+                    }
+                }
+            }
+            else if (e.Key == Key.Tab)
+            {
+                comboBox.IsDropDownOpen = false;
+                e.Handled = true;
+                History.Focus();
+            }
+
+
+
+            if (string.IsNullOrEmpty(comboBox.Text))
+            {
+                comboBox.IsDropDownOpen = false;
+            }
+            else
+            {
+                comboBox.IsDropDownOpen = true;
+            }
+
+            if (e.Key == Key.Enter)
+            {
+                e.Handled = true;
+                comboBox.IsDropDownOpen = false;
+            }
+
+        }
+        private void ClearSaved(object sender, RoutedEventArgs e)
+        {
+            History.Items.Clear();
         }
 
         public string CapitilizeItem(string item)
