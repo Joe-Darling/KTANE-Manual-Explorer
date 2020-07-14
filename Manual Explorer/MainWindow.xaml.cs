@@ -395,6 +395,7 @@ namespace Manual_Explorer
             {
                 History.Items.Add(CapitilizeItem(currentModule));
             }
+            History.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
         }
 
         private void LoadManual(string moduleName)
