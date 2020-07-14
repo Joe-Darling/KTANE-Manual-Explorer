@@ -6,17 +6,27 @@
         xmlns:local="clr-namespace:Manual_Explorer"
         mc:Ignorable="d"
         Title="MainWindow" Height="1080" Width="1920">
-    <Grid Background="#FF979797">
-        <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
-        <Button Content="Load" HorizontalAlignment="Left" Margin="10,152,0,0" VerticalAlignment="Top" Click="InitializeActiveModules"/>
+
+    <Grid>
+        <DockPanel>
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_New" Click="NewProfile"/>
+                    <MenuItem Header="_Open" Click="OpenProfile"/>
+                    <MenuItem Header="_Save" Click="SaveProfile"/>
+                    <MenuItem Header="Save As" Click="SaveProfileAs"/>
+                    <Separator/>
+                    <MenuItem Header="_Exit"/>
+                </MenuItem>
+            </Menu>
+            <TextBox AcceptsReturn="True" Background="#FFA4A4A4"/>
+        </DockPanel>
+        <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected"/>
         <Image x:Name="Page_1" HorizontalAlignment="Left" Height="970" Margin="280,44,0,0" VerticalAlignment="Top" Width="750"/>
-        <Button Content="Save" HorizontalAlignment="Left" Margin="88,152,0,0" VerticalAlignment="Top" Click="SaveCurrentModule"/>
+        <Button Content="Add" HorizontalAlignment="Left" Margin="46,150,0,0" VerticalAlignment="Top" Click="SaveCurrentModule"/>
         <Image x:Name="Page_2" HorizontalAlignment="Left" Height="970" Margin="1103,44,0,0" VerticalAlignment="Top" Width="750"/>
         <ListBox x:Name="History" Margin="10,200,1709,40" SelectionChanged="History_Selected"/>
-        <Button Content="Convert" HorizontalAlignment="Left" Margin="165,152,0,0" VerticalAlignment="Top" Click="ConvertPDFToImage"/>
-        <Button Content="Test" HorizontalAlignment="Left" Margin="88,113,0,0" VerticalAlignment="Top" Click="ConvertPDFToImage"/>
-        <Button Content="Clear" HorizontalAlignment="Left" Height="20" Margin="165,113,0,0" VerticalAlignment="Top" Width="46" Click="ClearSaved"/>
-        <Button Content="Save Profile" HorizontalAlignment="Left" Margin="10,113,0,0" VerticalAlignment="Top" Click="InitializeActiveModules"/>
+        <Button Content="Delete" HorizontalAlignment="Left" Margin="142,150,0,0" VerticalAlignment="Top" Click="DeleteCurrentModule"/>
 
     </Grid>
 </Window>

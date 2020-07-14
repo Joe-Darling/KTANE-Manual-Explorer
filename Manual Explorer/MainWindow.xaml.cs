@@ -31,11 +31,14 @@ namespace Manual_Explorer
     public partial class MainWindow : Window
     {
         private Dictionary<string, List<BitmapImage>> modules = new Dictionary<string, List<BitmapImage>>();
-        private string currentModule;
+        private string currentModule = string.Empty;
+        private HashSet<string> previouslySavedModules = new HashSet<string>();
+        private string savePath = string.Empty;
 
         public MainWindow()
         {
             InitializeComponent();
+            InitializeActiveModules();
         }
 
         private void UpdateQuery(object sender, KeyEventArgs e)
@@ -225,9 +228,37 @@ namespace Manual_Explorer
             }
 
         }
-        private void ClearSaved(object sender, RoutedEventArgs e)
+        private void NewProfile(object sender, RoutedEventArgs e)
         {
+            previouslySavedModules = new HashSet<string>();
             History.Items.Clear();
+        }
+
+        private bool HaveChangesBeenMade()
+        {
+            if(History.Items.Count != previouslySavedModules.Count)
+            {
+                return true;
+            }
+
+            foreach(string module in History.Items)
+            {
+                if (!previouslySavedModules.Contains(module))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void SetPreviouslySavedModules()
+        {
+            previouslySavedModules = new HashSet<string>();
+            foreach(string module in History.Items)
+            {
+                previouslySavedModules.Add(module);
+            }
         }
 
         public string CapitilizeItem(string item)
@@ -313,10 +344,10 @@ namespace Manual_Explorer
             }
         }
 
-        private void InitializeActiveModules(object sender, RoutedEventArgs e)
+        private void InitializeActiveModules()
         {
             // For now we will just initialize all modules.
-            string initialDirectory = "F:\\V\\ManualHelper.Test";
+            string initialDirectory = "C:\\ManualHelper.Test";
             string[] allFiles = Directory.GetFiles(initialDirectory, "*.bmp", SearchOption.AllDirectories);
             BitmapImage bitmap = new BitmapImage();
             if(modules.Keys.Count > 0)
@@ -364,10 +395,7 @@ namespace Manual_Explorer
             {
                 History.Items.Add(CapitilizeItem(currentModule));
             }
-
-            History.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
         }
-
 
         private void LoadManual(string moduleName)
         {
@@ -468,6 +496,101 @@ namespace Manual_Explorer
             foreach(string s in failedFiles)
             {
                 Trace.WriteLine(s);
+            }
+        }
+
+        private void OpenProfile(object sender, RoutedEventArgs e)
+        {
+            var fileContent = string.Empty;
+            var openFileDialog = new OpenFileDialog();
+
+            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            openFileDialog.FilterIndex = 0;
+            openFileDialog.RestoreDirectory = true;
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                //Get the path of specified file
+                savePath = openFileDialog.FileName;
+                try
+                {
+                    string[] moduleList = System.IO.File.ReadAllText(savePath).Split('\n');
+                    History.Items.Clear();
+
+                    foreach(string module in moduleList)
+                    {
+                        if (modules.ContainsKey(module))
+                        {
+                            History.Items.Add(CapitilizeItem(module));
+                        }
+                    }
+                    SetPreviouslySavedModules();
+                }
+                catch (Exception exception)
+                {
+                    Trace.WriteLine(exception);
+                }
+            }
+        }
+
+        private void SaveProfile(object sender, RoutedEventArgs e)
+        {
+            if (HaveChangesBeenMade())
+            {
+                if(savePath == string.Empty)
+                {
+                    SaveProfileAs(sender, e);
+                }
+                else
+                {
+                    SaveFile(savePath);
+                }
+            }
+        }
+
+        private void SaveProfileAs(object sender, RoutedEventArgs e)
+        {
+            var fileContent = string.Empty;
+            var saveFileDialog = new SaveFileDialog();
+
+            saveFileDialog.InitialDirectory = "c:\\";
+            saveFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            saveFileDialog.FilterIndex = 0;
+            saveFileDialog.RestoreDirectory = true;
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                SaveFile(saveFileDialog.FileName);
+            }
+        }
+
+        private void SaveFile(string filePath)
+        {
+            string fileContent = string.Empty;
+
+            foreach (string module in History.Items)
+            {
+                fileContent += module.ToLower() + "\n";
+            }
+            //Get the path of specified file
+            savePath = filePath;
+            try
+            {
+                System.IO.File.WriteAllText(savePath, fileContent);
+                SetPreviouslySavedModules();
+            }
+            catch (Exception exception)
+            {
+                Trace.WriteLine(exception);
+            }
+        }
+
+        private void DeleteCurrentModule(object sender, RoutedEventArgs e)
+        {
+            if(CapitilizeItem(currentModule) != string.Empty && History.Items.Contains(CapitilizeItem(currentModule)))
+            {
+                History.Items.Remove(CapitilizeItem(currentModule));
             }
         }
     }
