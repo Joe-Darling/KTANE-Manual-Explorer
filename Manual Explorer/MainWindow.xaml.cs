@@ -316,7 +316,7 @@ namespace Manual_Explorer
         private void InitializeActiveModules(object sender, RoutedEventArgs e)
         {
             // For now we will just initialize all modules.
-            string initialDirectory = "C:\\ManualHelper.Test";
+            string initialDirectory = "F:\\V\\ManualHelper.Test";
             string[] allFiles = Directory.GetFiles(initialDirectory, "*.bmp", SearchOption.AllDirectories);
             BitmapImage bitmap = new BitmapImage();
             if(modules.Keys.Count > 0)
@@ -364,7 +364,10 @@ namespace Manual_Explorer
             {
                 History.Items.Add(CapitilizeItem(currentModule));
             }
+
+            History.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
         }
+
 
         private void LoadManual(string moduleName)
         {
@@ -467,6 +470,5 @@ namespace Manual_Explorer
                 Trace.WriteLine(s);
             }
         }
-
     }
 }

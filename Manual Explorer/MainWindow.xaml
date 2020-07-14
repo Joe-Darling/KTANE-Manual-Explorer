@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="1080" Width="1920">
     <Grid Background="#FF979797">
-        <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected"/>
+        <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
         <Button Content="Load" HorizontalAlignment="Left" Margin="10,152,0,0" VerticalAlignment="Top" Click="InitializeActiveModules"/>
         <Image x:Name="Page_1" HorizontalAlignment="Left" Height="970" Margin="280,44,0,0" VerticalAlignment="Top" Width="750"/>
         <Button Content="Save" HorizontalAlignment="Left" Margin="88,152,0,0" VerticalAlignment="Top" Click="SaveCurrentModule"/>
