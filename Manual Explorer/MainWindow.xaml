@@ -16,6 +16,7 @@
         <Button Content="Convert" HorizontalAlignment="Left" Margin="165,152,0,0" VerticalAlignment="Top" Click="ConvertPDFToImage"/>
         <Button Content="Test" HorizontalAlignment="Left" Margin="88,113,0,0" VerticalAlignment="Top" Click="ConvertPDFToImage"/>
         <Button Content="Clear" HorizontalAlignment="Left" Height="20" Margin="165,113,0,0" VerticalAlignment="Top" Width="46" Click="ClearSaved"/>
+        <Button Content="Save Profile" HorizontalAlignment="Left" Margin="10,113,0,0" VerticalAlignment="Top" Click="InitializeActiveModules"/>
 
     </Grid>
 </Window>
