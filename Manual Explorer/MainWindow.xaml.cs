@@ -27,6 +27,7 @@ namespace Manual_Explorer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    // Comment
     public partial class MainWindow : Window
     {
         private Dictionary<string, List<BitmapImage>> modules = new Dictionary<string, List<BitmapImage>>();
