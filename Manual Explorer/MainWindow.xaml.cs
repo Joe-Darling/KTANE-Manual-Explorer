@@ -30,7 +30,6 @@ namespace Manual_Explorer
     // Comment
     public partial class MainWindow : Window
     {
-        private Dictionary<string, List<BitmapImage>> modules = new Dictionary<string, List<BitmapImage>>();
         private string currentModule = string.Empty;
         private ProfileManager profileManager;
         private ModuleManager moduleManager;
@@ -48,13 +47,13 @@ namespace Manual_Explorer
         private void UpdateQuery(object sender, KeyEventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
-            search.UpdateComboBox(comboBox, e, modules, History);
+            search.UpdateComboBox(comboBox, e, History);
         }
 
         private void BackspaceUpdate(object sender, KeyEventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
-            search.UpdateComboBoxOnBackspace(comboBox, e, modules, History);
+            search.UpdateComboBoxOnBackspace(comboBox, e, History);
         }
 
         public string CapitilizeItem(string item)
@@ -105,21 +104,22 @@ namespace Manual_Explorer
         {
             moduleName = moduleName.ToLower();
             currentModule = moduleName;
-            if (!modules.ContainsKey(moduleName))
+            if (!ModuleManager.GetInstance().DoesModuleExist(moduleName))
             {
                 throw new ArgumentException("This module name does not exist in the dictionary");
             }
 
             // TODO check if page is locked
-            Page_1.Source = modules[moduleName][0];
+            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentModule);
+            Page_1.Source = pages[0];
 
-            if (modules[moduleName].Count > 1)
+            if (pages.Count > 1)
             {
-                Page_2.Source = modules[moduleName][1];
+                Page_2.Source = pages[1];
             }
             else
             {
-                Page_2.Source = modules["blank page"][0];
+                Page_2.Source = ModuleManager.GetInstance().GetManualPages("blank page")[0];
             }
             
         }

@@ -41,12 +41,12 @@ namespace Manual_Explorer
             }
         }
 
-        public void SearchFilter(ComboBox comboBox, string userInput, Dictionary<string, List<BitmapImage>> modules)
+        public void SearchFilter(ComboBox comboBox, string userInput)
         {
             List<string> contains = new List<string>();
             List<string> wordStarts = new List<string>();
-
-            foreach (string nameToCheck in modules.Keys)
+            Dictionary<string, List<BitmapImage>>.KeyCollection keys = ModuleManager.GetInstance().GetModuleNames();
+            foreach (string nameToCheck in keys)
             {
                 // first adding modules whose first word starts with user input
                 if (nameToCheck.StartsWith(userInput))
@@ -83,8 +83,8 @@ namespace Manual_Explorer
                 comboBox.Items.Add(CapitilizeItem(moduleName));
             }
 
-            // adding modules which name might have been misspelled 
-            foreach (string item in modules.Keys)
+            // adding modules which name might have been misspelled
+            foreach (string item in keys)
             {
                 if (Compute(item, userInput) <= 3)
                 {
@@ -94,14 +94,14 @@ namespace Manual_Explorer
             }
         }
 
-        public void UpdateComboBox(ComboBox comboBox, KeyEventArgs e, Dictionary<string, List<BitmapImage>> modules, ListBox History)
+        public void UpdateComboBox(ComboBox comboBox, KeyEventArgs e, ListBox History)
         {
             comboBox.Items.Clear();
 
             if ((e.Key >= Key.A && e.Key <= Key.Z) || (e.Key >= Key.D0 && e.Key <= Key.D9))
             {
                 string userInput = comboBox.Text.ToLower() + e.Key.ToString().ToLower();
-                SearchFilter(comboBox, userInput, modules);
+                SearchFilter(comboBox, userInput);
             }
             else if (e.Key == Key.LeftShift || e.Key == Key.Space || e.Key == Key.RightShift)
             {
@@ -125,13 +125,13 @@ namespace Manual_Explorer
             }
         }
 
-        public void UpdateComboBoxOnBackspace(ComboBox comboBox, KeyEventArgs e, Dictionary<string, List<BitmapImage>> modules, ListBox History)
+        public void UpdateComboBoxOnBackspace(ComboBox comboBox, KeyEventArgs e, ListBox History)
         {
             if (e.Key == Key.Back)
             {
                 comboBox.Items.Clear();
                 string userInput = comboBox.Text.ToLower();
-                SearchFilter(comboBox, userInput, modules);
+                SearchFilter(comboBox, userInput);
             }
             else if (e.Key == Key.Tab)
             {

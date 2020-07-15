@@ -60,5 +60,15 @@ namespace Manual_Explorer
         {
             return modules.ContainsKey(moduleName);
         }
+
+        public Dictionary<string, List<BitmapImage>>.KeyCollection GetModuleNames()
+        {
+            return modules.Keys;
+        }
+
+        public List<BitmapImage> GetManualPages(string manual)
+        {
+            return modules[manual];
+        }
     }
 }
