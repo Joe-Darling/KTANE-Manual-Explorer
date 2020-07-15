@@ -46,14 +46,14 @@ namespace Manual_Explorer
             {
                 string userInput = comboBox.Text.ToLower() + e.Key.ToString().ToLower();
 
-                for (int i = 0; i < 10; i++)
-                {
-                    if (userInput.Contains(i.ToString()))
-                    {
-                        userInput = userInput.Remove(userInput.Length - 2, 1);
-                        break;
-                    }
-                }
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    if (userInput.Contains(i.ToString()))
+                //    {
+                //        userInput = userInput.Remove(userInput.Length - 2, 1);
+                //        break;
+                //    }
+                //}
 
                 List<string> contains = new List<string>();
                 List<string> wordStarts = new List<string>();
@@ -143,14 +143,14 @@ namespace Manual_Explorer
                 comboBox.Items.Clear();
                 string userInput = comboBox.Text.ToLower();
 
-                for (int i = 0; i < 10; i++)
-                {
-                    if (userInput.Contains(i.ToString()))
-                    {
-                        userInput = userInput.Remove(userInput.Length - 2, 1);
-                        break;
-                    }
-                }
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    if (userInput.Contains(i.ToString()))
+                //    {
+                //        userInput = userInput.Remove(userInput.Length - 2, 1);
+                //        break;
+                //    }
+                //}
 
                 List<string> contains = new List<string>();
                 List<string> wordStarts = new List<string>();
