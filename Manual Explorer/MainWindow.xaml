@@ -19,9 +19,8 @@
                     <MenuItem Header="_Exit"/>
                 </MenuItem>
             </Menu>
-            <TextBox AcceptsReturn="True" Background="#FFA4A4A4"/>
         </DockPanel>
-        <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate" LostFocus="ComboLostFocus"/>
+        <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
         <Image x:Name="Page_1" HorizontalAlignment="Left" Height="970" Margin="280,44,0,0" VerticalAlignment="Top" Width="750"/>
         <Button Content="Add" HorizontalAlignment="Left" Margin="46,150,0,0" VerticalAlignment="Top" Click="SaveCurrentModule"/>
         <Image x:Name="Page_2" HorizontalAlignment="Left" Height="970" Margin="1103,44,0,0" VerticalAlignment="Top" Width="750"/>
