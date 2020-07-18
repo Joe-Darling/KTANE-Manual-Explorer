@@ -43,7 +43,8 @@ namespace Manual_Explorer
             InitializeComponent();
             moduleManager = ModuleManager.GetInstance();
             profileManager = new ProfileManager(History);
-            rightSideBarManager = new RightSideBarManager(AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count);
+            rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
+                RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
         }
 
         private void UpdateQuery(object sender, KeyEventArgs e)
@@ -173,6 +174,17 @@ namespace Manual_Explorer
             int amount = terms[0].Equals("ADD") ? 1 : -1;
             WidgetType type = (terms[1].Equals("AA") || terms[1].Equals("D")) ? WidgetType.BATTERY : WidgetType.PORT;
             rightSideBarManager.ChangeQuantity(terms[1], amount, type);
+        }
+
+        private void SelectedSerialNumberBox(object sender, RoutedEventArgs e)
+        {
+            rightSideBarManager.SelectedSerialNumberBox();
+        }
+
+        private void ToggleIndicator(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBox = (CheckBox)sender;
+            rightSideBarManager.ToggledIndicator(checkBox.Name.Split('_')[0].Equals("LIT"), checkBox.IsChecked.Value);
         }
     }
 }
