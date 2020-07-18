@@ -36,12 +36,14 @@ namespace Manual_Explorer
         private HashSet<string> previouslySavedModules = new HashSet<string>();
         private string savePath = string.Empty;
         SearchFunctionality search = new SearchFunctionality();
+        RightSideBarManager rightSideBarManager;
 
         public MainWindow()
         {
             InitializeComponent();
             moduleManager = ModuleManager.GetInstance();
             profileManager = new ProfileManager(History);
+            rightSideBarManager = new RightSideBarManager(AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count);
         }
 
         private void UpdateQuery(object sender, KeyEventArgs e)
@@ -155,6 +157,22 @@ namespace Manual_Explorer
         private void ComboLostFocus(object sender, RoutedEventArgs e)
         {
             User_Query.IsDropDownOpen = false;
+        }
+
+        private void ResetRightSideBar(Object sender, RoutedEventArgs e)
+        {
+            rightSideBarManager.ResetPanel();
+        }
+
+        private void ChangeQuantity(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            string buttonName = button.Name;
+            string[] terms = buttonName.Split('_');
+
+            int amount = terms[0].Equals("ADD") ? 1 : -1;
+            WidgetType type = (terms[1].Equals("AA") || terms[1].Equals("D")) ? WidgetType.BATTERY : WidgetType.PORT;
+            rightSideBarManager.ChangeQuantity(terms[1], amount, type);
         }
     }
 }

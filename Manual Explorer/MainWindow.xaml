@@ -21,11 +21,76 @@
             </Menu>
         </DockPanel>
         <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
-        <Image x:Name="Page_1" HorizontalAlignment="Left" Height="970" Margin="280,44,0,0" VerticalAlignment="Top" Width="750"/>
+        <Image x:Name="Page_1" HorizontalAlignment="Left" Height="900" Margin="235,116,0,0" VerticalAlignment="Top" Width="700"/>
         <Button Content="Add" HorizontalAlignment="Left" Margin="46,150,0,0" VerticalAlignment="Top" Click="SaveCurrentModule"/>
-        <Image x:Name="Page_2" HorizontalAlignment="Left" Height="970" Margin="1103,44,0,0" VerticalAlignment="Top" Width="750"/>
+        <Image x:Name="Page_2" HorizontalAlignment="Left" Height="900" Margin="960,116,0,0" VerticalAlignment="Top" Width="700"/>
         <ListBox x:Name="History" Margin="10,200,1709,40" SelectionChanged="History_Selected"/>
         <Button Content="Delete" HorizontalAlignment="Left" Margin="142,150,0,0" VerticalAlignment="Top" Click="DeleteCurrentModule"/>
+        <Grid Margin="1686,0,0,0" Background="#FF818181">
+            <Label Content="Starting Time:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0"/>
+            <TextBox HorizontalAlignment="Left" Margin="88,12,0,0" Text="0:00" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="22"/>
+            <Label Content="Modules:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,41,0,0"/>
+            <TextBox HorizontalAlignment="Left" Margin="88,43,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="22"/>
+            <Label Content="AA Batteries:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,115,0,0"/>
+            <Label Content="D Batteries:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,146,0,0"/>
+            <Label Content="Battery Holders:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,177,0,0"/>
+            <Label Content="Total Batteries:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,208,0,0"/>
+            <Label Content="DVI-D:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,239,0,0"/>
+            <Label Content="Parallel:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,270,0,0"/>
+            <Label Content="PS/2:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,301,0,0"/>
+            <Label Content="RJ-45:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,332,0,0"/>
+            <Label Content="Serial:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,363,0,0"/>
+            <Label Content="RCA:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,394,0,0"/>
+            <Label Content="Lit:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="69,454,0,0"/>
+            <Label Content="Unlit:" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,454,0,0"/>
+            <Label Content="BOB:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="33,480,0,0"/>
+            <Label Content="CAR:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="33,511,0,0"/>
+            <Label Content="CLR:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,542,0,0"/>
+            <Label Content="FRK:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,573,0,0"/>
+            <Label Content="FRQ:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,604,0,0"/>
+            <Label Content="IND:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,635,0,0"/>
+            <Label Content="MSA:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,666,0,0"/>
+            <Label Content="NSA:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,697,0,0"/>
+            <Label Content="SIG:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,728,0,0"/>
+            <Label Content="SND:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,759,0,0"/>
+            <Label Content="TRN:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,790,0,0"/>
+            <CheckBox x:Name="LIT_BOB" Content="" HorizontalAlignment="Left" Margin="72,485,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_BOB" Content="" HorizontalAlignment="Center" Margin="0,485,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_CAR" Content="" HorizontalAlignment="Left" Margin="72,516,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_CAR" Content="" HorizontalAlignment="Center" Margin="0,516,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_CLR" Content="" HorizontalAlignment="Left" Margin="72,548,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_CLR" Content="" HorizontalAlignment="Center" Margin="0,548,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_FRK" Content="" HorizontalAlignment="Left" Margin="72,579,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_FRK" Content="" HorizontalAlignment="Center" Margin="0,579,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_FRQ" Content="" HorizontalAlignment="Left" Margin="72,609,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_FRQ" Content="" HorizontalAlignment="Center" Margin="0,609,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_IND" Content="" HorizontalAlignment="Left" Margin="72,640,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_IND" Content="" HorizontalAlignment="Center" Margin="0,640,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_MSA" Content="" HorizontalAlignment="Left" Margin="72,672,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_MSA" Content="" HorizontalAlignment="Center" Margin="0,672,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_NSA" Content="" HorizontalAlignment="Left" Margin="72,703,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_NSA" Content="" HorizontalAlignment="Center" Margin="0,703,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_SIG" Content="" HorizontalAlignment="Left" Margin="72,734,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_SIG" Content="" HorizontalAlignment="Center" Margin="0,734,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_SND" Content="" HorizontalAlignment="Left" Margin="72,765,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_SND" Content="" HorizontalAlignment="Center" Margin="0,765,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="LIT_TRN" Content="" HorizontalAlignment="Left" Margin="72,797,0,0" VerticalAlignment="Top"/>
+            <CheckBox x:Name="UNLIT_TRN" Content="" HorizontalAlignment="Center" Margin="0,797,0,0" VerticalAlignment="Top"/>
+            <Label Content="Total Ports:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="1,425,0,0"/>
+            <Label Content="Total:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,821,0,0"/>
+            <TextBox HorizontalAlignment="Center" Margin="0,852,0,0" Text="Notes" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" Height="202"/>
+            <Button Content="Reset" HorizontalAlignment="Left" Margin="191,70,0,0" VerticalAlignment="Top" Click="ResetRightSideBar"/>
+            <Button x:Name="SUB_AA" Content="3" HorizontalAlignment="Left" Margin="115,117,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
+            <TextBlock x:Name="AA_Count" HorizontalAlignment="Left" Margin="154,114,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
+            <Button x:Name="ADD_AA" Content="4" HorizontalAlignment="Left" Margin="181,117,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
+            <Button x:Name="SUB_D" Content="3" HorizontalAlignment="Left" Margin="115,147,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
+            <TextBlock x:Name="D_Count" HorizontalAlignment="Left" Margin="154,144,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
+            <Button x:Name="ADD_D" Content="4" HorizontalAlignment="Left" Margin="181,147,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
+            <TextBlock x:Name="Battery_Holder_Count" HorizontalAlignment="Left" Margin="154,173,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
+            <TextBlock x:Name="Total_Battery_Count" HorizontalAlignment="Left" Margin="154,204,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
+            <Label Content="Serial:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,84,0,0"/>
+            <TextBox HorizontalAlignment="Left" Margin="51,85,0,0" Text="######" TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Height="24" FontSize="14"/>
+        </Grid>
 
     </Grid>
 </Window>
