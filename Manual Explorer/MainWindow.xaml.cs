@@ -74,18 +74,6 @@ namespace Manual_Explorer
             
         }
 
-        private void LoadRandomFile(object sender, RoutedEventArgs e)
-        {
-            string initialDirectory = "C:\\ManualHelper.Test";
-            string[] allFiles = Directory.GetFiles(initialDirectory, "*.bmp", SearchOption.AllDirectories);
-            Random rng = new Random();
-            string file = allFiles[rng.Next(0, allFiles.Length - 1)];
-            string moduleName = file.Substring(0, file.LastIndexOf('.') - 2);
-            moduleName = moduleName.ToLower();
-            moduleName = moduleName.Split('\\').Last();
-            LoadManual(moduleName);
-        }
-
         private void SaveCurrentModule(object sender, RoutedEventArgs e)
         {
             if (!History.Items.Contains(CapitilizeItem(currentModule)))
