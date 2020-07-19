@@ -17,7 +17,17 @@ namespace Manual_Explorer
         {
             // For now we will just initialize all modules.
             string initialDirectory = "C:\\ManualHelper.Test";
-            string[] allFiles = Directory.GetFiles(initialDirectory, "*.bmp", SearchOption.AllDirectories);
+            string secondaryDirectory = "F:\\V\\ManualHelper.Test";
+            string[] allFiles;
+            try
+            {
+                allFiles = Directory.GetFiles(initialDirectory, "*.bmp", SearchOption.AllDirectories);
+            }
+            catch(Exception e)
+            {
+               allFiles = Directory.GetFiles(secondaryDirectory, "*.bmp", SearchOption.AllDirectories);
+            }
+             
             BitmapImage bitmap = new BitmapImage();
 
             modules = new Dictionary<string, List<BitmapImage>>();
