@@ -21,20 +21,16 @@ namespace Manual_Explorer
 
         private async void TestPDFDownloader()
         {
+            // Downloads browser if one isn't already installed
             await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
+
+            // Launches new headless chrome browser
             Browser browser = await Puppeteer.LaunchAsync(new LaunchOptions
             {
                 Headless = true
             });
 
-            string htmlString = string.Empty;
-
-            using (WebClient client = new WebClient())
-            {
-                htmlString = client.DownloadString("https://ktane.timwi.de/HTML/");
-            }
-
-            if (htmlString == string.Empty)
+            if(!TryGetKtaneSiteHtml(out string htmlString))
             {
                 Trace.WriteLine("Unable to get list of modules from site.., aborting operation.");
                 return;
@@ -47,15 +43,19 @@ namespace Manual_Explorer
             var baseUrl = "https://ktane.timwi.de/HTML/";
             var failedFiles = new List<string>();
             directory = directory.SelectSingleNode("directory");
+
+            // Foreach item in the html
             foreach (var child in directory.ChildNodes)
             {
                 string manualUrlName = child.GetAttributeValue("link", "none");
 
+                // If it is a manual page that is not a translation page
                 if (child.Name.Equals("file") && !manualUrlName.Equals("none") && !child.InnerText.ToLower().Contains("translated"))
                 {
                     Trace.Write("Manual: " + child.InnerText);
                     try
                     {
+                        // Try to use the headless browser to go to that page, if successful download the PDF version of the page
                         string manualName = child.InnerText.Replace(".html", "");
                         PuppeteerSharp.Page page = await browser.NewPageAsync();
                         await page.GoToAsync(baseUrl + manualUrlName);
@@ -66,6 +66,7 @@ namespace Manual_Explorer
                     }
                     catch (Exception)
                     {
+                        // If an error occurs add it to list of failed files
                         Trace.WriteLine("Failed to download correctly");
                         failedFiles.Add(child.InnerText);
                     }
@@ -77,6 +78,24 @@ namespace Manual_Explorer
             {
                 Trace.WriteLine(s);
             }
+        }
+
+        private bool TryGetKtaneSiteHtml(out string htmlString)
+        {
+            // Goes to ktane repo site and gets the html string from it
+            htmlString = string.Empty;
+
+            using (WebClient client = new WebClient())
+            {
+                htmlString = client.DownloadString("https://ktane.timwi.de/HTML/");
+            }
+
+            if (htmlString == string.Empty)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private void ConvertPDFToImage()

@@ -19,11 +19,7 @@ namespace Manual_Explorer
             string initialDirectory = "C:\\ManualHelper.Test";
             string[] allFiles = Directory.GetFiles(initialDirectory, "*.bmp", SearchOption.AllDirectories);
             BitmapImage bitmap = new BitmapImage();
-            if (modules.Keys.Count > 0)
-            {
-                Trace.WriteLine("Already initialized");
-                return;
-            }
+
             modules = new Dictionary<string, List<BitmapImage>>();
 
             foreach (string file in allFiles)
