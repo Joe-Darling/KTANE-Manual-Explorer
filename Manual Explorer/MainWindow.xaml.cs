@@ -30,19 +30,17 @@ namespace Manual_Explorer
     // Comment
     public partial class MainWindow : Window
     {
-        private string currentModule = string.Empty;
         private ProfileManager profileManager;
-        private ModuleManager moduleManager;
-        private HashSet<string> previouslySavedModules = new HashSet<string>();
-        private string savePath = string.Empty;
         SearchFunctionality search = new SearchFunctionality();
         RightSideBarManager rightSideBarManager;
+        ManualDisplayHandler manualDisplayHandler;
 
         public MainWindow()
         {
             InitializeComponent();
-            moduleManager = ModuleManager.GetInstance();
+            ModuleManager.GetInstance();
             profileManager = new ProfileManager(History);
+            manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
         }
@@ -64,63 +62,41 @@ namespace Manual_Explorer
             return char.ToUpper(item[0]) + item.Substring(1);
         }
 
+        private void History_Selected(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox comboBox = (ListBox)sender;
+            if (comboBox.SelectedItem != null)
+            {
+                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
+            }
+        }
+
         private void OnSelected(object sender, SelectionChangedEventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
             if(comboBox.SelectedItem != null)
             {
-                LoadManual(comboBox.SelectedItem.ToString());
+                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
             }
             
         }
 
         private void SaveCurrentModule(object sender, RoutedEventArgs e)
         {
-            if (!History.Items.Contains(CapitilizeItem(currentModule)))
+            string currentManual = CapitilizeItem(manualDisplayHandler.GetCurrentActiveManual());
+            if (!History.Items.Contains(currentManual))
             {
-                History.Items.Add(CapitilizeItem(currentModule));
+                History.Items.Add(currentManual);
             }
             History.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
         }
 
         private void DeleteCurrentModule(object sender, RoutedEventArgs e)
         {
-            if (CapitilizeItem(currentModule) != string.Empty && History.Items.Contains(CapitilizeItem(currentModule)))
+            string currentManual = CapitilizeItem(manualDisplayHandler.GetCurrentActiveManual());
+            if (currentManual != string.Empty && History.Items.Contains(currentManual))
             {
-                History.Items.Remove(CapitilizeItem(currentModule));
-            }
-        }
-
-        private void LoadManual(string moduleName)
-        {
-            moduleName = moduleName.ToLower();
-            currentModule = moduleName;
-            if (!ModuleManager.GetInstance().DoesModuleExist(moduleName))
-            {
-                throw new ArgumentException("This module name does not exist in the dictionary");
-            }
-
-            // TODO check if page is locked
-            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentModule);
-            Page_1.Source = pages[0];
-
-            if (pages.Count > 1)
-            {
-                Page_2.Source = pages[1];
-            }
-            else
-            {
-                Page_2.Source = ModuleManager.GetInstance().GetManualPages("blank page")[0];
-            }
-            
-        }
-
-        private void History_Selected(object sender, SelectionChangedEventArgs e)
-        {
-            ListBox comboBox = (ListBox)sender;
-            if (comboBox.SelectedItem != null)
-            {
-                LoadManual(comboBox.SelectedItem.ToString());
+                History.Items.Remove(currentManual);
             }
         }
 
