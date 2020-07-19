@@ -89,7 +89,7 @@
             <TextBlock x:Name="Battery_Holder_Count" HorizontalAlignment="Left" Margin="154,173,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
             <TextBlock x:Name="Total_Battery_Count" HorizontalAlignment="Left" Margin="154,204,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
             <Label Content="Serial:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,84,0,0"/>
-            <TextBox x:Name="Serial_Number" HorizontalAlignment="Left" Margin="51,85,0,0" Text="######" TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Height="24" FontSize="14" FontFamily="Consolas" GotFocus="SelectedSerialNumberBox"/>
+            <TextBox x:Name="Serial_Number" HorizontalAlignment="Left" Margin="51,85,0,0" Text="######" TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Height="24" FontSize="14" FontFamily="Consolas" GotFocus="SelectedSerialNumberBox" CharacterCasing="Upper"/>
             <Button x:Name="SUB_DVI" Content="3" HorizontalAlignment="Left" Margin="115,240,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
             <TextBlock x:Name="DVI_Count" HorizontalAlignment="Left" Margin="154,237,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
             <Button x:Name="ADD_DVI" Content="4" HorizontalAlignment="Left" Margin="181,240,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
