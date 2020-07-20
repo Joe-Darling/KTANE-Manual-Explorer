@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,12 +33,14 @@ namespace Manual_Explorer
         SearchFunctionality search = new SearchFunctionality();
         RightSideBarManager rightSideBarManager;
         ManualDisplayHandler manualDisplayHandler;
+        DrawingManager drawingManager;
 
         public MainWindow()
         {
             InitializeComponent();
             ModuleManager.GetInstance();
             profileManager = new ProfileManager(History);
+            drawingManager = new DrawingManager();
             manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
@@ -68,6 +69,9 @@ namespace Manual_Explorer
             if (comboBox.SelectedItem != null)
             {
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
+                //TODO only clear if page isn't locked
+                drawingManager.ClearPage(Left_Page_Drawing);
+                drawingManager.ClearPage(Right_Page_Drawing);
             }
         }
 
@@ -77,6 +81,9 @@ namespace Manual_Explorer
             if(comboBox.SelectedItem != null)
             {
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
+                //TODO only clear if page isn't locked
+                drawingManager.ClearPage(Left_Page_Drawing);
+                drawingManager.ClearPage(Right_Page_Drawing);
             }
             
         }
@@ -149,6 +156,39 @@ namespace Manual_Explorer
         {
             CheckBox checkBox = (CheckBox)sender;
             rightSideBarManager.ToggledIndicator(checkBox.Name.Split('_')[0].Equals("LIT"), checkBox.IsChecked.Value);
+        }
+
+        private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            drawingManager.MouseButtonDown((Canvas)sender, e);
+        }
+
+        private void CanvasMouseMove(object sender, MouseEventArgs e)
+        {
+            drawingManager.MouseMove((Canvas)sender, e);
+        }
+
+        private void CanvasMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            drawingManager.MouseButtonUp(e);
+        }
+
+        private void ClearDrawing(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            if (button.Name.Equals("Left_Clear"))
+            {
+                drawingManager.ClearPage(Left_Page_Drawing);
+            }
+            else
+            {
+                drawingManager.ClearPage(Right_Page_Drawing);
+            }
+        }
+
+        private void EnterDrawingWindow(object sender, MouseEventArgs e)
+        {
+            drawingManager.OnMouseEnter((Canvas)sender, e);
         }
     }
 }
