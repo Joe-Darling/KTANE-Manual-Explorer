@@ -13,6 +13,8 @@ namespace Manual_Explorer
         private Image leftPage;
         private Image rightPage;
         private string currentManual;
+        private PageInfo leftPageC;
+        private PageInfo rightPageC;
 
         public ManualDisplayHandler(Image leftPage, Image rightPage)
         {
@@ -33,6 +35,9 @@ namespace Manual_Explorer
             // TODO check if page is locked
             List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
             leftPage.Source = pages[0];
+
+            leftPageC = new PageInfo(pages, 0);
+            rightPageC = new PageInfo(pages, 1);
 
             if (pages.Count > 1)
             {
@@ -55,8 +60,12 @@ namespace Manual_Explorer
             currentManual = moduleName;
 
             List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
+            //PageInfo pageObject = new 
             ImageSource currentLeft = leftPage.Source;
             ImageSource currentRight = rightPage.Source;
+
+            
+
 
             int totalPages = pages.Count;
             int currentLeftIndex = 0;
@@ -83,8 +92,10 @@ namespace Manual_Explorer
 
             if (pages.Count > 2 && leftPage.Source != firstPage)
             {
-                leftPage.Source = pages[currentLeftIndex - 1];
-                rightPage.Source = pages[currentRightIndex - 1];
+                leftPage.Source = leftPageC.previousPage();
+                rightPage.Source = rightPageC.previousPage();
+                //leftPage.Source = pages[currentLeftIndex - 1];
+                //rightPage.Source = pages[currentRightIndex - 1];
             }
             else
             {
@@ -95,6 +106,14 @@ namespace Manual_Explorer
 
         public void TurnRight(string moduleName)
         {
+
+            //PageInfo PageObject = new PageInfo();
+            //int leftIndex = PageObject.getLeftIndex();
+            //int rightIndex = PageObject.getRightIndex();
+
+            
+
+
             moduleName = moduleName.ToLower();
             currentManual = moduleName;
 
@@ -102,6 +121,7 @@ namespace Manual_Explorer
 
             ImageSource currentLeft = leftPage.Source;
             ImageSource currentRight = rightPage.Source;
+
 
             int totalPages = pages.Count;
             int currentLeftIndex = 0;
@@ -129,8 +149,10 @@ namespace Manual_Explorer
 
             if (pages.Count > 2 && rightPage.Source != lastPage)
             {
-                leftPage.Source = pages[currentLeftIndex + 1];
-                rightPage.Source = pages[currentRightIndex + 1];
+                leftPage.Source = leftPageC.nextPage();
+                rightPage.Source = rightPageC.nextPage();
+                //leftPage.Source = pages[currentLeftIndex + 1];
+                //rightPage.Source = pages[currentRightIndex + 1];
             }
             else
             {

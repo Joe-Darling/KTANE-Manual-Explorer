@@ -18,7 +18,6 @@
                     <Separator/>
                     <MenuItem Header="_Exit"/>
                 </MenuItem>
-                
             </Menu>
         </DockPanel>
         <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
@@ -114,6 +113,8 @@
             <TextBlock x:Name="Total_Unlit_Indicators" HorizontalAlignment="Left" Margin="109,817,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
             <Button Content="3" Height="26" Width="56" FontFamily="Marlett" FontSize="20" Click="PageTurnLeft" x:Name="PageLeft" Margin="-1407,47,1585,991"/>
             <Button Content="4" Height="28" Width="53" FontFamily="Marlett" FontSize="20" Click="PageTurnRight" x:Name="PageRight" Margin="-124,49,304,987"/>
+            <Button Content="Lock Left" Height="23" Width="58" x:Name="lockLeftBtn" Margin="-1312,50,1488,991"/>
+            <Button Content="Lock Right" Height="23" Width="65" x:Name="lockRightBtn" Margin="-226,53,394,988"/>
         </Grid>
 
     </Grid>
