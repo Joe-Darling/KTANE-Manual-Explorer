@@ -150,5 +150,18 @@ namespace Manual_Explorer
             CheckBox checkBox = (CheckBox)sender;
             rightSideBarManager.ToggledIndicator(checkBox.Name.Split('_')[0].Equals("LIT"), checkBox.IsChecked.Value);
         }
+
+        private void PageTurnLeft(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
+            
+        }
+
+        private void PageTurnRight(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+        }
     }
 }

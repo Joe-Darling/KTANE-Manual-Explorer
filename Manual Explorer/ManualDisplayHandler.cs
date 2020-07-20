@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Manual_Explorer
@@ -45,6 +47,95 @@ namespace Manual_Explorer
         public string GetCurrentActiveManual()
         {
             return currentManual;
+        }
+
+        public void TurnLeft(string moduleName)
+        {
+            moduleName = moduleName.ToLower();
+            currentManual = moduleName;
+
+            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
+            ImageSource currentLeft = leftPage.Source;
+            ImageSource currentRight = rightPage.Source;
+
+            int totalPages = pages.Count;
+            int currentLeftIndex = 0;
+            int currentRightIndex = 0;
+
+            for (int i = 0; i < totalPages; i++)
+            {
+                if (currentLeft == pages[i])
+                {
+                    currentLeftIndex = i;
+                }
+
+                if (currentRight == pages[i])
+                {
+                    currentRightIndex = i;
+                }
+            }
+
+            int firstPageIndex = 0;
+            int lastPageIndex = pages.Count - 1;
+
+            ImageSource firstPage = pages[firstPageIndex];
+            ImageSource lastPage = pages[lastPageIndex];
+
+            if (pages.Count > 2 && leftPage.Source != firstPage)
+            {
+                leftPage.Source = pages[currentLeftIndex - 1];
+                rightPage.Source = pages[currentRightIndex - 1];
+            }
+            else
+            {
+                Trace.WriteLine("Left end reached");
+            }
+
+        }
+
+        public void TurnRight(string moduleName)
+        {
+            moduleName = moduleName.ToLower();
+            currentManual = moduleName;
+
+            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
+
+            ImageSource currentLeft = leftPage.Source;
+            ImageSource currentRight = rightPage.Source;
+
+            int totalPages = pages.Count;
+            int currentLeftIndex = 0;
+            int currentRightIndex = 0;
+
+            for (int i = 0; i < totalPages; i++)
+            {
+                if (currentLeft == pages[i])
+                {
+                    currentLeftIndex = i;
+                }
+
+                if (currentRight == pages[i])
+                {
+                    currentRightIndex = i;
+                }
+            }
+            
+            int firstPageIndex = 0;
+            int lastPageIndex = pages.Count - 1;
+
+            ImageSource firstPage = pages[firstPageIndex];
+            ImageSource lastPage = pages[lastPageIndex];
+            
+
+            if (pages.Count > 2 && rightPage.Source != lastPage)
+            {
+                leftPage.Source = pages[currentLeftIndex + 1];
+                rightPage.Source = pages[currentRightIndex + 1];
+            }
+            else
+            {
+                Trace.WriteLine("Right end reached");
+            }
         }
     }
 }
