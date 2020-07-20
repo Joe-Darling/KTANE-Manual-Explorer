@@ -22,8 +22,10 @@
         </DockPanel>
         <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
         <Image x:Name="Page_1" HorizontalAlignment="Left" Height="900" Margin="235,116,0,0" VerticalAlignment="Top" Width="700"/>
+        <Canvas x:Name="Left_Page_Drawing" HorizontalAlignment="Left" Height="900" Margin="235, 116, 0 ,0" VerticalAlignment="Top" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
         <Button Content="Add" HorizontalAlignment="Left" Margin="46,150,0,0" VerticalAlignment="Top" Click="SaveCurrentModule"/>
         <Image x:Name="Page_2" HorizontalAlignment="Left" Height="900" Margin="960,116,0,0" VerticalAlignment="Top" Width="700"/>
+        <Canvas x:Name="Right_Page_Drawing" HorizontalAlignment="Left" Height="900" Margin="960, 116, 0 ,0" VerticalAlignment="Top" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
         <ListBox x:Name="History" Margin="10,200,1709,40" SelectionChanged="History_Selected"/>
         <Button Content="Delete" HorizontalAlignment="Left" Margin="142,150,0,0" VerticalAlignment="Top" Click="DeleteCurrentModule"/>
         <Grid x:Name="Right_Panel" Margin="1686,0,0,0" Background="#FF818181">
@@ -112,6 +114,8 @@
             <TextBlock x:Name="Total_Lit_Indicators" HorizontalAlignment="Left" Margin="76,817,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
             <TextBlock x:Name="Total_Unlit_Indicators" HorizontalAlignment="Left" Margin="109,817,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
         </Grid>
+        <Button x:Name="Left_Clear" Content="Clear" HorizontalAlignment="Left" Margin="566,55,0,0" VerticalAlignment="Top" Click="ClearDrawing"/>
+        <Button x:Name="Right_Clear" Content="Clear" HorizontalAlignment="Left" Margin="1291,55,0,0" VerticalAlignment="Top" Click="ClearDrawing"/>
 
     </Grid>
 </Window>
