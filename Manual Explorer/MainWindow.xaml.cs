@@ -20,6 +20,7 @@ using System.Net;
 using PuppeteerSharp;
 using HtmlAgilityPack;
 using System.Threading;
+using System.ComponentModel;
 
 namespace Manual_Explorer
 {
@@ -44,6 +45,15 @@ namespace Manual_Explorer
             manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            if (!profileManager.ShouldClose())
+            {
+                e.Cancel = true;
+            }
         }
 
         private void UpdateQuery(object sender, KeyEventArgs e)
@@ -91,20 +101,13 @@ namespace Manual_Explorer
         private void SaveCurrentModule(object sender, RoutedEventArgs e)
         {
             string currentManual = CapitilizeItem(manualDisplayHandler.GetCurrentActiveManual());
-            if (!History.Items.Contains(currentManual))
-            {
-                History.Items.Add(currentManual);
-            }
-            History.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
+            profileManager.AddToProfile(currentManual);
         }
 
         private void DeleteCurrentModule(object sender, RoutedEventArgs e)
         {
             string currentManual = CapitilizeItem(manualDisplayHandler.GetCurrentActiveManual());
-            if (currentManual != string.Empty && History.Items.Contains(currentManual))
-            {
-                History.Items.Remove(currentManual);
-            }
+            profileManager.DeleteFromProfile(currentManual);
         }
 
         private void NewProfile(object sender, RoutedEventArgs e)
