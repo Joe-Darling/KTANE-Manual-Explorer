@@ -3,64 +3,131 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Manual_Explorer
 {
     class PageInfo
     {
-        //private BitmapImage currentLeftPage;
-        //private BitmapImage currentRightPage;
-        //private int currentLeftIndex;
-        //private int currentRightIndex;
-        //private string currentManual;
         private List<BitmapImage> pages;
         private int pageIndex;
-        //public BitmapImage nextPage;
-        //public BitmapImage previousPage;
-        
+        private static BitmapImage blankPage;
 
         public PageInfo(List<BitmapImage> pages, int pageIndex)
         {
+            blankPage = ModuleManager.GetInstance().GetManualPages("blank page")[0];
             this.pages = pages;
             this.pageIndex = pageIndex;
         }
-        
-        public BitmapImage nextPage()
+
+        //public BitmapImage NextPage()
+        //{
+        //    //if (pageIndex < pages.Count - 1)
+        //    //{
+        //    //    pageIndex = pageIndex + 1;
+        //    //    return pages[pageIndex];
+        //    //}
+        //    //else if (pages[pages.Count - 1] != blankPage)
+        //    //{
+        //    //    pages.Add(blankPage);
+        //    //    return blankPage;
+        //    //}
+        //    //else
+        //    //{
+        //    //    return null;
+        //    //}
+
+        //    if (pageIndex < pages.Count - 1)
+        //    {
+        //        pageIndex = pageIndex + 1;
+        //        return pages[pageIndex];
+        //    }
+        //    else
+        //    {
+        //        pages.Add(blankPage);
+        //        return blankPage;
+        //    }
+        //}
+
+
+        //if (pages[pages.Count - 1] == blankPage)
+        //{
+        //    if (pageIndex < pages.Count - 1)
+        //    {
+        //        pageIndex = pageIndex + 1;
+        //        return pages[pageIndex];
+        //    }
+        //    else
+        //    {
+        //        return pages[pageIndex];
+        //    }
+        //}
+        //else
+        //{
+        //    if (pageIndex < pages.Count - 1)
+        //    {
+        //        pageIndex = pageIndex + 1;
+        //        return pages[pageIndex];
+        //    }
+        //    else
+        //    {
+        //        pages.Add(blankPage);
+        //        return blankPage;
+        //    }
+        //} 
+    
+
+        //public BitmapImage PreviousPage()
+        //{
+        //    //if (pageIndex > 0)
+        //    //{
+        //        pageIndex = pageIndex - 1;
+        //        return pages[pageIndex];
+        //    //}
+        //    //else
+        //    //{
+        //    //    return pages[pageIndex];
+        //    //}
+        //}
+
+        public bool EdgePageCheck(ImageSource currPage)
         {
-            pageIndex = pageIndex + 1;
-            return pages[pageIndex];
+            if (currPage == pages[0] || currPage == blankPage)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        public BitmapImage previousPage()
+        public BitmapImage NextPageLeft()
         {
-            //BitmapImage previousPage;
-            //if (currentIndex != 0)
-            //{
+                pageIndex = pageIndex + 1;
+                return pages[pageIndex];
+        }
+
+        public BitmapImage PreviousPage()
+        {
             pageIndex = pageIndex - 1;
             return pages[pageIndex];
-            //}
-
-            //return previousPage;
         }
 
+        public BitmapImage NextPageRight()
+        {
+            if (pageIndex < pages.Count - 1)
+            {
+                pageIndex = pageIndex + 1;
+                return pages[pageIndex];
+            }
+            else
+            {
+                pages.Add(blankPage);
+                return pages[pageIndex + 1];
+            }
+        }
 
-        //public int getLeftIndex(string moduleName)
-        //{
-        //    moduleName = moduleName.ToLower();
-        //    currentManual = moduleName;
-
-        //    List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
-        //    return pages.Count;
-        //}
-
-        //public int getRightIndex(string moduleName)
-        //{
-        //    moduleName = moduleName.ToLower();
-        //    currentManual = moduleName;
-
-        //    List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
-        //    return pages.Count;
-        //}
     }
 }

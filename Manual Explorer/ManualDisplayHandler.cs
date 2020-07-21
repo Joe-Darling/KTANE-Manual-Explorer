@@ -60,103 +60,25 @@ namespace Manual_Explorer
             currentManual = moduleName;
 
             List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
-            //PageInfo pageObject = new 
-            ImageSource currentLeft = leftPage.Source;
-            ImageSource currentRight = rightPage.Source;
 
-            
-
-
-            int totalPages = pages.Count;
-            int currentLeftIndex = 0;
-            int currentRightIndex = 0;
-
-            for (int i = 0; i < totalPages; i++)
+            if (pages.Count > 2 && !leftPageC.EdgePageCheck(leftPage.Source))
             {
-                if (currentLeft == pages[i])
-                {
-                    currentLeftIndex = i;
-                }
-
-                if (currentRight == pages[i])
-                {
-                    currentRightIndex = i;
-                }
+                leftPage.Source = leftPageC.PreviousPage();
+                rightPage.Source = rightPageC.PreviousPage();
             }
-
-            int firstPageIndex = 0;
-            int lastPageIndex = pages.Count - 1;
-
-            ImageSource firstPage = pages[firstPageIndex];
-            ImageSource lastPage = pages[lastPageIndex];
-
-            if (pages.Count > 2 && leftPage.Source != firstPage)
-            {
-                leftPage.Source = leftPageC.previousPage();
-                rightPage.Source = rightPageC.previousPage();
-                //leftPage.Source = pages[currentLeftIndex - 1];
-                //rightPage.Source = pages[currentRightIndex - 1];
-            }
-            else
-            {
-                Trace.WriteLine("Left end reached");
-            }
-
         }
 
         public void TurnRight(string moduleName)
         {
-
-            //PageInfo PageObject = new PageInfo();
-            //int leftIndex = PageObject.getLeftIndex();
-            //int rightIndex = PageObject.getRightIndex();
-
-            
-
-
             moduleName = moduleName.ToLower();
             currentManual = moduleName;
 
             List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
-
-            ImageSource currentLeft = leftPage.Source;
-            ImageSource currentRight = rightPage.Source;
-
-
-            int totalPages = pages.Count;
-            int currentLeftIndex = 0;
-            int currentRightIndex = 0;
-
-            for (int i = 0; i < totalPages; i++)
-            {
-                if (currentLeft == pages[i])
-                {
-                    currentLeftIndex = i;
-                }
-
-                if (currentRight == pages[i])
-                {
-                    currentRightIndex = i;
-                }
-            }
             
-            int firstPageIndex = 0;
-            int lastPageIndex = pages.Count - 1;
-
-            ImageSource firstPage = pages[firstPageIndex];
-            ImageSource lastPage = pages[lastPageIndex];
-            
-
-            if (pages.Count > 2 && rightPage.Source != lastPage)
+            if (pages.Count > 2 && !rightPageC.EdgePageCheck(rightPage.Source))
             {
-                leftPage.Source = leftPageC.nextPage();
-                rightPage.Source = rightPageC.nextPage();
-                //leftPage.Source = pages[currentLeftIndex + 1];
-                //rightPage.Source = pages[currentRightIndex + 1];
-            }
-            else
-            {
-                Trace.WriteLine("Right end reached");
+                leftPage.Source = leftPageC.NextPageLeft();
+                rightPage.Source = rightPageC.NextPageRight();
             }
         }
     }
