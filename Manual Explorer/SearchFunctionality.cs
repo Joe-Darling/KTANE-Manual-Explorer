@@ -10,26 +10,26 @@ namespace Manual_Explorer
 {
     class SearchFunctionality
     {
-        public void TabAction(ComboBox comboBox, KeyEventArgs e, ListBox History)
+        private void TabAction(ComboBox comboBox, KeyEventArgs e, ListBox History)
         {
             comboBox.IsDropDownOpen = false;
             e.Handled = true;
             History.Focus();
         }
 
-        public void InvalidCharAction(KeyEventArgs e)
+        private void InvalidCharAction(KeyEventArgs e)
         {
             e.Handled = true;
             Trace.WriteLine("A letter was NOT pressed");
         }
 
-        public void EnterAction(ComboBox comboBox, KeyEventArgs e)
+        private void EnterAction(ComboBox comboBox, KeyEventArgs e)
         {
             e.Handled = true;
             comboBox.IsDropDownOpen = false;
         }
 
-        public void EmptyComboBoxCheck(ComboBox comboBox)
+        private void EmptyComboBoxCheck(ComboBox comboBox)
         {
             if (string.IsNullOrEmpty(comboBox.Text))
             {
@@ -145,12 +145,12 @@ namespace Manual_Explorer
             EmptyComboBoxCheck(comboBox);
         }
 
-        public string CapitilizeItem(string item)
+        private string CapitilizeItem(string item)
         {
             return char.ToUpper(item[0]) + item.Substring(1);
         }
 
-        public static int Compute(string s, string t)
+        private static int Compute(string s, string t)
         {
             int n = s.Length;
             int m = t.Length;

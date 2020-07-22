@@ -161,6 +161,23 @@ namespace Manual_Explorer
             rightSideBarManager.ToggledIndicator(checkBox.Name.Split('_')[0].Equals("LIT"), checkBox.IsChecked.Value);
         }
 
+        private void PageTurnLeft(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
+            drawingManager.ClearPage(Left_Page_Drawing);
+            drawingManager.ClearPage(Right_Page_Drawing);
+
+        }
+
+        private void PageTurnRight(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+            drawingManager.ClearPage(Left_Page_Drawing);
+            drawingManager.ClearPage(Right_Page_Drawing);
+        }
+            
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
             drawingManager.MouseButtonDown((Canvas)sender, e);
@@ -193,5 +210,5 @@ namespace Manual_Explorer
         {
             drawingManager.OnMouseEnter((Canvas)sender, e);
         }
-    }
+    }   
 }

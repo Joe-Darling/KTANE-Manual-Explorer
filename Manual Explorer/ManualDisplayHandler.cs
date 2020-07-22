@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace Manual_Explorer
@@ -11,6 +13,8 @@ namespace Manual_Explorer
         private Image leftPage;
         private Image rightPage;
         private string currentManual;
+        private PageInfo leftPageC;
+        private PageInfo rightPageC;
 
         public ManualDisplayHandler(Image leftPage, Image rightPage)
         {
@@ -32,6 +36,9 @@ namespace Manual_Explorer
             List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
             leftPage.Source = pages[0];
 
+            leftPageC = new PageInfo(pages, 0);
+            rightPageC = new PageInfo(pages, 1);
+
             if (pages.Count > 1)
             {
                 rightPage.Source = pages[1];
@@ -45,6 +52,34 @@ namespace Manual_Explorer
         public string GetCurrentActiveManual()
         {
             return currentManual;
+        }
+
+        public void TurnLeft(string moduleName)
+        {
+            moduleName = moduleName.ToLower();
+            currentManual = moduleName;
+
+            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
+
+            if (pages.Count > 2 && !leftPageC.EdgePageCheck(leftPage.Source))
+            {
+                leftPage.Source = leftPageC.PreviousPage();
+                rightPage.Source = rightPageC.PreviousPage();
+            }
+        }
+
+        public void TurnRight(string moduleName)
+        {
+            moduleName = moduleName.ToLower();
+            currentManual = moduleName;
+
+            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
+            
+            if (pages.Count > 2 && !rightPageC.EdgePageCheck(rightPage.Source))
+            {
+                leftPage.Source = leftPageC.NextPage();
+                rightPage.Source = rightPageC.NextPage();
+            }
         }
     }
 }
