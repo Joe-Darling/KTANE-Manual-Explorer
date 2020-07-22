@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -13,6 +14,7 @@ namespace Manual_Explorer
         private List<BitmapImage> pages;
         private int pageIndex;
         private static BitmapImage blankPage;
+        private bool lockClicked = false; //page is unlocked by default
 
         public PageInfo(List<BitmapImage> pages, int pageIndex)
         {
@@ -35,7 +37,7 @@ namespace Manual_Explorer
 
         public bool EdgePageCheck(ImageSource currPage)
         {
-            if (currPage == pages[0] || currPage == pages[pages.Count -1])
+            if (currPage == pages[0] || currPage == pages[pages.Count - 1])
             {
                 return true;
             }
@@ -43,6 +45,16 @@ namespace Manual_Explorer
             {
                 return false;
             }
+        }
+
+        public bool Locked()
+        {
+            return lockClicked;
+        }
+
+        public void ChangeLockStatus()
+        {
+            lockClicked = lockClicked ? false : true; //if lockedClick is true set it to false and vice versa
         }
     }
 }

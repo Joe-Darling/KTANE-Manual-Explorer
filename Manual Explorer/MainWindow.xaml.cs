@@ -35,6 +35,8 @@ namespace Manual_Explorer
         RightSideBarManager rightSideBarManager;
         ManualDisplayHandler manualDisplayHandler;
         DrawingManager drawingManager;
+        //private bool leftLockClicked = false;
+        //private bool rightLockClicked = false;
 
         public MainWindow()
         {
@@ -209,6 +211,18 @@ namespace Manual_Explorer
         private void EnterDrawingWindow(object sender, MouseEventArgs e)
         {
             drawingManager.OnMouseEnter((Canvas)sender, e);
+        }
+
+        private void LockLeftPage(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            manualDisplayHandler.LockLeft(button);
+        }
+
+        private void LockRightPage(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            manualDisplayHandler.LockRight(button);
         }
     }   
 }
