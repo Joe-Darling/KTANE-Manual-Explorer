@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Manual_Explorer
@@ -27,6 +28,30 @@ namespace Manual_Explorer
             return char.ToUpper(item[0]) + item.Substring(1);
         }
 
+        public bool ShouldClose()
+        {
+            if (changeMade)
+            {
+                MessageBoxResult result = MessageBox.Show("You have unsaved changes to your current profile. Would you like to save them?", "Save?", MessageBoxButton.YesNoCancel);
+                switch (result)
+                {
+                    case MessageBoxResult.Yes:
+                        return SaveProfile();
+                    case MessageBoxResult.No:
+                        return true;
+                    case MessageBoxResult.Cancel:
+                        return false;
+                    default:
+                        throw new ArgumentException("Invalid result: " + result);
+                }
+            }
+            else
+            {
+                return true;
+            }
+           
+        }
+
         private void SetPreviouslySavedModules()
         {
             previouslySavedModules = new HashSet<string>();
@@ -34,6 +59,26 @@ namespace Manual_Explorer
             {
                 previouslySavedModules.Add(module);
             }
+            changeMade = false;
+        }
+
+        public void AddToProfile(string currentManual)
+        {
+            if (!moduleList.Items.Contains(currentManual))
+            {
+                moduleList.Items.Add(currentManual);
+            }
+            moduleList.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
+            changeMade = true;
+        }
+
+        public void DeleteFromProfile(string currentManual)
+        {
+            if (currentManual != string.Empty && moduleList.Items.Contains(currentManual))
+            {
+                moduleList.Items.Remove(currentManual);
+            }
+            changeMade = true;
         }
 
         public void NewProfile()
@@ -78,22 +123,24 @@ namespace Manual_Explorer
             }
         }
 
-        public void SaveProfile()
+        public bool SaveProfile()
         {
             if (changeMade)
             {
                 if (currentProfilePath == string.Empty)
                 {
-                    SaveProfileAs();
+                    return SaveProfileAs();
                 }
                 else
                 {
                     SaveFile(currentProfilePath);
+                    return true;
                 }
             }
+            return true;
         }
 
-        public void SaveProfileAs()
+        public bool SaveProfileAs()
         {
             var fileContent = string.Empty;
             var saveFileDialog = new SaveFileDialog();
@@ -103,10 +150,12 @@ namespace Manual_Explorer
             saveFileDialog.FilterIndex = 0;
             saveFileDialog.RestoreDirectory = true;
 
-            if (saveFileDialog.ShowDialog() == true)
+            bool choseFile = saveFileDialog.ShowDialog() ?? false;
+            if (choseFile)
             {
                 SaveFile(saveFileDialog.FileName);
             }
+            return choseFile;
         }
 
         private void SaveFile(string filePath)

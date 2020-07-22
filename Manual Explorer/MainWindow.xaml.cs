@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -21,6 +20,7 @@ using System.Net;
 using PuppeteerSharp;
 using HtmlAgilityPack;
 using System.Threading;
+using System.ComponentModel;
 
 namespace Manual_Explorer
 {
@@ -34,15 +34,26 @@ namespace Manual_Explorer
         SearchFunctionality search = new SearchFunctionality();
         RightSideBarManager rightSideBarManager;
         ManualDisplayHandler manualDisplayHandler;
+        DrawingManager drawingManager;
 
         public MainWindow()
         {
             InitializeComponent();
             ModuleManager.GetInstance();
             profileManager = new ProfileManager(History);
+            drawingManager = new DrawingManager();
             manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            base.OnClosing(e);
+            if (!profileManager.ShouldClose())
+            {
+                e.Cancel = true;
+            }
         }
 
         private void UpdateQuery(object sender, KeyEventArgs e)
@@ -68,6 +79,9 @@ namespace Manual_Explorer
             if (comboBox.SelectedItem != null)
             {
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
+                //TODO only clear if page isn't locked
+                drawingManager.ClearPage(Left_Page_Drawing);
+                drawingManager.ClearPage(Right_Page_Drawing);
             }
         }
 
@@ -77,6 +91,9 @@ namespace Manual_Explorer
             if(comboBox.SelectedItem != null)
             {
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
+                //TODO only clear if page isn't locked
+                drawingManager.ClearPage(Left_Page_Drawing);
+                drawingManager.ClearPage(Right_Page_Drawing);
             }
             
         }
@@ -84,20 +101,13 @@ namespace Manual_Explorer
         private void SaveCurrentModule(object sender, RoutedEventArgs e)
         {
             string currentManual = CapitilizeItem(manualDisplayHandler.GetCurrentActiveManual());
-            if (!History.Items.Contains(currentManual))
-            {
-                History.Items.Add(currentManual);
-            }
-            History.Items.SortDescriptions.Add(new System.ComponentModel.SortDescription("", System.ComponentModel.ListSortDirection.Ascending));
+            profileManager.AddToProfile(currentManual);
         }
 
         private void DeleteCurrentModule(object sender, RoutedEventArgs e)
         {
             string currentManual = CapitilizeItem(manualDisplayHandler.GetCurrentActiveManual());
-            if (currentManual != string.Empty && History.Items.Contains(currentManual))
-            {
-                History.Items.Remove(currentManual);
-            }
+            profileManager.DeleteFromProfile(currentManual);
         }
 
         private void NewProfile(object sender, RoutedEventArgs e)
@@ -162,6 +172,39 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+        }
+            
+        private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            drawingManager.MouseButtonDown((Canvas)sender, e);
+        }
+
+        private void CanvasMouseMove(object sender, MouseEventArgs e)
+        {
+            drawingManager.MouseMove((Canvas)sender, e);
+        }
+
+        private void CanvasMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            drawingManager.MouseButtonUp(e);
+        }
+
+        private void ClearDrawing(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            if (button.Name.Equals("Left_Clear"))
+            {
+                drawingManager.ClearPage(Left_Page_Drawing);
+            }
+            else
+            {
+                drawingManager.ClearPage(Right_Page_Drawing);
+            }
+        }
+
+        private void EnterDrawingWindow(object sender, MouseEventArgs e)
+        {
+            drawingManager.OnMouseEnter((Canvas)sender, e);
         }
     }
 }
