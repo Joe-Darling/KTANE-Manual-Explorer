@@ -165,13 +165,17 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
-            
+            drawingManager.ClearPage(Left_Page_Drawing);
+            drawingManager.ClearPage(Right_Page_Drawing);
+
         }
 
         private void PageTurnRight(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+            drawingManager.ClearPage(Left_Page_Drawing);
+            drawingManager.ClearPage(Right_Page_Drawing);
         }
             
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
@@ -206,5 +210,5 @@ namespace Manual_Explorer
         {
             drawingManager.OnMouseEnter((Canvas)sender, e);
         }
-    }
+    }   
 }
