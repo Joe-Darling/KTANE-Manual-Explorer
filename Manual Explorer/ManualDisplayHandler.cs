@@ -77,8 +77,8 @@ namespace Manual_Explorer
             
             if (pages.Count > 2 && !rightPageC.EdgePageCheck(rightPage.Source))
             {
-                leftPage.Source = leftPageC.NextPageLeft();
-                rightPage.Source = rightPageC.NextPageRight();
+                leftPage.Source = leftPageC.NextPage();
+                rightPage.Source = rightPageC.NextPage();
             }
         }
     }

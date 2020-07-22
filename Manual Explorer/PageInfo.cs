@@ -21,92 +21,10 @@ namespace Manual_Explorer
             this.pageIndex = pageIndex;
         }
 
-        //public BitmapImage NextPage()
-        //{
-        //    //if (pageIndex < pages.Count - 1)
-        //    //{
-        //    //    pageIndex = pageIndex + 1;
-        //    //    return pages[pageIndex];
-        //    //}
-        //    //else if (pages[pages.Count - 1] != blankPage)
-        //    //{
-        //    //    pages.Add(blankPage);
-        //    //    return blankPage;
-        //    //}
-        //    //else
-        //    //{
-        //    //    return null;
-        //    //}
-
-        //    if (pageIndex < pages.Count - 1)
-        //    {
-        //        pageIndex = pageIndex + 1;
-        //        return pages[pageIndex];
-        //    }
-        //    else
-        //    {
-        //        pages.Add(blankPage);
-        //        return blankPage;
-        //    }
-        //}
-
-
-        //if (pages[pages.Count - 1] == blankPage)
-        //{
-        //    if (pageIndex < pages.Count - 1)
-        //    {
-        //        pageIndex = pageIndex + 1;
-        //        return pages[pageIndex];
-        //    }
-        //    else
-        //    {
-        //        return pages[pageIndex];
-        //    }
-        //}
-        //else
-        //{
-        //    if (pageIndex < pages.Count - 1)
-        //    {
-        //        pageIndex = pageIndex + 1;
-        //        return pages[pageIndex];
-        //    }
-        //    else
-        //    {
-        //        pages.Add(blankPage);
-        //        return blankPage;
-        //    }
-        //} 
-    
-
-        //public BitmapImage PreviousPage()
-        //{
-        //    //if (pageIndex > 0)
-        //    //{
-        //        pageIndex = pageIndex - 1;
-        //        return pages[pageIndex];
-        //    //}
-        //    //else
-        //    //{
-        //    //    return pages[pageIndex];
-        //    //}
-        //}
-
-        public bool EdgePageCheck(ImageSource currPage)
+        public BitmapImage NextPage()
         {
-            if (currPage == pages[0] || currPage == blankPage)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public BitmapImage NextPageLeft()
-        {
-                pageIndex = pageIndex + 1;
-                return pages[pageIndex];
+            pageIndex = pageIndex + 1;
+            return pages[pageIndex];
         }
 
         public BitmapImage PreviousPage()
@@ -115,19 +33,16 @@ namespace Manual_Explorer
             return pages[pageIndex];
         }
 
-        public BitmapImage NextPageRight()
+        public bool EdgePageCheck(ImageSource currPage)
         {
-            if (pageIndex < pages.Count - 1)
+            if (currPage == pages[0] || currPage == pages[pages.Count -1])
             {
-                pageIndex = pageIndex + 1;
-                return pages[pageIndex];
+                return true;
             }
             else
             {
-                pages.Add(blankPage);
-                return pages[pageIndex + 1];
+                return false;
             }
         }
-
     }
 }
