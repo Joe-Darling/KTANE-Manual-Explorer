@@ -35,16 +35,14 @@ namespace Manual_Explorer
             return pages[pageIndex];
         }
 
-        public bool EdgePageCheck(ImageSource currPage)
+        public bool LastPageCheck(ImageSource currPage)
         {
-            if (currPage == pages[0] || currPage == pages[pages.Count - 1])
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return currPage == pages[pages.Count - 1];
+        }
+
+        public bool FirstPageCheck(ImageSource currPage)
+        {
+            return currPage == pages[0]; 
         }
 
         public bool Locked()
