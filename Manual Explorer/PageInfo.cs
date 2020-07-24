@@ -25,14 +25,30 @@ namespace Manual_Explorer
 
         public BitmapImage NextPage()
         {
-            pageIndex = pageIndex + 1;
-            return pages[pageIndex];
+            try
+            {
+                pageIndex = pageIndex + 1;
+                return pages[pageIndex];
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                pageIndex = pageIndex - 1;
+                return pages[pageIndex];
+            }
         }
 
         public BitmapImage PreviousPage()
         {
-            pageIndex = pageIndex - 1;
-            return pages[pageIndex];
+            try
+            {
+                pageIndex = pageIndex - 1;
+                return pages[pageIndex];
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                pageIndex = pageIndex + 1;
+                return pages[pageIndex];
+            }
         }
 
         public bool LastPageCheck(ImageSource currPage)
@@ -43,6 +59,16 @@ namespace Manual_Explorer
         public bool FirstPageCheck(ImageSource currPage)
         {
             return currPage == pages[0]; 
+        }
+
+        public bool SecondPageCheck(ImageSource currPage)
+        {
+            return currPage == pages[1];
+        }
+
+        public bool SecondLastPageCheck(ImageSource currPage)
+        {
+            return currPage == pages[pages.Count - 2];
         }
 
         public bool Locked()
