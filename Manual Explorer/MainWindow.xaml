@@ -80,7 +80,7 @@
             <CheckBox x:Name="UNLIT_TRN" Content="" HorizontalAlignment="Center" Margin="0,797,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
             <Label Content="Total Ports:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="1,425,0,0"/>
             <Label Content="Total:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,821,0,0"/>
-            <TextBox HorizontalAlignment="Center" Margin="0,852,0,0" Text="Notes" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" Height="202"/>
+            <TextBox HorizontalAlignment="Center" Margin="0,852,0,0" Text="Notes" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" Height="267" AcceptsReturn="true"/>
             <Button Content="Reset" HorizontalAlignment="Left" Margin="191,70,0,0" VerticalAlignment="Top" Click="ResetRightSideBar"/>
             <Button x:Name="SUB_AA" Content="3" HorizontalAlignment="Left" Margin="115,117,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
             <TextBlock x:Name="AA_Count" HorizontalAlignment="Left" Margin="154,114,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>

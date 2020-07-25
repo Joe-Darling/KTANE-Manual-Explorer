@@ -38,34 +38,6 @@ namespace Manual_Explorer
             bool leftLockClicked = (leftPage.Source == null) ? false : leftPageC.Locked();
             bool rightLockClicked = (rightPage.Source == null) ? false : rightPageC.Locked();
 
-            //bool sameManual = true;
-
-            //if ((leftLockClicked && !rightLockClicked && rightPage.Source != null) || //left locked and manual changed
-            //    (rightLockClicked && !leftLockClicked && rightPage.Source != null))   //right locked and manual changed
-            //{
-            //    sameManual = false;
-            //}
-            //else
-            //{
-            //    sameManual = true;
-            //}
-
-            //if (sameManual == true) //same manual on both pages
-            //{
-
-            //}
-            //else //two different manuals on pages
-            //{
-
-            //}
-
-
-
-
-
-
-
-
             if (!leftLockClicked && !rightLockClicked)
             {
                 leftPageC = new PageInfo(pages, 0);
@@ -147,30 +119,49 @@ namespace Manual_Explorer
 
             if (leftLockClicked && !rightLockClicked) //only left page locked
             {
-                if (!rightPageC.FirstPageCheck(rightPage.Source))
-                {
-                    rightPage.Source = rightPageC.PreviousPage();
-                }
+                rightPage.Source = rightPageC.PreviousPage();
             }
             else if (rightLockClicked && !leftLockClicked) //only right page locked 
             {
-                if (!leftPageC.FirstPageCheck(leftPage.Source))
-                {
-                    leftPage.Source = leftPageC.PreviousPage();
-                }
+                leftPage.Source = leftPageC.PreviousPage();
             }
             else if (!leftLockClicked && !rightLockClicked) //both free
             {
-                if (leftPageC.FirstPageCheck(leftPage.Source) && !rightPageC.SecondPageCheck(rightPage.Source) && !rightPageC.FirstPageCheck(rightPage.Source))
+                if (SameManual())
                 {
-                    rightPage.Source = rightPageC.PreviousPage();
+                    TurnLeftSame();
                 }
-                else if (!leftPageC.FirstPageCheck(leftPage.Source) && !rightPageC.FirstPageCheck(rightPage.Source)) //ni jedna ni druga 
+                else 
+                {
+                    TurnLeftDiff();
+                }
+            }
+        }
+
+        public void TurnLeftSame()
+        {
+            if (leftPageC.GetCurrIndex(leftPage.Source) == (rightPageC.GetCurrIndex(rightPage.Source) -1))
+            {
+                if (!leftPageC.EdgePageCheck(leftPage.Source, 0))
                 {
                     leftPage.Source = leftPageC.PreviousPage();
                     rightPage.Source = rightPageC.PreviousPage();
                 }
             }
+            else if (leftPageC.GetCurrIndex(leftPage.Source) < rightPageC.GetCurrIndex(rightPage.Source))
+            {
+                rightPage.Source = rightPageC.PreviousPage();
+            }
+            else
+            {
+                leftPage.Source = leftPageC.PreviousPage();
+            }
+        }
+
+        public void TurnLeftDiff()
+        {
+            leftPage.Source = leftPageC.PreviousPage();
+            rightPage.Source = rightPageC.PreviousPage();
         }
 
         public void TurnRight(string moduleName)
@@ -184,71 +175,76 @@ namespace Manual_Explorer
             bool leftLockClicked = leftPageC.Locked();
             bool rightLockClicked = rightPageC.Locked();
 
-
-
             List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
 
             if (leftLockClicked && !rightLockClicked) //only left page locked
             {
-                if (!rightPageC.LastPageCheck(rightPage.Source))
-                {
-                    rightPage.Source = rightPageC.NextPage();
-                }
+                rightPage.Source = rightPageC.NextPage();
             }
             else if (rightLockClicked && !leftLockClicked) //only right page locked 
             {
-                if (!leftPageC.LastPageCheck(leftPage.Source))
-                {
-                    leftPage.Source = leftPageC.NextPage();
-                }
+                leftPage.Source = leftPageC.NextPage();
             }
             else if (!leftLockClicked && !rightLockClicked) //both free
             {
-                if (!leftPageC.FirstPageCheck(leftPage.Source) && !leftPageC.SecondLastPageCheck(leftPage.Source) && rightPageC.LastPageCheck(rightPage.Source))
+                if (SameManual())
                 {
-                    leftPage.Source = leftPageC.NextPage();
+                    TurnRightSame(pages);
                 }
-                else if (!rightPageC.LastPageCheck(rightPage.Source) && !leftPageC.LastPageCheck(leftPage.Source))
+                else
                 {
-                    leftPage.Source = leftPageC.NextPage();
-                    rightPage.Source = rightPageC.NextPage();
+                    TurnRightDiff();
                 }
             }
         }
 
+        public void TurnRightSame(List<BitmapImage> pages)
+        {
+            if (leftPageC.GetCurrIndex(leftPage.Source) == (rightPageC.GetCurrIndex(rightPage.Source) - 1))
+            {
+                if (!leftPageC.EdgePageCheck(rightPage.Source, pages.Count - 1))
+                {
+                    leftPage.Source = leftPageC.NextPage();
+                    rightPage.Source = rightPageC.NextPage();
+                }
+            }
+            else if (leftPageC.GetCurrIndex(leftPage.Source) < rightPageC.GetCurrIndex(rightPage.Source))
+            {
+                leftPage.Source = leftPageC.NextPage();
+            }
+            else
+            {
+                rightPage.Source = rightPageC.NextPage();
+            }
+        }
+
+        public void TurnRightDiff()
+        {
+            leftPage.Source = leftPageC.NextPage();
+            rightPage.Source = rightPageC.NextPage();
+        }
+
         public void LockLeft(Button leftLockBtn)
-        {   
-            // check if the page is even there
-            if (!leftPageC.Locked()) // if left lock is clicked
+        {
+            if (leftPage.Source != null)
             {
-                leftLockBtn.Content = "Unlock Left";
-                leftLockBtn.Background = Brushes.IndianRed;
+                leftPageC.LockPage(leftLockBtn);
+                leftPageC.ChangeLockStatus();
             }
-
-            else  // if left page is unlocked
-            {
-                leftLockBtn.Content = "Lock Left";
-                leftLockBtn.Background = Brushes.YellowGreen;
-            }
-
-            leftPageC.ChangeLockStatus();
         }
 
         public void LockRight(Button rightLockBtn)
         {
-            if (!rightPageC.Locked()) // if right lock is clicked
+            if (rightPage.Source != null)
             {
-                rightLockBtn.Content = "Unlock Right";
-                rightLockBtn.Background = Brushes.IndianRed;
+                rightPageC.LockPage(rightLockBtn);
+                rightPageC.ChangeLockStatus();
             }
+        }
 
-            else // if right page is unlocked
-            {
-                rightLockBtn.Content = "Lock Right";
-                rightLockBtn.Background = Brushes.YellowGreen;
-            }
+        public void TurnPage()
+        {
 
-            rightPageC.ChangeLockStatus();
         }
     }
 }

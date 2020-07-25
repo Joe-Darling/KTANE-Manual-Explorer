@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace Manual_Explorer
 {
@@ -51,24 +52,23 @@ namespace Manual_Explorer
             }
         }
 
-        public bool LastPageCheck(ImageSource currPage)
+        public bool EdgePageCheck(ImageSource currPage, int index)
         {
-            return currPage == pages[pages.Count - 1];
+            return currPage == pages[index];
         }
 
-        public bool FirstPageCheck(ImageSource currPage)
+        public int GetCurrIndex(ImageSource currPage)
         {
-            return currPage == pages[0]; 
-        }
-
-        public bool SecondPageCheck(ImageSource currPage)
-        {
-            return currPage == pages[1];
-        }
-
-        public bool SecondLastPageCheck(ImageSource currPage)
-        {
-            return currPage == pages[pages.Count - 2];
+            int currIndex = 0;
+            for (int i = 0; i < pages.Count; i++)
+            {
+                if (currPage == pages[i])
+                {
+                    currIndex = i;
+                    break;
+                }
+            }
+            return currIndex;
         }
 
         public bool Locked()
@@ -79,6 +79,21 @@ namespace Manual_Explorer
         public void ChangeLockStatus()
         {
             lockClicked = lockClicked ? false : true; //if lockedClick is true set it to false and vice versa
+        }
+
+        public void LockPage(Button lockBtn)
+        {
+            if (!Locked()) // if lock is clicked
+            {
+                lockBtn.Content = "Unlock Left";
+                lockBtn.Background = Brushes.IndianRed;
+            }
+
+            else  // if page is unlocked
+            {
+                lockBtn.Content = "Lock Left";
+                lockBtn.Background = Brushes.YellowGreen;
+            }
         }
     }
 }
