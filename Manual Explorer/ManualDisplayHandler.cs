@@ -109,119 +109,12 @@ namespace Manual_Explorer
 
         public void TurnLeft(string moduleName)
         {
-            moduleName = moduleName.ToLower();
-            currentManual = moduleName;
-
-            bool leftLockClicked = leftPageC.Locked();
-            bool rightLockClicked = rightPageC.Locked();
-
-            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
-
-            if (leftLockClicked && !rightLockClicked) //only left page locked
-            {
-                rightPage.Source = rightPageC.PreviousPage();
-            }
-            else if (rightLockClicked && !leftLockClicked) //only right page locked 
-            {
-                leftPage.Source = leftPageC.PreviousPage();
-            }
-            else if (!leftLockClicked && !rightLockClicked) //both free
-            {
-                if (SameManual())
-                {
-                    TurnLeftSame();
-                }
-                else 
-                {
-                    TurnLeftDiff();
-                }
-            }
-        }
-
-        public void TurnLeftSame()
-        {
-            if (leftPageC.GetCurrIndex(leftPage.Source) == (rightPageC.GetCurrIndex(rightPage.Source) -1))
-            {
-                if (!leftPageC.EdgePageCheck(leftPage.Source, 0))
-                {
-                    leftPage.Source = leftPageC.PreviousPage();
-                    rightPage.Source = rightPageC.PreviousPage();
-                }
-            }
-            else if (leftPageC.GetCurrIndex(leftPage.Source) < rightPageC.GetCurrIndex(rightPage.Source))
-            {
-                rightPage.Source = rightPageC.PreviousPage();
-            }
-            else
-            {
-                leftPage.Source = leftPageC.PreviousPage();
-            }
-        }
-
-        public void TurnLeftDiff()
-        {
-            leftPage.Source = leftPageC.PreviousPage();
-            rightPage.Source = rightPageC.PreviousPage();
+            TurnPage("left", moduleName);
         }
 
         public void TurnRight(string moduleName)
         {
-            moduleName = moduleName.ToLower();
-            currentManual = moduleName;
-
-            bool sameManual = SameManual();
-            Trace.WriteLine(sameManual);
-
-            bool leftLockClicked = leftPageC.Locked();
-            bool rightLockClicked = rightPageC.Locked();
-
-            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
-
-            if (leftLockClicked && !rightLockClicked) //only left page locked
-            {
-                rightPage.Source = rightPageC.NextPage();
-            }
-            else if (rightLockClicked && !leftLockClicked) //only right page locked 
-            {
-                leftPage.Source = leftPageC.NextPage();
-            }
-            else if (!leftLockClicked && !rightLockClicked) //both free
-            {
-                if (SameManual())
-                {
-                    TurnRightSame(pages);
-                }
-                else
-                {
-                    TurnRightDiff();
-                }
-            }
-        }
-
-        public void TurnRightSame(List<BitmapImage> pages)
-        {
-            if (leftPageC.GetCurrIndex(leftPage.Source) == (rightPageC.GetCurrIndex(rightPage.Source) - 1))
-            {
-                if (!leftPageC.EdgePageCheck(rightPage.Source, pages.Count - 1))
-                {
-                    leftPage.Source = leftPageC.NextPage();
-                    rightPage.Source = rightPageC.NextPage();
-                }
-            }
-            else if (leftPageC.GetCurrIndex(leftPage.Source) < rightPageC.GetCurrIndex(rightPage.Source))
-            {
-                leftPage.Source = leftPageC.NextPage();
-            }
-            else
-            {
-                rightPage.Source = rightPageC.NextPage();
-            }
-        }
-
-        public void TurnRightDiff()
-        {
-            leftPage.Source = leftPageC.NextPage();
-            rightPage.Source = rightPageC.NextPage();
+            TurnPage("right", moduleName);
         }
 
         public void LockLeft(Button leftLockBtn)
@@ -242,9 +135,94 @@ namespace Manual_Explorer
             }
         }
 
-        public void TurnPage()
+        public void TurnSame(List<BitmapImage> pages, string pagePosition)
         {
+            if (leftPageC.GetCurrIndex(leftPage.Source) == (rightPageC.GetCurrIndex(rightPage.Source) - 1))
+            {
+                if (!leftPageC.EdgePageCheck(leftPage.Source, 0) && pagePosition.Equals("left"))
+                {
+                    leftPage.Source = leftPageC.PreviousPage();
+                    rightPage.Source = rightPageC.PreviousPage();
+                }
+                else if (!leftPageC.EdgePageCheck(rightPage.Source, pages.Count - 1) && pagePosition.Equals("right"))
+                {
+                    leftPage.Source = leftPageC.NextPage();
+                    rightPage.Source = rightPageC.NextPage();
+                }
+            }
+            else if (leftPageC.GetCurrIndex(leftPage.Source) < rightPageC.GetCurrIndex(rightPage.Source))
+            {
+                switch (pagePosition)
+                {
+                    case "left":
+                        rightPage.Source = rightPageC.PreviousPage();
+                        break;
+                    case "right":
+                        leftPage.Source = leftPageC.NextPage();
+                        break;
+                }
+            }
+            else
+            {   switch (pagePosition)
+                {
+                    case "left":
+                        leftPage.Source = leftPageC.PreviousPage();
+                        break;
+                    case "right":
+                        rightPage.Source = rightPageC.NextPage();
+                        break;
+                }
+            }
+        }
 
+        public void TurnDiff(string pagePosition)
+        {
+            switch (pagePosition)
+            {
+                case "left":
+                    leftPage.Source = leftPageC.PreviousPage();
+                    rightPage.Source = rightPageC.PreviousPage();
+                    break;
+                case "right":
+                    leftPage.Source = leftPageC.NextPage();
+                    rightPage.Source = rightPageC.NextPage();
+                    break;
+            }
+        }
+
+        public void TurnPage(string turnDirection, string moduleName)
+        {
+            moduleName = moduleName.ToLower();
+            currentManual = moduleName;
+
+            bool sameManual = SameManual();
+
+            bool leftLockClicked = leftPageC.Locked();
+            bool rightLockClicked = rightPageC.Locked();
+
+            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
+
+            if (leftLockClicked && !rightLockClicked) //only left page locked
+            {
+                ImageSource pageToGet = turnDirection.Equals("left") ? rightPageC.PreviousPage() : rightPageC.NextPage();
+                rightPage.Source = pageToGet;
+            }
+            else if (rightLockClicked && !leftLockClicked) //only right page locked 
+            {
+                ImageSource pageToGet = turnDirection.Equals("left") ? leftPageC.PreviousPage() : leftPageC.NextPage();
+                leftPage.Source = pageToGet;
+            }
+            else if (!leftLockClicked && !rightLockClicked) //both free
+            {
+                if (SameManual())
+                {
+                    TurnSame(pages, turnDirection);
+                }
+                else
+                {
+                    TurnDiff(turnDirection);
+                }
+            }
         }
     }
 }

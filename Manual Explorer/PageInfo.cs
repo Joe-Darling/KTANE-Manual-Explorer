@@ -14,12 +14,11 @@ namespace Manual_Explorer
     {
         private List<BitmapImage> pages;
         private int pageIndex;
-        private static BitmapImage blankPage;
         private bool lockClicked = false; //page is unlocked by default
+        //private ImageSource pageSource;
 
         public PageInfo(List<BitmapImage> pages, int pageIndex)
         {
-            blankPage = ModuleManager.GetInstance().GetManualPages("blank page")[0];
             this.pages = pages;
             this.pageIndex = pageIndex;
         }
@@ -28,12 +27,12 @@ namespace Manual_Explorer
         {
             try
             {
-                pageIndex = pageIndex + 1;
+                pageIndex += 1;
                 return pages[pageIndex];
             }
             catch (ArgumentOutOfRangeException)
             {
-                pageIndex = pageIndex - 1;
+                pageIndex -= 1;
                 return pages[pageIndex];
             }
         }
@@ -42,12 +41,12 @@ namespace Manual_Explorer
         {
             try
             {
-                pageIndex = pageIndex - 1;
+                pageIndex -= 1;
                 return pages[pageIndex];
             }
             catch (ArgumentOutOfRangeException)
             {
-                pageIndex = pageIndex + 1;
+                pageIndex += 1;
                 return pages[pageIndex];
             }
         }
@@ -78,7 +77,7 @@ namespace Manual_Explorer
 
         public void ChangeLockStatus()
         {
-            lockClicked = lockClicked ? false : true; //if lockedClick is true set it to false and vice versa
+            lockClicked = !lockClicked; //if lockedClick is true set it to false and vice versa
         }
 
         public void LockPage(Button lockBtn)
