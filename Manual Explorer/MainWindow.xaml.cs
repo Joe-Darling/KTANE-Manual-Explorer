@@ -27,7 +27,6 @@ namespace Manual_Explorer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    // Comment
     public partial class MainWindow : Window
     {
         private ProfileManager profileManager;
@@ -79,9 +78,7 @@ namespace Manual_Explorer
             if (comboBox.SelectedItem != null)
             {
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
-                //TODO only clear if page isn't locked
-                drawingManager.ClearPage(Left_Page_Drawing);
-                drawingManager.ClearPage(Right_Page_Drawing);
+                ClearCheck();
             }
         }
 
@@ -91,9 +88,7 @@ namespace Manual_Explorer
             if(comboBox.SelectedItem != null)
             {
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
-                //TODO only clear if page isn't locked
-                drawingManager.ClearPage(Left_Page_Drawing);
-                drawingManager.ClearPage(Right_Page_Drawing);
+                ClearCheck();
             }
             
         }
@@ -165,17 +160,14 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
-            drawingManager.ClearPage(Left_Page_Drawing);
-            drawingManager.ClearPage(Right_Page_Drawing);
-
+            ClearCheck();
         }
 
         private void PageTurnRight(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
-            drawingManager.ClearPage(Left_Page_Drawing);
-            drawingManager.ClearPage(Right_Page_Drawing);
+            ClearCheck();
         }
             
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
@@ -206,9 +198,34 @@ namespace Manual_Explorer
             }
         }
 
+        private void ClearCheck()
+        {
+            if (!manualDisplayHandler.isLocked("left"))
+            {
+                drawingManager.ClearPage(Left_Page_Drawing);
+            }
+
+            if (!manualDisplayHandler.isLocked("right"))
+            {
+                drawingManager.ClearPage(Right_Page_Drawing);
+            }
+        }
+
         private void EnterDrawingWindow(object sender, MouseEventArgs e)
         {
             drawingManager.OnMouseEnter((Canvas)sender, e);
+        }
+
+        private void LockLeftPage(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            manualDisplayHandler.LockLeft(button);
+        }
+
+        private void LockRightPage(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            manualDisplayHandler.LockRight(button);
         }
     }   
 }
