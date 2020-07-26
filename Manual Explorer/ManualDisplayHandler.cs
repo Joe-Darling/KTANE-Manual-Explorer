@@ -13,8 +13,8 @@ namespace Manual_Explorer
         private Image leftPage;
         private Image rightPage;
         private string currentManual;
-        private PageInfo leftPageC;
-        private PageInfo rightPageC;
+        private PageHandler leftPageC;
+        private PageHandler rightPageC;
 
         public ManualDisplayHandler(Image leftPage, Image rightPage)
         {
@@ -40,8 +40,8 @@ namespace Manual_Explorer
 
             if (!leftLockClicked && !rightLockClicked)
             {
-                leftPageC = new PageInfo(pages, 0);
-                rightPageC = new PageInfo(pages, 1);
+                leftPageC = new PageHandler(pages, 0, leftPage.Source);
+                rightPageC = new PageHandler(pages, 1, rightPage.Source);
 
                 leftPage.Source = pages[0];
 
@@ -56,12 +56,12 @@ namespace Manual_Explorer
             }
             else if (leftLockClicked && !rightLockClicked) //left page locked
             {
-                rightPageC = new PageInfo(pages, 0);
+                rightPageC = new PageHandler(pages, 0, rightPage.Source);
                 rightPage.Source = pages[0];
             }
             else if (rightLockClicked && !leftLockClicked)
             {
-                leftPageC = new PageInfo(pages, 0);
+                leftPageC = new PageHandler(pages, 0, leftPage.Source);
                 leftPage.Source = pages[0];
             }
         }
@@ -71,7 +71,7 @@ namespace Manual_Explorer
             bool leftLockClicked = (leftPage.Source == null) ? false : leftPageC.Locked();
             bool rightLockClicked = (rightPage.Source == null) ? false : rightPageC.Locked();
 
-            bool sameManual = true;
+            bool sameManual;
 
             if ((leftLockClicked && !rightLockClicked && rightPage.Source != null) || //left locked and manual changed
                 (rightLockClicked && !leftLockClicked && rightPage.Source != null))   //right locked and manual changed
@@ -86,7 +86,7 @@ namespace Manual_Explorer
             return sameManual;
         }
 
-        public bool isLocked(string page)
+        public bool IsLocked(string page)
         {
             if (page.Equals("left"))
             {

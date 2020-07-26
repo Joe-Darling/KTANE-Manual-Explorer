@@ -10,17 +10,18 @@ using Brushes = System.Windows.Media.Brushes;
 
 namespace Manual_Explorer
 {
-    class PageInfo
+    class PageHandler
     {
         private List<BitmapImage> pages;
         private int pageIndex;
         private bool lockClicked = false; //page is unlocked by default
-        //private ImageSource pageSource;
+        private ImageSource pageSource;
 
-        public PageInfo(List<BitmapImage> pages, int pageIndex)
+        public PageHandler(List<BitmapImage> pages, int pageIndex, ImageSource pageSource)
         {
             this.pages = pages;
             this.pageIndex = pageIndex;
+            this.pageSource = pageSource;
         }
 
         public BitmapImage NextPage()

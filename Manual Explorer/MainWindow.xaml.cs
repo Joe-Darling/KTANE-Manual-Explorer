@@ -200,12 +200,12 @@ namespace Manual_Explorer
 
         private void ClearCheck()
         {
-            if (!manualDisplayHandler.isLocked("left"))
+            if (!manualDisplayHandler.IsLocked("left"))
             {
                 drawingManager.ClearPage(Left_Page_Drawing);
             }
 
-            if (!manualDisplayHandler.isLocked("right"))
+            if (!manualDisplayHandler.IsLocked("right"))
             {
                 drawingManager.ClearPage(Right_Page_Drawing);
             }
