@@ -31,6 +31,7 @@ namespace Manual_Explorer
     public partial class MainWindow : Window
     {
         private ProfileManager profileManager;
+        private ConnectionHandler connectionHandler;
         SearchFunctionality search = new SearchFunctionality();
         RightSideBarManager rightSideBarManager;
         ManualDisplayHandler manualDisplayHandler;
@@ -129,6 +130,15 @@ namespace Manual_Explorer
         {
             profileManager.SaveProfileAs();
         }
+
+        private void OpenConnectionWindow(object sender, RoutedEventArgs e)
+        {
+            Trace.WriteLine("Connected");
+            connectionHandler = new ConnectionHandler(profileManager, Remaining_Time, Total_Modules, null);
+            Thread thread = new Thread(connectionHandler.ThreadStart);
+            thread.Start();
+        }
+
         private void ComboLostFocus(object sender, RoutedEventArgs e)
         {
             User_Query.IsDropDownOpen = false;
