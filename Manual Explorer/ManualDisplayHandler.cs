@@ -21,6 +21,8 @@ namespace Manual_Explorer
             this.leftPage = leftPage;
             this.rightPage = rightPage;
             currentManual = string.Empty;
+            leftPageC = new PageHandler(ModuleManager.GetInstance().GetManualPages("blank page"), 0, leftPage, currentManual);
+            rightPageC = new PageHandler(ModuleManager.GetInstance().GetManualPages("blank page"), 0, rightPage, currentManual);
         }
 
         public void DisplayManual(string moduleName)
@@ -35,55 +37,23 @@ namespace Manual_Explorer
 
             List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
 
-            bool leftLockClicked = (leftPage.Source == null) ? false : leftPageC.Locked();
-            bool rightLockClicked = (rightPage.Source == null) ? false : rightPageC.Locked();
+            bool leftLockClicked = leftPageC.Locked();
+            bool rightLockClicked = rightPageC.Locked();
 
             if (!leftLockClicked && !rightLockClicked)
             {
-                leftPageC = new PageHandler(pages, 0, leftPage.Source);
-                rightPageC = new PageHandler(pages, 1, rightPage.Source);
-
-                leftPage.Source = pages[0];
-
-                if (pages.Count > 1)
-                {
-                    rightPage.Source = pages[1];
-                }
-                else
-                {
-                    rightPage.Source = ModuleManager.GetInstance().GetManualPages("blank page")[0];
-                }
+                leftPageC = new PageHandler(pages, 0, leftPage, currentManual);
+                rightPageC = new PageHandler(pages, 1, rightPage, currentManual);
+                
             }
             else if (leftLockClicked && !rightLockClicked) //left page locked
             {
-                rightPageC = new PageHandler(pages, 0, rightPage.Source);
-                rightPage.Source = pages[0];
+                rightPageC = new PageHandler(pages, 0, rightPage, currentManual);
             }
             else if (rightLockClicked && !leftLockClicked)
             {
-                leftPageC = new PageHandler(pages, 0, leftPage.Source);
-                leftPage.Source = pages[0];
+                leftPageC = new PageHandler(pages, 0, leftPage, currentManual);
             }
-        }
-
-        public bool SameManual()
-        {
-            bool leftLockClicked = (leftPage.Source == null) ? false : leftPageC.Locked();
-            bool rightLockClicked = (rightPage.Source == null) ? false : rightPageC.Locked();
-
-            bool sameManual;
-
-            if ((leftLockClicked && !rightLockClicked && rightPage.Source != null) || //left locked and manual changed
-                (rightLockClicked && !leftLockClicked && rightPage.Source != null))   //right locked and manual changed
-            {
-                sameManual = false;
-            }
-            else
-            {
-                sameManual = true;
-            }
-
-            return sameManual;
         }
 
         public bool IsLocked(string page)
@@ -119,7 +89,7 @@ namespace Manual_Explorer
 
         public void LockLeft(Button leftLockBtn)
         {
-            if (leftPage.Source != null)
+            if (leftPageC.GetPageSource() != null)
             {
                 leftPageC.LockPage(leftLockBtn);
                 leftPageC.ChangeLockStatus();
@@ -128,7 +98,7 @@ namespace Manual_Explorer
 
         public void LockRight(Button rightLockBtn)
         {
-            if (rightPage.Source != null)
+            if (rightPageC.GetPageSource() != null)
             {
                 rightPageC.LockPage(rightLockBtn);
                 rightPageC.ChangeLockStatus();
@@ -139,26 +109,26 @@ namespace Manual_Explorer
         {
             if (leftPageC.GetCurrIndex(leftPage.Source) == (rightPageC.GetCurrIndex(rightPage.Source) - 1))
             {
-                if (!leftPageC.EdgePageCheck(leftPage.Source, 0) && pagePosition.Equals("left"))
+                if (!leftPageC.EdgePageCheck(leftPageC.GetPageSource(), 0) && pagePosition.Equals("left"))
                 {
-                    leftPage.Source = leftPageC.PreviousPage();
-                    rightPage.Source = rightPageC.PreviousPage();
+                    leftPageC.PreviousPage();
+                    rightPageC.PreviousPage();
                 }
-                else if (!leftPageC.EdgePageCheck(rightPage.Source, pages.Count - 1) && pagePosition.Equals("right"))
+                else if (!leftPageC.EdgePageCheck(rightPageC.GetPageSource(), pages.Count - 1) && pagePosition.Equals("right"))
                 {
-                    leftPage.Source = leftPageC.NextPage();
-                    rightPage.Source = rightPageC.NextPage();
+                    leftPageC.NextPage();
+                    rightPageC.NextPage();
                 }
             }
-            else if (leftPageC.GetCurrIndex(leftPage.Source) < rightPageC.GetCurrIndex(rightPage.Source))
+            else if (leftPageC.GetCurrIndex(leftPageC.GetPageSource()) < rightPageC.GetCurrIndex(rightPageC.GetPageSource()))
             {
                 switch (pagePosition)
                 {
                     case "left":
-                        rightPage.Source = rightPageC.PreviousPage();
+                        rightPageC.PreviousPage();
                         break;
                     case "right":
-                        leftPage.Source = leftPageC.NextPage();
+                        leftPageC.NextPage();
                         break;
                 }
             }
@@ -166,10 +136,10 @@ namespace Manual_Explorer
             {   switch (pagePosition)
                 {
                     case "left":
-                        leftPage.Source = leftPageC.PreviousPage();
+                        leftPageC.PreviousPage();
                         break;
                     case "right":
-                        rightPage.Source = rightPageC.NextPage();
+                        rightPageC.NextPage();
                         break;
                 }
             }
@@ -180,12 +150,12 @@ namespace Manual_Explorer
             switch (pagePosition)
             {
                 case "left":
-                    leftPage.Source = leftPageC.PreviousPage();
-                    rightPage.Source = rightPageC.PreviousPage();
+                    leftPageC.PreviousPage();
+                    rightPageC.PreviousPage();
                     break;
                 case "right":
-                    leftPage.Source = leftPageC.NextPage();
-                    rightPage.Source = rightPageC.NextPage();
+                    leftPageC.NextPage();
+                    rightPageC.NextPage();
                     break;
             }
         }
@@ -195,8 +165,6 @@ namespace Manual_Explorer
             moduleName = moduleName.ToLower();
             currentManual = moduleName;
 
-            bool sameManual = SameManual();
-
             bool leftLockClicked = leftPageC.Locked();
             bool rightLockClicked = rightPageC.Locked();
 
@@ -205,16 +173,16 @@ namespace Manual_Explorer
             if (leftLockClicked && !rightLockClicked) //only left page locked
             {
                 ImageSource pageToGet = turnDirection.Equals("left") ? rightPageC.PreviousPage() : rightPageC.NextPage();
-                rightPage.Source = pageToGet;
+                rightPageC.SetPageSource(pageToGet);
             }
             else if (rightLockClicked && !leftLockClicked) //only right page locked 
             {
                 ImageSource pageToGet = turnDirection.Equals("left") ? leftPageC.PreviousPage() : leftPageC.NextPage();
-                leftPage.Source = pageToGet;
+                leftPageC.SetPageSource(pageToGet);
             }
             else if (!leftLockClicked && !rightLockClicked) //both free
             {
-                if (SameManual())
+                if (leftPageC.SameManual(rightPageC))
                 {
                     TurnSame(pages, turnDirection);
                 }

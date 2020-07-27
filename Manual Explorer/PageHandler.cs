@@ -7,48 +7,63 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Brushes = System.Windows.Media.Brushes;
+using Image = System.Windows.Controls.Image;
 
 namespace Manual_Explorer
 {
     class PageHandler
     {
+        private Image page;
         private List<BitmapImage> pages;
         private int pageIndex;
         private bool lockClicked = false; //page is unlocked by default
-        private ImageSource pageSource;
+        private string currManual;
+        //private ImageSource pageSource;
 
-        public PageHandler(List<BitmapImage> pages, int pageIndex, ImageSource pageSource)
+        public PageHandler(List<BitmapImage> pages, int pageIndex, Image page, string currManual) //, ImageSource pageSource
         {
+            this.page = page;
             this.pages = pages;
             this.pageIndex = pageIndex;
-            this.pageSource = pageSource;
+            page.Source = pages[pageIndex];
+            this.currManual = currManual;
+
+            if (pages.Count == 1)
+            {
+                page.Source = ModuleManager.GetInstance().GetManualPages("blank page")[0];
+            }
+            //this.pageSource = pageSource;
         }
 
-        public BitmapImage NextPage()
+        public ImageSource NextPage()
         {
             try
             {
                 pageIndex += 1;
-                return pages[pageIndex];
+                page.Source = pages[pageIndex];
+                return page.Source;
             }
             catch (ArgumentOutOfRangeException)
             {
                 pageIndex -= 1;
-                return pages[pageIndex];
+                page.Source = pages[pageIndex];
+                return page.Source;
             }
         }
 
-        public BitmapImage PreviousPage()
+        public ImageSource PreviousPage()
         {
             try
             {
                 pageIndex -= 1;
-                return pages[pageIndex];
+                page.Source = pages[pageIndex];
+                return page.Source;
             }
             catch (ArgumentOutOfRangeException)
             {
                 pageIndex += 1;
-                return pages[pageIndex];
+                page.Source = pages[pageIndex];
+                return page.Source;
             }
         }
 
@@ -94,6 +109,33 @@ namespace Manual_Explorer
                 lockBtn.Content = "Lock Left";
                 lockBtn.Background = Brushes.YellowGreen;
             }
+        }
+
+        public void TurnPage(string direction, bool otherPageState)
+        {
+            if (direction.Equals("left") && otherPageState == true)
+            {
+                PreviousPage();
+            }
+            else if (direction.Equals("right") && otherPageState == true)
+            {
+                NextPage();
+            }
+        }
+
+        public ImageSource GetPageSource()
+        {
+            return page.Source;
+        }
+        public ImageSource SetPageSource(ImageSource toSet)
+        {
+            page.Source = toSet;
+            return page.Source;
+        }
+
+        public bool SameManual(PageHandler otherPage)
+        {
+            return currManual == otherPage.currManual;
         }
     }
 }
