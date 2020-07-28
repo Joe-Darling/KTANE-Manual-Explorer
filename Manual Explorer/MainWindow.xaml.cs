@@ -30,11 +30,12 @@ namespace Manual_Explorer
     public partial class MainWindow : Window
     {
         private ProfileManager profileManager;
-        private ConnectionHandler connectionHandler;
+        ConnectionHandler connectionHandler;
         SearchFunctionality search = new SearchFunctionality();
         RightSideBarManager rightSideBarManager;
         ManualDisplayHandler manualDisplayHandler;
         DrawingManager drawingManager;
+        ConnectionWindow connectionWindow;
 
         public MainWindow()
         {
@@ -42,6 +43,8 @@ namespace Manual_Explorer
             ModuleManager.GetInstance();
             profileManager = new ProfileManager(History);
             drawingManager = new DrawingManager();
+            connectionWindow = new ConnectionWindow(this);
+            connectionHandler = new ConnectionHandler(profileManager, Remaining_Time, Total_Modules, null, connectionWindow.Status_Text, connectionWindow.Room_ID_Text, connectionWindow.Password_Text);
             manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
@@ -128,10 +131,7 @@ namespace Manual_Explorer
 
         private void OpenConnectionWindow(object sender, RoutedEventArgs e)
         {
-            Trace.WriteLine("Connected");
-            connectionHandler = new ConnectionHandler(profileManager, Remaining_Time, Total_Modules, null);
-            Thread thread = new Thread(connectionHandler.ThreadStart);
-            thread.Start();
+            connectionWindow.Show();
         }
 
         private void ComboLostFocus(object sender, RoutedEventArgs e)
@@ -236,6 +236,12 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             manualDisplayHandler.LockRight(button);
+        }
+
+        public void StartConnectionThread()
+        {
+            Thread thread = new Thread(connectionHandler.ThreadStart);
+            thread.Start();
         }
     }   
 }
