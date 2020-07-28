@@ -29,7 +29,9 @@ namespace Manual_Explorer
             currentManual = moduleName;
             if (!ModuleManager.GetInstance().DoesModuleExist(moduleName))
             {
-                throw new ArgumentException("This module name does not exist in the dictionary");
+                leftPage.Source = ModuleManager.GetInstance().GetManualPages("error page")[0];
+                rightPage.Source = ModuleManager.GetInstance().GetManualPages("error page")[0];
+                return;
             }
 
             // TODO check if page is locked

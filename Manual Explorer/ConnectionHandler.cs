@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -40,12 +41,12 @@ namespace Manual_Explorer
             }
             else
             {
-                Dispatcher.Invoke(() =>
+                Application.Current.Dispatcher.Invoke(() =>
                 {
                     profileManager.NewProfile();
                     string[] fileData = File.ReadAllLines(path);
                     remainingTime.Text = fileData[0].Split(' ')[1];
-                    totalModules.Text = fileData[1].Split(' ')[1];
+                    totalModules.Text = fileData[1].Split(' ')[2];
                     int ind = 5;
                     while (ind < fileData.Length)
                     {
@@ -58,7 +59,15 @@ namespace Manual_Explorer
                         ind++;
                     }
                 });
-                
+                try
+                {
+                    File.Delete(path);
+                    CheckForFile();
+                }
+                catch (Exception)
+                {
+
+                }
             }
         }
     }
