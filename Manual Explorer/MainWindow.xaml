@@ -83,7 +83,7 @@
             <CheckBox x:Name="UNLIT_TRN" Content="" HorizontalAlignment="Center" Margin="0,797,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
             <Label Content="Total Ports:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="1,425,0,0"/>
             <Label Content="Total:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,821,0,0"/>
-            <TextBox HorizontalAlignment="Center" Margin="0,852,0,0" Text="Notes" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" Height="202"/>
+            <TextBox HorizontalAlignment="Center" Margin="0,852,0,0" Text="Notes" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" Height="267" AcceptsReturn="true"/>
             <Button Content="Reset" HorizontalAlignment="Left" Margin="191,70,0,0" VerticalAlignment="Top" Click="ResetRightSideBar"/>
             <Button x:Name="SUB_AA" Content="3" HorizontalAlignment="Left" Margin="115,117,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
             <TextBlock x:Name="AA_Count" HorizontalAlignment="Left" Margin="154,114,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
@@ -118,8 +118,8 @@
             <TextBlock x:Name="Total_Unlit_Indicators" HorizontalAlignment="Left" Margin="109,817,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
             <Button Content="3" Height="26" Width="56" FontFamily="Marlett" FontSize="20" Click="PageTurnLeft" x:Name="PageLeft" Margin="-1407,47,1585,991"/>
             <Button Content="4" Height="28" Width="53" FontFamily="Marlett" FontSize="20" Click="PageTurnRight" x:Name="PageRight" Margin="-124,49,304,987"/>
-            <Button Content="Lock Left" Height="23" Width="58" x:Name="lockLeftBtn" Margin="-1312,50,1488,991"/>
-            <Button Content="Lock Right" Height="23" Width="65" x:Name="lockRightBtn" Margin="-226,53,394,988"/>
+            <Button Content="Lock Left" Height="23" x:Name="lockLeftBtn" Margin="-1312,50,1460,991" Click="LockLeftPage" Background="YellowGreen"/>
+            <Button Content="Lock Right" Height="23" x:Name="lockRightBtn" Margin="-250,53,394,988" Click="LockRightPage" Background="YellowGreen"/>
         </Grid>
         <Button x:Name="Left_Clear" Content="Clear" HorizontalAlignment="Left" Margin="566,55,0,0" VerticalAlignment="Top" Click="ClearDrawing"/>
         <Button x:Name="Right_Clear" Content="Clear" HorizontalAlignment="Left" Margin="1291,55,0,0" VerticalAlignment="Top" Click="ClearDrawing"/>
