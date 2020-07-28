@@ -28,10 +28,6 @@ namespace Manual_Explorer
             page.Source = pages[pageIndex];
             this.currManual = currManual;
 
-            if (pages.Count == 1)
-            {
-                page.Source = ModuleManager.GetInstance().GetManualPages("blank page")[0];
-            }
             //this.pageSource = pageSource;
         }
 

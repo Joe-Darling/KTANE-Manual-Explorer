@@ -44,9 +44,16 @@ namespace Manual_Explorer
 
             if (!leftLockClicked && !rightLockClicked)
             {
-                leftPageC = new PageHandler(pages, 0, leftPage, currentManual);
-                rightPageC = new PageHandler(pages, 1, rightPage, currentManual);
-                
+                if (pages.Count == 1)
+                {
+                    leftPageC = new PageHandler(pages, 0, leftPage, currentManual);
+                    rightPageC = new PageHandler(ModuleManager.GetInstance().GetManualPages("blank page"), 0, rightPage, currentManual);
+                }
+                else
+                {
+                    leftPageC = new PageHandler(pages, 0, leftPage, currentManual);
+                    rightPageC = new PageHandler(pages, 1, rightPage, currentManual);
+                }
             }
             else if (leftLockClicked && !rightLockClicked) //left page locked
             {
