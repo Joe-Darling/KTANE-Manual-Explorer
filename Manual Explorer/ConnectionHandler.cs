@@ -41,18 +41,35 @@ namespace Manual_Explorer
         public void ThreadStart()
         {
             Trace.WriteLine("Thread started");
-            
+            string roomID = string.Empty;
+            string pass = string.Empty;
+
             Application.Current.Dispatcher.Invoke(() =>
             {
-                if (!TryConnectToRoom(roomIDField.Text, passField.Text, out string response, out Exception exception))
-                {
-                    Trace.WriteLine(exception);
-                    statusText.Text = response;
-                    return;
-                }
-                statusText.Text = response;
-
+                roomID = roomIDField.Text;
+                pass = passField.Text;
             });
+
+            bool connected = TryConnectToRoom(roomID, pass, out string response, out Exception exception);
+
+            if (response == string.Empty)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    statusText.Text = "Could not connect to the server. Please check to ensure the server is online and you are connected to the internet.";
+                });
+                Trace.WriteLine(exception);
+                return;
+            }
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                statusText.Text = response;
+            });
+                
+            if (!connected)
+            {
+                return;
+            }
 
             Trace.WriteLine("Connected, beginning thread loop");
             ThreadLoop();
