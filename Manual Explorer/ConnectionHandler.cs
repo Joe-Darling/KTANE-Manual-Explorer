@@ -13,7 +13,7 @@ namespace Manual_Explorer
 {
     class ConnectionHandler
     {
-        private readonly string ip = "192.168.4.20";
+        private readonly string ip = "176.99.158.28";
         private readonly int port = 8080;
         private TcpClient tcpClient;
         private ProfileManager profileManager;
