@@ -10,6 +10,10 @@ namespace Manual_Explorer
 {
     class SearchFunctionality
     {
+        private Image leftPage;
+        private Image rightPage;
+
+
         private void TabAction(ComboBox comboBox, KeyEventArgs e, ListBox History)
         {
             comboBox.IsDropDownOpen = false;
@@ -125,7 +129,7 @@ namespace Manual_Explorer
             }
         }
 
-        public void UpdateComboBoxOnBackspace(ComboBox comboBox, KeyEventArgs e, ListBox History)
+        public void UpdateComboBoxOnBackspace(ComboBox comboBox, KeyEventArgs e, ListBox History, ManualDisplayHandler mdh)
         {
             if (e.Key == Key.Back)
             {
