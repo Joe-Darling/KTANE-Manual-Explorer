@@ -111,7 +111,7 @@ namespace Manual_Explorer
             {
                 byte[] newUpdate = new byte[10000];
                 int bytesRead = tcpStream.Read(newUpdate, 0, newUpdate.Length);
-                string[] serverMessage = asen.GetString(newUpdate, 0, bytesRead).Split('|');
+                string[] serverMessage = asen.GetString(newUpdate, 0, bytesRead).Replace("\0", string.Empty).Split('|');
 
                 Console.WriteLine(bytesRead);
                 switch (serverMessage[0])
@@ -145,7 +145,7 @@ namespace Manual_Explorer
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
-                MessageBox.Show(serverMessage, "Uh-Oh.", MessageBoxButton.YesNo);
+                MessageBox.Show(serverMessage, "Uh-Oh.");
             });
         }
 
@@ -153,7 +153,10 @@ namespace Manual_Explorer
         {
             tcpClient.Close();
             tcpClient = null;
-            
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MessageBox.Show("The host has closed the connection", "Connection closed");
+            });
         }
 
         public void LoadNewLevel(string[] levelParameters)
