@@ -90,8 +90,8 @@ namespace Manual_Explorer
                 tcpStream.Write(messageToSend, 0, messageToSend.Length);
 
                 byte[] responseBytes = new byte[100];
-                tcpStream.Read(responseBytes, 0, 100);
-                string[] serverMessage = asen.GetString(responseBytes).Split('|');
+                int bytesRead = tcpStream.Read(responseBytes, 0, responseBytes.Length);
+                string[] serverMessage = asen.GetString(responseBytes, 0, bytesRead).Split('|');
                 response = serverMessage[1];
                 exception = null;
                 return serverMessage[0].Equals("true");
@@ -106,7 +106,8 @@ namespace Manual_Explorer
 
         public void ThreadLoop()
         {
-            while (true)
+            bool stillRunning = true;
+            while (stillRunning)
             {
                 byte[] newUpdate = new byte[10000];
                 int bytesRead = tcpStream.Read(newUpdate, 0, newUpdate.Length);
@@ -118,8 +119,41 @@ namespace Manual_Explorer
                     case "Start Level":
                         LoadNewLevel(serverMessage);
                         break;
+                    case "Close Room":
+                        RoomClosed();
+                        stillRunning = false;
+                        break;
+                    case "Complete Level":
+                        LevelComplete(serverMessage[1]);
+                        break;
+                    case "Lost Level":
+                        LevelLost(serverMessage[1]);
+                        break;
                 }
             }
+        }
+
+        private void LevelComplete(string serverMessage)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MessageBox.Show(serverMessage, "Success!");
+            });
+        }
+
+        private void LevelLost(string serverMessage)
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                MessageBox.Show(serverMessage, "Uh-Oh.", MessageBoxButton.YesNo);
+            });
+        }
+
+        private void RoomClosed()
+        {
+            tcpClient.Close();
+            tcpClient = null;
+            
         }
 
         public void LoadNewLevel(string[] levelParameters)
