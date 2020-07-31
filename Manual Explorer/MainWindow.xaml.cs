@@ -44,7 +44,7 @@ namespace Manual_Explorer
             profileManager = new ProfileManager(History);
             drawingManager = new DrawingManager();
             connectionWindow = new ConnectionWindow(this);
-            connectionHandler = new ConnectionHandler(profileManager, Remaining_Time, Total_Modules, null, connectionWindow.Status_Text, connectionWindow.Room_ID_Text, connectionWindow.Password_Text);
+            connectionHandler = new ConnectionHandler(profileManager, Remaining_Time, Total_Modules, null);
             manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
@@ -131,6 +131,7 @@ namespace Manual_Explorer
 
         private void OpenConnectionWindow(object sender, RoutedEventArgs e)
         {
+            connectionWindow = new ConnectionWindow(this);
             connectionWindow.Show();
         }
 
@@ -240,7 +241,10 @@ namespace Manual_Explorer
 
         public void StartConnectionThread()
         {
-            Thread thread = new Thread(connectionHandler.ThreadStart);
+            string roomID = connectionWindow.Room_ID_Text.Text;
+            string password = connectionWindow.Password_Text.Text;
+            TextBlock statusText = connectionWindow.Status_Text;
+            Thread thread = new Thread(() => connectionHandler.ThreadStart(roomID, password, statusText));
             thread.Start();
         }
     }   
