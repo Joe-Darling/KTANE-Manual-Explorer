@@ -39,7 +39,7 @@ namespace Manual_Explorer
                 bitmap.UriSource = new Uri(file);
                 bitmap.EndInit();
                 string moduleName = file.Substring(0, file.LastIndexOf('-'));
-                moduleName = moduleName.Split('\\').Last().ToLower();
+                moduleName = moduleName.Split('\\').Last().ToLower().Replace('’', '\'');
                 if (modules.ContainsKey(moduleName))
                 {
                     modules[moduleName].Add(bitmap);

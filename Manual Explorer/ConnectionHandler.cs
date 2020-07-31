@@ -20,36 +20,21 @@ namespace Manual_Explorer
         private TextBox remainingTime;
         private TextBox totalModules;
         private TextBox strikes;
-        private TextBlock statusText;
-        private TextBox roomIDField;
-        private TextBox passField;
         private Stream tcpStream;
 
-        private ASCIIEncoding asen = new ASCIIEncoding();
+        //private ASCIIEncoding asen = new ASCIIEncoding();
 
-        public ConnectionHandler(ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes, TextBlock statusText, TextBox roomIDField, TextBox passField)
+        public ConnectionHandler(ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
         {
             this.profileManager = profileManager;
             this.remainingTime = remainingTime;
             this.totalModules = totalModules;
             this.strikes = strikes;
-            this.statusText = statusText;
-            this.roomIDField = roomIDField;
-            this.passField = passField;
         }
 
-        public void ThreadStart()
+        public void ThreadStart(string roomID, string pass, TextBlock statusText)
         {
             Trace.WriteLine("Thread started");
-            string roomID = string.Empty;
-            string pass = string.Empty;
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                roomID = roomIDField.Text;
-                pass = passField.Text;
-            });
-
             bool connected = TryConnectToRoom(roomID, pass, out string response, out Exception exception);
 
             if (response == string.Empty)
@@ -86,12 +71,12 @@ namespace Manual_Explorer
                 tcpClient = new TcpClient();
                 tcpClient.Connect(ip, port);
                 tcpStream = tcpClient.GetStream();
-                byte[] messageToSend = asen.GetBytes("join|" + roomID + "|" + pass);
+                byte[] messageToSend = Encoding.UTF8.GetBytes("join|" + roomID + "|" + pass);
                 tcpStream.Write(messageToSend, 0, messageToSend.Length);
 
                 byte[] responseBytes = new byte[100];
                 int bytesRead = tcpStream.Read(responseBytes, 0, responseBytes.Length);
-                string[] serverMessage = asen.GetString(responseBytes, 0, bytesRead).Split('|');
+                string[] serverMessage = Encoding.UTF8.GetString(responseBytes, 0, bytesRead).Split('|');
                 response = serverMessage[1];
                 exception = null;
                 return serverMessage[0].Equals("true");
@@ -111,7 +96,7 @@ namespace Manual_Explorer
             {
                 byte[] newUpdate = new byte[10000];
                 int bytesRead = tcpStream.Read(newUpdate, 0, newUpdate.Length);
-                string[] serverMessage = asen.GetString(newUpdate, 0, bytesRead).Replace("\0", string.Empty).Split('|');
+                string[] serverMessage = Encoding.UTF8.GetString(newUpdate, 0, bytesRead).Replace("\0", string.Empty).Split('|');
 
                 Console.WriteLine(bytesRead);
                 switch (serverMessage[0])
