@@ -160,6 +160,14 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
+            if (drawingManager.CanvasContentCheck(Left_Page_Drawing))
+            {
+                drawingManager.SaveDrawing(manualDisplayHandler.GetCurrentActiveManual(), drawingManager.ConvertWriteableBitmapToBitmapImage(drawingManager.SaveAsWriteableBitmap(Left_Page_Drawing)));
+            }
+            if (drawingManager.CanvasContentCheck(Right_Page_Drawing))
+            {
+                drawingManager.SaveDrawing(manualDisplayHandler.GetCurrentActiveManual(), drawingManager.ConvertWriteableBitmapToBitmapImage(drawingManager.SaveAsWriteableBitmap(Right_Page_Drawing)));
+            }
             ClearCheck();
         }
 
@@ -167,6 +175,14 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+            if (drawingManager.CanvasContentCheck(Left_Page_Drawing))
+            {
+                drawingManager.SaveDrawing(manualDisplayHandler.GetCurrentActiveManual(), drawingManager.ConvertWriteableBitmapToBitmapImage(drawingManager.SaveAsWriteableBitmap(Left_Page_Drawing)));
+            }
+            if (drawingManager.CanvasContentCheck(Right_Page_Drawing))
+            {
+                drawingManager.SaveDrawing(manualDisplayHandler.GetCurrentActiveManual(), drawingManager.ConvertWriteableBitmapToBitmapImage(drawingManager.SaveAsWriteableBitmap(Right_Page_Drawing)));
+            }
             ClearCheck();
         }
             
