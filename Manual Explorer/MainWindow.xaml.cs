@@ -64,7 +64,7 @@ namespace Manual_Explorer
         private void BackspaceUpdate(object sender, KeyEventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
-            search.UpdateComboBoxOnBackspace(comboBox, e, History);
+            search.UpdateComboBoxOnBackspace(comboBox, e, History, manualDisplayHandler);
         }
 
         public string CapitilizeItem(string item)
@@ -226,6 +226,18 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             manualDisplayHandler.LockRight(button);
+        }
+
+        private void ArrowControl(object sender, KeyEventArgs e)
+        {
+            if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Left)
+            {
+                manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Right)
+            {
+                manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+            }
         }
     }   
 }

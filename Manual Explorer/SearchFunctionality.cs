@@ -10,6 +10,10 @@ namespace Manual_Explorer
 {
     class SearchFunctionality
     {
+        private Image leftPage;
+        private Image rightPage;
+
+
         private void TabAction(ComboBox comboBox, KeyEventArgs e, ListBox History)
         {
             comboBox.IsDropDownOpen = false;
@@ -103,7 +107,7 @@ namespace Manual_Explorer
                 string userInput = comboBox.Text.ToLower() + e.Key.ToString().ToLower();
                 SearchFilter(comboBox, userInput);
             }
-            else if (e.Key == Key.LeftShift || e.Key == Key.Space || e.Key == Key.RightShift)
+            else if (e.Key == Key.LeftShift || e.Key == Key.Space || e.Key == Key.RightShift || e.Key == Key.OemMinus || e.Key == Key.OemQuotes)
             {
             }
             else if (e.Key == Key.Tab)
@@ -125,7 +129,7 @@ namespace Manual_Explorer
             }
         }
 
-        public void UpdateComboBoxOnBackspace(ComboBox comboBox, KeyEventArgs e, ListBox History)
+        public void UpdateComboBoxOnBackspace(ComboBox comboBox, KeyEventArgs e, ListBox History, ManualDisplayHandler mdh)
         {
             if (e.Key == Key.Back)
             {
