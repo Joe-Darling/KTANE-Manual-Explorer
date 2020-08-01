@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -22,14 +23,17 @@ namespace Manual_Explorer
         private TextBox strikes;
         private Stream tcpStream;
 
-        //private ASCIIEncoding asen = new ASCIIEncoding();
-
         public ConnectionHandler(ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
         {
             this.profileManager = profileManager;
             this.remainingTime = remainingTime;
             this.totalModules = totalModules;
             this.strikes = strikes;
+        }
+
+        public TcpClient GetTcpClient()
+        {
+            return tcpClient;
         }
 
         public void ThreadStart(string roomID, string pass, TextBlock statusText)
@@ -70,16 +74,14 @@ namespace Manual_Explorer
             {
                 tcpClient = new TcpClient();
                 tcpClient.Connect(ip, port);
-                tcpStream = tcpClient.GetStream();
-                byte[] messageToSend = Encoding.UTF8.GetBytes("join|" + roomID + "|" + pass);
-                tcpStream.Write(messageToSend, 0, messageToSend.Length);
+                TrySendData("join|" + roomID + "|" + pass);
 
-                byte[] responseBytes = new byte[100];
-                int bytesRead = tcpStream.Read(responseBytes, 0, responseBytes.Length);
-                string[] serverMessage = Encoding.UTF8.GetString(responseBytes, 0, bytesRead).Split('|');
-                response = serverMessage[1];
+                TryReadData(out response, out exception);
                 exception = null;
-                return serverMessage[0].Equals("true");
+                bool result = response.Split('|')[0].Equals("true");
+                response = response.Split('|')[1];
+
+                return result;
             }
             catch(Exception e)
             {
@@ -94,28 +96,38 @@ namespace Manual_Explorer
             bool stillRunning = true;
             while (stillRunning)
             {
-                byte[] newUpdate = new byte[10000];
-                int bytesRead = tcpStream.Read(newUpdate, 0, newUpdate.Length);
-                string[] serverMessage = Encoding.UTF8.GetString(newUpdate, 0, bytesRead).Replace("\0", string.Empty).Split('|');
+                TryReadData(out var response, out var ex);
 
-                Console.WriteLine(bytesRead);
-                switch (serverMessage[0])
+                string[] serverMessage = response.Split('|');
+                if(serverMessage.Length > 1)
                 {
-                    case "Start Level":
-                        LoadNewLevel(serverMessage);
-                        break;
-                    case "Close Room":
-                        RoomClosed();
-                        stillRunning = false;
-                        break;
-                    case "Complete Level":
-                        LevelComplete(serverMessage[1]);
-                        break;
-                    case "Lost Level":
-                        LevelLost(serverMessage[1]);
-                        break;
+                    switch (serverMessage[0])
+                    {
+                        case "Start Level":
+                            LoadNewLevel(serverMessage);
+                            break;
+                        case "Close Room":
+                            RoomClosed();
+                            stillRunning = false;
+                            break;
+                        case "Complete Level":
+                            LevelComplete(serverMessage[1]);
+                            break;
+                        case "Lost Level":
+                            LevelLost(serverMessage[1]);
+                            break;
+                        case "Hosts Modules":
+                            SetHostsModules(serverMessage);
+                            break;
+                    }
                 }
             }
+        }
+
+        private void SetHostsModules(string[] modules)
+        {
+            modules = modules.Skip(1).ToArray();
+            ModuleManager.GetInstance().SetLoadedModules(modules);
         }
 
         private void LevelComplete(string serverMessage)
@@ -163,6 +175,53 @@ namespace Manual_Explorer
                     ind++;
                 }
             });
+        }
+
+        public bool TrySendData(string message)
+        {
+            try
+            {
+                int messageLength = Encoding.UTF8.GetBytes(message).Length;
+                byte[] messageToSend = Encoding.UTF8.GetBytes(messageLength.ToString() + "|" + message);
+                tcpStream = tcpClient.GetStream();
+                tcpStream.Write(messageToSend, 0, messageToSend.Length);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public bool TryReadData(out string response, out Exception exception)
+        {
+            exception = null;
+            try
+            {
+                byte[] responseBytes = new byte[20000];
+                int totalBytesRead = 0;
+                int messageLength = -1;
+                int headerBytes = 0;
+                do
+                {
+                    totalBytesRead += tcpStream.Read(responseBytes, totalBytesRead, responseBytes.Length - totalBytesRead);
+                    if (messageLength == -1 && Encoding.UTF8.GetString(responseBytes).Contains("|"))
+                    {
+                        messageLength = int.Parse(Encoding.UTF8.GetString(responseBytes).Split('|')[0]);
+                        headerBytes = messageLength.ToString().Length + 1;
+                    }
+                } while (totalBytesRead - headerBytes < messageLength);
+                response = Encoding.UTF8.GetString(responseBytes, 0, totalBytesRead).Replace("\0", string.Empty);
+                response = response.Substring(response.IndexOf("|") + 1);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                exception = e;
+                response = string.Empty;
+                return false;
+            }
         }
     }
 }

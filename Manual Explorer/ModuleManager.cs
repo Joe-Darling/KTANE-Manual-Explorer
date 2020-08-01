@@ -12,6 +12,7 @@ namespace Manual_Explorer
     {
         private static ModuleManager instance = null;
         private Dictionary<string, List<BitmapImage>> modules = new Dictionary<string, List<BitmapImage>>();
+        private Dictionary<string, string> loadedModules = new Dictionary<string, string>();
 
         private ModuleManager()
         {
@@ -67,14 +68,57 @@ namespace Manual_Explorer
             return modules.ContainsKey(moduleName);
         }
 
+        public bool DoesModuleExistInReadInModules(string moduleName)
+        {
+            return loadedModules.ContainsKey(moduleName.ToLower());
+        }
+
+        public string GetLookupString(string moduleName)
+        {
+            return loadedModules[moduleName.ToLower()];
+        }
+
         public Dictionary<string, List<BitmapImage>>.KeyCollection GetModuleNames()
         {
             return modules.Keys;
         }
 
+        public Dictionary<string, string>.KeyCollection GetReadInModuleNames()
+        {
+            return loadedModules.Keys;
+        }
+
         public List<BitmapImage> GetManualPages(string manual)
         {
             return modules[manual];
+        }
+
+        public void SetLoadedModules(string[] mods)
+        {
+            foreach(string mod in mods)
+            {
+                if (modules.ContainsKey(mod.ToLower()))
+                {
+                    loadedModules.Add(mod.ToLower(), mod.ToLower());
+                }
+                else
+                {
+                    loadedModules.Add(mod.ToLower(), "missing mod");
+                }
+            }
+        }
+
+        public void ChangeLookupForModule(string module, string newLookup)
+        {
+            module = module.ToLower();
+            newLookup = newLookup.ToLower();
+            if (loadedModules.ContainsKey(module.ToLower()))
+            {
+                Trace.WriteLine(loadedModules[module]);
+                loadedModules[module] = newLookup.ToLower();
+                Trace.WriteLine(loadedModules[module]);
+
+            }
         }
     }
 }

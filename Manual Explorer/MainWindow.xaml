@@ -20,6 +20,7 @@
                 </MenuItem>
                 <MenuItem Header="_Connect">
                     <MenuItem Header="_Connect" Click="OpenConnectionWindow"/>
+                    <MenuItem Header="Configure Pages" Click="ConfigurePages"/>
                 </MenuItem>
             </Menu>
         </DockPanel>

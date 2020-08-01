@@ -36,6 +36,7 @@ namespace Manual_Explorer
         ManualDisplayHandler manualDisplayHandler;
         DrawingManager drawingManager;
         ConnectionWindow connectionWindow;
+        PageConfigWindow pageConfigWindow;
 
         public MainWindow()
         {
@@ -62,13 +63,13 @@ namespace Manual_Explorer
         private void UpdateQuery(object sender, KeyEventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
-            search.UpdateComboBox(comboBox, e, History);
+            search.UpdateComboBox(comboBox, e, History, ModuleManager.GetInstance().GetModuleNames().ToList());
         }
 
         private void BackspaceUpdate(object sender, KeyEventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
-            search.UpdateComboBoxOnBackspace(comboBox, e, History);
+            search.UpdateComboBoxOnBackspace(comboBox, e, History, ModuleManager.GetInstance().GetModuleNames().ToList());
         }
 
         public string CapitilizeItem(string item)
@@ -81,7 +82,7 @@ namespace Manual_Explorer
             ListBox comboBox = (ListBox)sender;
             if (comboBox.SelectedItem != null)
             {
-                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
+                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString(), connectionHandler.GetTcpClient() != null);
                 ClearCheck();
             }
         }
@@ -91,7 +92,7 @@ namespace Manual_Explorer
             ComboBox comboBox = (ComboBox)sender;
             if(comboBox.SelectedItem != null)
             {
-                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
+                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString(), connectionHandler.GetTcpClient() != null);
                 ClearCheck();
             }
             
@@ -246,6 +247,18 @@ namespace Manual_Explorer
             TextBlock statusText = connectionWindow.Status_Text;
             Thread thread = new Thread(() => connectionHandler.ThreadStart(roomID, password, statusText));
             thread.Start();
+        }
+
+        private void ConfigurePages(object sender, RoutedEventArgs e)
+        {
+            //if(connectionHandler.GetTcpClient() == null)
+            //{
+            //    MessageBox.Show("You need to be connected to a room before you can configure pages.");
+            //    return;
+            //}
+
+            pageConfigWindow = new PageConfigWindow(search);
+            pageConfigWindow.Show();
         }
     }   
 }
