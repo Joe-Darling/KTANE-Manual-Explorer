@@ -19,6 +19,10 @@
                     <Separator/>
                     <MenuItem Header="_Exit"/>
                 </MenuItem>
+                <MenuItem Header="_Connect">
+                    <MenuItem Header="_Connect" Click="OpenConnectionWindow"/>
+                    <MenuItem Header="Configure Pages" Click="ConfigurePages"/>
+                </MenuItem>
             </Menu>
         </DockPanel>
         <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
@@ -27,13 +31,22 @@
         <Button Content="Add" HorizontalAlignment="Left" Margin="46,150,0,0" VerticalAlignment="Top" Click="SaveCurrentModule"/>
         <Image x:Name="Page_2" HorizontalAlignment="Left" Height="900" Margin="960,116,0,0" VerticalAlignment="Top" Width="700"/>
         <Canvas x:Name="Right_Page_Drawing" HorizontalAlignment="Left" Height="900" Margin="960, 116, 0 ,0" VerticalAlignment="Top" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
-        <ListBox x:Name="History" Margin="10,200,1709,40" SelectionChanged="History_Selected"/>
+        <ListBox x:Name="History" Margin="10,200,1709,40" SelectionChanged="History_Selected">
+            <ListBox.Resources>
+                <ContextMenu x:Key="HistoryMenu">
+                    <MenuItem Header="Configure Manual" Click="ConfigureManualPage"/>
+                </ContextMenu>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="ContextMenu" Value="{StaticResource HistoryMenu}"/>
+                </Style>
+            </ListBox.Resources>
+        </ListBox>
         <Button Content="Delete" HorizontalAlignment="Left" Margin="142,150,0,0" VerticalAlignment="Top" Click="DeleteCurrentModule"/>
         <Grid x:Name="Right_Panel" Margin="1686,0,0,0" Background="#FF818181">
             <Label Content="Starting Time:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0"/>
-            <TextBox HorizontalAlignment="Left" Margin="88,12,0,0" Text="0:00" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="22"/>
+            <TextBox x:Name="Remaining_Time" HorizontalAlignment="Left" Margin="88,12,0,0" Text="0:00" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="22"/>
             <Label Content="Modules:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,41,0,0"/>
-            <TextBox HorizontalAlignment="Left" Margin="88,43,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="22"/>
+            <TextBox x:Name="Total_Modules" HorizontalAlignment="Left" Margin="88,43,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="22"/>
             <Label Content="AA Batteries:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,115,0,0"/>
             <Label Content="D Batteries:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,146,0,0"/>
             <Label Content="Battery Holders:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,177,0,0"/>
