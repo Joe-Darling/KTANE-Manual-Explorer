@@ -106,8 +106,11 @@ namespace Manual_Explorer
 
         private void DeleteCurrentModule(object sender, RoutedEventArgs e)
         {
-            string currentManual = History.SelectedItem.ToString();
-            profileManager.DeleteFromProfile(currentManual);
+            if(History.SelectedItem != null)
+            {
+                string currentManual = History.SelectedItem.ToString();
+                profileManager.DeleteFromProfile(currentManual);
+            }
         }
 
         private void NewProfile(object sender, RoutedEventArgs e)
