@@ -28,6 +28,10 @@ namespace Manual_Explorer
             page.Source = pages[pageIndex];
             this.currManual = currManual;
 
+            //if (pages.Count == 1)
+            //{
+            //    page.Source = ModuleManager.GetInstance().GetManualPages("blank page")[0];
+            //}
             //this.pageSource = pageSource;
         }
 
@@ -107,17 +111,17 @@ namespace Manual_Explorer
             }
         }
 
-        public void TurnPage(string direction, bool otherPageState)
-        {
-            if (direction.Equals("left") && otherPageState == true)
-            {
-                PreviousPage();
-            }
-            else if (direction.Equals("right") && otherPageState == true)
-            {
-                NextPage();
-            }
-        }
+        //public void TurnPage(string direction, bool otherPageState)
+        //{
+        //    if (direction.Equals("left") && otherPageState == true)
+        //    {
+        //        PreviousPage();
+        //    }
+        //    else if (direction.Equals("right") && otherPageState == true)
+        //    {
+        //        NextPage();
+        //    }
+        //}
 
         public ImageSource GetPageSource()
         {

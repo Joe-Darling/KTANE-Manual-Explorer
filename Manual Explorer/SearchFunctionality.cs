@@ -103,7 +103,7 @@ namespace Manual_Explorer
                 string userInput = comboBox.Text.ToLower() + e.Key.ToString().ToLower();
                 SearchFilter(comboBox, userInput, keys);
             }
-            else if (e.Key == Key.LeftShift || e.Key == Key.Space || e.Key == Key.RightShift)
+            else if (e.Key == Key.LeftShift || e.Key == Key.Space || e.Key == Key.RightShift || e.Key == Key.OemMinus || e.Key == Key.OemQuotes)
             {
             }
             else if (e.Key == Key.Tab)

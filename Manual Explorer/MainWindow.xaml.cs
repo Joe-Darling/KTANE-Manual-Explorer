@@ -274,5 +274,17 @@ namespace Manual_Explorer
                 pageConfigWindow.SetReadInComboText(History.SelectedItem.ToString());
             }
         }
+        
+        private void ArrowControl(object sender, KeyEventArgs e)
+        {
+            if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Left)
+            {
+                manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Right)
+            {
+                manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+            }
+        }
     }   
 }

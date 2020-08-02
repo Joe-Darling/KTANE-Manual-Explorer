@@ -65,7 +65,7 @@ namespace Manual_Explorer
 
             bool leftLockClicked = leftPageC.Locked();
             bool rightLockClicked = rightPageC.Locked();
-
+            
             if (!leftLockClicked && !rightLockClicked)
             {
                 if (pages.Count == 1)
