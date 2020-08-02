@@ -51,6 +51,16 @@ namespace Manual_Explorer
                 }
                 Trace.WriteLine(moduleName);
             }
+            if(File.Exists(AppDomain.CurrentDomain.BaseDirectory + "Manual Config.txt"))
+            {
+                string[] pageConfigData = File.ReadAllLines(AppDomain.CurrentDomain.BaseDirectory + "Manual Config.txt");
+                foreach(string config in pageConfigData)
+                {
+                    string readIn = config.Split(" -> ")[0];
+                    string lookup = config.Split(" -> ")[1];
+                    loadedModules.Add(readIn, lookup);
+                }
+            }
         }
 
         public static ModuleManager GetInstance()
@@ -93,19 +103,23 @@ namespace Manual_Explorer
             return modules[manual];
         }
 
-        public void SetLoadedModules(string[] mods)
+        public void AddLoadedModules(string[] mods)
         {
             foreach(string mod in mods)
             {
-                if (modules.ContainsKey(mod.ToLower()))
-                {
-                    loadedModules.Add(mod.ToLower(), mod.ToLower());
-                }
-                else
-                {
-                    loadedModules.Add(mod.ToLower(), "missing mod");
-                }
+                AddLoadedModule(mod);
             }
+        }
+
+        public void AddLoadedModule(string mod)
+        {
+            mod = mod.ToLower();
+            if (loadedModules.ContainsKey(mod))
+            {
+                return;
+            }
+            string value = modules.ContainsKey(mod) ? mod : "error page";
+            loadedModules.Add(mod, value);
         }
 
         public void ChangeLookupForModule(string module, string newLookup)
@@ -114,10 +128,7 @@ namespace Manual_Explorer
             newLookup = newLookup.ToLower();
             if (loadedModules.ContainsKey(module.ToLower()))
             {
-                Trace.WriteLine(loadedModules[module]);
                 loadedModules[module] = newLookup.ToLower();
-                Trace.WriteLine(loadedModules[module]);
-
             }
         }
     }

@@ -127,7 +127,7 @@ namespace Manual_Explorer
         private void SetHostsModules(string[] modules)
         {
             modules = modules.Skip(1).ToArray();
-            ModuleManager.GetInstance().SetLoadedModules(modules);
+            ModuleManager.GetInstance().AddLoadedModules(modules);
         }
 
         private void LevelComplete(string serverMessage)
@@ -170,6 +170,10 @@ namespace Manual_Explorer
                     if (string.IsNullOrEmpty(module))
                     {
                         break;
+                    }
+                    if (!ModuleManager.GetInstance().DoesModuleExistInReadInModules(module))
+                    {
+                        ModuleManager.GetInstance().AddLoadedModule(module);
                     }
                     profileManager.AddToProfile(module);
                     ind++;

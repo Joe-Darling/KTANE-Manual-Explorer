@@ -106,7 +106,7 @@ namespace Manual_Explorer
 
         private void DeleteCurrentModule(object sender, RoutedEventArgs e)
         {
-            string currentManual = CapitilizeItem(manualDisplayHandler.GetCurrentActiveManual());
+            string currentManual = History.SelectedItem.ToString();
             profileManager.DeleteFromProfile(currentManual);
         }
 
@@ -249,16 +249,30 @@ namespace Manual_Explorer
             thread.Start();
         }
 
-        private void ConfigurePages(object sender, RoutedEventArgs e)
+        private bool TryOpenPageConfigWindow()
         {
-            //if(connectionHandler.GetTcpClient() == null)
-            //{
-            //    MessageBox.Show("You need to be connected to a room before you can configure pages.");
-            //    return;
-            //}
+            if (connectionHandler.GetTcpClient() == null)
+            {
+                MessageBox.Show("You need to be connected to a room before you can configure pages.");
+                return false;
+            }
 
             pageConfigWindow = new PageConfigWindow(search);
             pageConfigWindow.Show();
+            return true;
+        }
+
+        private void ConfigurePages(object sender, RoutedEventArgs e)
+        {
+            TryOpenPageConfigWindow();
+        }
+
+        private void ConfigureManualPage(object sender, RoutedEventArgs e)
+        {
+            if (TryOpenPageConfigWindow())
+            {
+                pageConfigWindow.SetReadInComboText(History.SelectedItem.ToString());
+            }
         }
     }   
 }
