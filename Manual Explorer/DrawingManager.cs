@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -9,6 +10,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Reflection;
+using System.Windows.Markup;
+using System.Drawing;
+using Point = System.Windows.Point;
+using Size = System.Windows.Size;
 
 namespace Manual_Explorer
 {
@@ -18,7 +24,7 @@ namespace Manual_Explorer
         private Line currentLine;
         private double lineThinkness = 3;
         private Canvas currentCanvas;
-        private Dictionary<string, BitmapImage> savedDrawings = new Dictionary<string, BitmapImage>();
+        private Dictionary<BitmapImage, BitmapImage> savedDrawings = new Dictionary<BitmapImage, BitmapImage>();
 
         public DrawingManager() { }
 
@@ -27,7 +33,7 @@ namespace Manual_Explorer
             canvas.Children.Clear();
         }
 
-        public void SaveDrawing(string currPage, BitmapImage drawing)
+        public void SaveDrawing(BitmapImage currPage, BitmapImage drawing)
         {
             if (!savedDrawings.ContainsKey(currPage))
             {
@@ -152,17 +158,32 @@ namespace Manual_Explorer
             }
             return bmImage;
         }
-        //public BitmapImage BitmapFromWriteableBitmap(WriteableBitmap writeBmp)
-        //{
-        //    BitmapImage bmpImage;
-        //    using (MemoryStream outStream = new MemoryStream())
-        //    {
-        //        BitmapEncoder enc = new BmpBitmapEncoder();
-        //        enc.Frames.Add(BitmapFrame.Create((BitmapSource)writeBmp));
-        //        enc.Save(outStream);
-        //        bmpImage = new BitmapImage(outStream);
-        //    }
-        //    return bmpImage;
-        //}
+
+        public void CheckToSave(Canvas leftCanvas, Canvas rightCanvas, BitmapImage leftPage, BitmapImage rightPage)
+        {
+            if (CanvasContentCheck(leftCanvas))
+            {
+                SaveDrawing(leftPage, ConvertWriteableBitmapToBitmapImage(SaveAsWriteableBitmap(leftCanvas)));
+            }
+            if (CanvasContentCheck(rightCanvas))
+            {
+                SaveDrawing(rightPage, ConvertWriteableBitmapToBitmapImage(SaveAsWriteableBitmap(rightCanvas)));
+            }
+        }
+
+        public Dictionary<BitmapImage, BitmapImage> GetSavedDrawingsDict()
+        {
+            return savedDrawings;
+        }
+
+        public List<BitmapImage> GetValues()
+        {
+            List<BitmapImage> list = new List<BitmapImage>();
+            foreach (var item in savedDrawings.Values)
+            {
+                list.Add(item);
+            }
+            return list;
+        }
     }
 }

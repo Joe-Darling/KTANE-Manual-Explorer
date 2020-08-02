@@ -15,6 +15,7 @@ namespace Manual_Explorer
         private string currentManual;
         private PageHandler leftPageC;
         private PageHandler rightPageC;
+        private DrawingManager drawingManager = new DrawingManager();
 
         public ManualDisplayHandler(Image leftPage, Image rightPage)
         {
@@ -84,10 +85,15 @@ namespace Manual_Explorer
             return currentManual;
         }
 
-        //public BitmapImage GetCurrentPage()
-        //{
-        //    return 
-        //}
+        public BitmapImage GetCurrentLeftPage()
+        {
+            return leftPageC.GetCurrentPage();
+        }
+
+        public BitmapImage GetCurrentRightPage()
+        {
+            return rightPageC.GetCurrentPage();
+        }
 
         public void TurnLeft(string moduleName)
         {
