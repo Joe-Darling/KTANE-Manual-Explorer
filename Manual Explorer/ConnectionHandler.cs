@@ -18,13 +18,15 @@ namespace Manual_Explorer
         private readonly int port = 8080;
         private TcpClient tcpClient;
         private ProfileManager profileManager;
+        private MainWindow mainWindow;
         private TextBox remainingTime;
         private TextBox totalModules;
         private TextBox strikes;
         private Stream tcpStream;
 
-        public ConnectionHandler(ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
+        public ConnectionHandler(MainWindow mainWindow, ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
         {
+            this.mainWindow = mainWindow;
             this.profileManager = profileManager;
             this.remainingTime = remainingTime;
             this.totalModules = totalModules;
@@ -119,9 +121,30 @@ namespace Manual_Explorer
                         case "Hosts Modules":
                             SetHostsModules(serverMessage);
                             break;
+                        case "Timer Update":
+                            TimerUpdate(serverMessage);
+                            break;
                     }
                 }
             }
+        }
+
+        private void TimerUpdate(string[] serverMessage)
+        {
+            DateTime currentTime = DateTime.UtcNow;
+            DateTime timeMessageWasGenerated = DateTime.Parse(serverMessage[1]);
+            TimeSpan timeLeft = TimeSpan.Parse(serverMessage[2]);
+            int rateOfChange = int.Parse(serverMessage[3]);
+
+            // Remaning time = base remaning time minus the time it takes to send and recieve the message
+            timeLeft = timeLeft - (currentTime - timeMessageWasGenerated);
+
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                remainingTime.Text = timeLeft.Minutes + ":" + timeLeft.Seconds;
+                mainWindow.AdustTimerSpeed(rateOfChange);
+            });
         }
 
         private void SetHostsModules(string[] modules)
