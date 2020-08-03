@@ -4,14 +4,20 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Windows.Controls;
+using System.Windows.Markup;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
 
 namespace Manual_Explorer
 {
     class ModuleManager
     {
         private static ModuleManager instance = null;
+        DrawingManager drawingManager = new DrawingManager();
         private Dictionary<string, List<BitmapImage>> modules = new Dictionary<string, List<BitmapImage>>();
+        private Dictionary<ImageSource, Canvas> savedDrawings = new Dictionary<ImageSource, Canvas>();
 
         private ModuleManager()
         {
@@ -75,6 +81,82 @@ namespace Manual_Explorer
         public List<BitmapImage> GetManualPages(string manual)
         {
             return modules[manual];
+        }
+
+        public static T ElementClone<T>(T element)
+        {
+            T clone = default(T);
+            MemoryStream memStream = ElementToStream(element);
+            clone = ElementFromStream<T>(memStream);
+            return clone;
+        }
+
+        /// <summary>
+        /// Saves an element as MemoryStream.
+        /// </summary>
+        public static MemoryStream ElementToStream(object element)
+        {
+            MemoryStream memStream = new MemoryStream();
+            XamlWriter.Save(element, memStream);
+            return memStream;
+        }
+
+        /// <summary>
+        /// Rebuilds an element from a MemoryStream.
+        /// </summary>
+        public static T ElementFromStream<T>(MemoryStream elementAsStream)
+        {
+            object reconstructedElement = null;
+
+            if (elementAsStream.CanRead)
+            {
+                elementAsStream.Seek(0, SeekOrigin.Begin);
+                reconstructedElement = XamlReader.Load(elementAsStream);
+                elementAsStream.Close();
+            }
+
+            return (T)reconstructedElement;
+        }
+
+        public void SaveDrawing(ImageSource currPage, Canvas drawing)
+        {
+            if (!savedDrawings.ContainsKey(currPage))
+            {
+                Canvas clonedCanvas = ElementClone<Canvas>(drawing);
+                savedDrawings.Add(currPage, clonedCanvas);
+            }
+            Trace.WriteLine(savedDrawings.Count);
+            //drawingManager.ClearPage(drawing);
+        }
+
+        public void CheckToSave(Canvas leftCanvas, Canvas rightCanvas, ImageSource leftPage, ImageSource rightPage)
+        {
+            if (CanvasContentCheck(leftCanvas))
+            {
+                SaveDrawing(leftPage, leftCanvas);//ConvertWriteableBitmapToBitmapImage(SaveAsWriteableBitmap(leftCanvas)));
+            }
+            if (CanvasContentCheck(rightCanvas))
+            {
+                SaveDrawing(rightPage, rightCanvas);//ConvertWriteableBitmapToBitmapImage(SaveAsWriteableBitmap(rightCanvas)));
+            }
+        }
+
+        public bool CanvasContentCheck(Canvas canvas) //true if something is drawn
+        {
+            return canvas.Children.Count != 0;
+        }
+
+        public Canvas WhichCanvasToUse(ImageSource pageToLoad)
+        {
+            if (savedDrawings.ContainsKey(pageToLoad))
+            {
+                Trace.WriteLine(savedDrawings[pageToLoad].Children.Count);
+                return savedDrawings[pageToLoad];
+            }
+            else
+            {
+                return new Canvas();
+            }
         }
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -16,14 +18,18 @@ namespace Manual_Explorer
         private PageHandler leftPageC;
         private PageHandler rightPageC;
         private DrawingManager drawingManager = new DrawingManager();
+        private Canvas leftCanvas;
+        private Canvas rightCanvas;
 
-        public ManualDisplayHandler(Image leftPage, Image rightPage)
+        public ManualDisplayHandler(Image leftPage, Image rightPage, Canvas leftCanvas, Canvas rightCanvas)
         {
             this.leftPage = leftPage;
             this.rightPage = rightPage;
             currentManual = string.Empty;
             leftPageC = new PageHandler(ModuleManager.GetInstance().GetManualPages("blank page"), 0, leftPage, currentManual);
             rightPageC = new PageHandler(ModuleManager.GetInstance().GetManualPages("blank page"), 0, rightPage, currentManual);
+            this.leftCanvas = leftCanvas;
+            this.rightCanvas = rightCanvas;
         }
 
         public void DisplayManual(string moduleName)
@@ -85,12 +91,12 @@ namespace Manual_Explorer
             return currentManual;
         }
 
-        public BitmapImage GetCurrentLeftPage()
+        public ImageSource GetCurrentLeftPage()
         {
             return leftPageC.GetCurrentPage();
         }
 
-        public BitmapImage GetCurrentRightPage()
+        public ImageSource GetCurrentRightPage()
         {
             return rightPageC.GetCurrentPage();
         }
@@ -208,6 +214,19 @@ namespace Manual_Explorer
                 {
                     TurnDiff(turnDirection);
                 }
+            }
+
+            //leftCanvas.Children.Clear();
+            //rightCanvas.Children.Clear();
+            var childrenLeft = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children;
+            var childrenRight = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children;
+            foreach (var element in childrenLeft)
+            {
+                leftCanvas.Children.Add((UIElement)element);
+            }
+            foreach (var element in childrenRight)
+            {
+                rightCanvas.Children.Add((UIElement)element);
             }
         }
     }

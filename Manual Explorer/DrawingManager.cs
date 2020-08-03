@@ -15,6 +15,7 @@ using System.Windows.Markup;
 using System.Drawing;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
+using System.Linq;
 
 namespace Manual_Explorer
 {
@@ -24,22 +25,12 @@ namespace Manual_Explorer
         private Line currentLine;
         private double lineThinkness = 3;
         private Canvas currentCanvas;
-        private Dictionary<BitmapImage, BitmapImage> savedDrawings = new Dictionary<BitmapImage, BitmapImage>();
 
         public DrawingManager() { }
 
         public void ClearPage(Canvas canvas)
         {
             canvas.Children.Clear();
-        }
-
-        public void SaveDrawing(BitmapImage currPage, BitmapImage drawing)
-        {
-            if (!savedDrawings.ContainsKey(currPage))
-            {
-                savedDrawings.Add(currPage, drawing);
-            }
-            Trace.WriteLine(savedDrawings.Count);
         }
 
         public void OnMouseEnter(Canvas canvas, MouseEventArgs e)
@@ -110,80 +101,106 @@ namespace Manual_Explorer
             currentLine.Y2 = e.GetPosition(canvas).Y;
         }
 
-        public bool CanvasContentCheck(Canvas canvas) //true if something is drawn
-        {
-            return canvas.Children.Count != 0;
-        }
+        //public void SaveDrawing(BitmapImage currPage, Canvas drawing)
+        //{
+        //    if (!savedDrawings.ContainsKey(currPage))
+        //    {
+        //        Canvas clonedCanvas = ElementClone<Canvas>(drawing);
+        //        savedDrawings.Add(currPage, clonedCanvas);
+        //    }
+        //    Trace.WriteLine(savedDrawings.Count);
+        //    //ClearPage(drawing);
+        //}
 
-        public WriteableBitmap SaveAsWriteableBitmap(Canvas canvas)
-        {
-            if (canvas == null) return null;
+        //public bool CanvasContentCheck(Canvas canvas) //true if something is drawn
+        //{
+        //    return canvas.Children.Count != 0;
+        //}
 
-            // Save current canvas transform
-            Transform transform = canvas.LayoutTransform;
-            // reset current transform (in case it is scaled or rotated)
-            canvas.LayoutTransform = null;
+        //public WriteableBitmap SaveAsWriteableBitmap(Canvas canvas)
+        //{
+        //    if (canvas == null) return null;
 
-            // Get the size of canvas
-            Size size = new Size(canvas.ActualWidth, canvas.ActualHeight);
-            // Measure and arrange the surface
-            // VERY IMPORTANT
-            canvas.Measure(size);
-            canvas.Arrange(new Rect(size));
+        //    // Save current canvas transform
+        //    Transform transform = canvas.LayoutTransform;
+        //    // reset current transform (in case it is scaled or rotated)
+        //    canvas.LayoutTransform = null;
 
-            // Create a render bitmap and push the surface to it
-            RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)size.Width, (int)size.Height, 96d, 96d, PixelFormats.Pbgra32);
-            renderBitmap.Render(canvas);
+        //    // Get the size of canvas
+        //    Size size = new Size(canvas.ActualWidth, canvas.ActualHeight);
+        //    // Measure and arrange the surface
+        //    // VERY IMPORTANT
+        //    canvas.Measure(size);
+        //    canvas.Arrange(new Rect(size));
 
-            //Restore previously saved layout
-            canvas.LayoutTransform = transform;
+        //    // Create a render bitmap and push the surface to it
+        //    RenderTargetBitmap renderBitmap = new RenderTargetBitmap((int)size.Width, (int)size.Height, 96d, 96d, PixelFormats.Pbgra32);
+        //    renderBitmap.Render(canvas);
 
-            //create and return a new WriteableBitmap using the RenderTargetBitmap
-            return new WriteableBitmap(renderBitmap);
-        }
+        //    //Restore previously saved layout
+        //    canvas.LayoutTransform = transform;
 
-        public BitmapImage ConvertWriteableBitmapToBitmapImage(WriteableBitmap wbm)
-        {
-            BitmapImage bmImage = new BitmapImage();
-            using (MemoryStream stream = new MemoryStream())
-            {
-                PngBitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(wbm));
-                encoder.Save(stream);
-                bmImage.BeginInit();
-                bmImage.CacheOption = BitmapCacheOption.OnLoad;
-                bmImage.StreamSource = stream;
-                bmImage.EndInit();
-                bmImage.Freeze();
-            }
-            return bmImage;
-        }
+        //    //create and return a new WriteableBitmap using the RenderTargetBitmap
+        //    return new WriteableBitmap(renderBitmap);
+        //}
 
-        public void CheckToSave(Canvas leftCanvas, Canvas rightCanvas, BitmapImage leftPage, BitmapImage rightPage)
-        {
-            if (CanvasContentCheck(leftCanvas))
-            {
-                SaveDrawing(leftPage, ConvertWriteableBitmapToBitmapImage(SaveAsWriteableBitmap(leftCanvas)));
-            }
-            if (CanvasContentCheck(rightCanvas))
-            {
-                SaveDrawing(rightPage, ConvertWriteableBitmapToBitmapImage(SaveAsWriteableBitmap(rightCanvas)));
-            }
-        }
+        //public BitmapImage ConvertWriteableBitmapToBitmapImage(WriteableBitmap wbm)
+        //{
+        //    BitmapImage bmImage = new BitmapImage();
+        //    using (MemoryStream stream = new MemoryStream())
+        //    {
+        //        PngBitmapEncoder encoder = new PngBitmapEncoder();
+        //        encoder.Frames.Add(BitmapFrame.Create(wbm));
+        //        encoder.Save(stream);
+        //        bmImage.BeginInit();
+        //        bmImage.CacheOption = BitmapCacheOption.OnLoad;
+        //        bmImage.StreamSource = stream;
+        //        bmImage.EndInit();
+        //        bmImage.Freeze();
+        //    }
+        //    return bmImage;
+        //}
 
-        public Dictionary<BitmapImage, BitmapImage> GetSavedDrawingsDict()
-        {
-            return savedDrawings;
-        }
+        //public void CheckToSave(Canvas leftCanvas, Canvas rightCanvas, BitmapImage leftPage, BitmapImage rightPage)
+        //{
+        //    if (CanvasContentCheck(leftCanvas))
+        //    {
+        //        SaveDrawing(leftPage, leftCanvas);//ConvertWriteableBitmapToBitmapImage(SaveAsWriteableBitmap(leftCanvas)));
+        //    }
+        //    if (CanvasContentCheck(rightCanvas))
+        //    {
+        //        SaveDrawing(rightPage, rightCanvas);//ConvertWriteableBitmapToBitmapImage(SaveAsWriteableBitmap(rightCanvas)));
+        //    }
+        //}
 
-        public List<BitmapImage> GetValues()
-        {
-            List<BitmapImage> list = new List<BitmapImage>();
-            foreach (var item in savedDrawings.Values)
-            {
-                list.Add(item);
-            }
-            return list;
-        }
+        //public Dictionary<BitmapImage, Canvas> GetSavedDrawingsDict()
+        //{
+        //    return savedDrawings;
+        //}
+
+        //public List<Canvas> GetValues()
+        //{
+        //    List<Canvas> list = new List<Canvas>();
+        //    foreach (var item in savedDrawings.Values)
+        //    {
+        //        list.Add(item);
+        //    }
+        //    return list;
+        //}
+
+        //public Canvas WhichCanvasToUse(BitmapImage pageToLoad)
+        //{
+        //    if (savedDrawings.ContainsKey(pageToLoad))
+        //    {
+        //        return savedDrawings[pageToLoad];
+        //    }
+        //    else
+        //    {
+        //        //Canvas canvas = new Canvas();
+        //        return cleanCanvas;
+        //    }
+        //}
+
+        
     }
 }

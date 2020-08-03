@@ -41,7 +41,7 @@ namespace Manual_Explorer
             ModuleManager.GetInstance();
             profileManager = new ProfileManager(History);
             drawingManager = new DrawingManager();
-            manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2);
+            manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2, Left_Page_Drawing, Right_Page_Drawing);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
         }
@@ -78,7 +78,7 @@ namespace Manual_Explorer
             if (comboBox.SelectedItem != null)
             {
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
-                drawingManager.CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+                ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 ClearCheck();
             }
         }
@@ -91,7 +91,6 @@ namespace Manual_Explorer
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
                 ClearCheck();
             }
-            
         }
 
         private void SaveCurrentModule(object sender, RoutedEventArgs e)
@@ -161,25 +160,28 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
-            drawingManager.CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
-            ClearCheck();
+            ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+            //ClearCheck();
         }
 
         private void PageTurnRight(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
             manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
-            drawingManager.CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
-            ClearCheck();
+            ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+            //ClearCheck();
         }
             
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
+            //Canvas canvas = drawingManager.WhichCanvasToUse(manualDisplayHandler.GetCurrentLeftPage(), (Canvas)sender);
             drawingManager.MouseButtonDown((Canvas)sender, e);
+            
         }
 
         private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
+            //Canvas canvas = drawingManager.WhichCanvasToUse(manualDisplayHandler.GetCurrentLeftPage(), (Canvas)sender);
             drawingManager.MouseMove((Canvas)sender, e);
         }
 
@@ -215,7 +217,8 @@ namespace Manual_Explorer
         }
 
         private void EnterDrawingWindow(object sender, MouseEventArgs e)
-        {
+        {   
+            //Canvas canvas = drawingManager.WhichCanvasToUse(manualDisplayHandler.GetCurrentLeftPage(), (Canvas)sender);
             drawingManager.OnMouseEnter((Canvas)sender, e);
         }
 
