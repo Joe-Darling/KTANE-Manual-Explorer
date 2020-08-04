@@ -228,18 +228,14 @@ namespace Manual_Explorer
             {
                 ImageSource pageToGet = turnDirection.Equals("left") ? rightPageC.PreviousPage() : rightPageC.NextPage();
                 rightPageC.SetPageSource(pageToGet);
-                rightCanvas.Children.Clear();
             }
             else if (rightLockClicked && !leftLockClicked) //only right page locked 
             {
                 ImageSource pageToGet = turnDirection.Equals("left") ? leftPageC.PreviousPage() : leftPageC.NextPage();
                 leftPageC.SetPageSource(pageToGet);
-                leftCanvas.Children.Clear();
             }
             else if (!leftLockClicked && !rightLockClicked) //both free
             {
-                leftCanvas.Children.Clear();
-                rightCanvas.Children.Clear();
                 if (leftPageC.SameManual(rightPageC))
                 {
                     TurnSame(pages, turnDirection);
@@ -268,7 +264,7 @@ namespace Manual_Explorer
                 }
                 else
                 {
-                    leftCanvas = new Canvas();
+                    leftCanvas = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage());
                 }
                 
             }
