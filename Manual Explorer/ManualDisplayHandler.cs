@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows;
@@ -18,8 +19,8 @@ namespace Manual_Explorer
         private PageHandler leftPageC;
         private PageHandler rightPageC;
         private DrawingManager drawingManager = new DrawingManager();
-        private Canvas leftCanvas;
-        private Canvas rightCanvas;
+        public Canvas leftCanvas;
+        public Canvas rightCanvas;
 
         public ManualDisplayHandler(Image leftPage, Image rightPage, Canvas leftCanvas, Canvas rightCanvas)
         {
@@ -93,12 +94,12 @@ namespace Manual_Explorer
 
         public ImageSource GetCurrentLeftPage()
         {
-            return leftPageC.GetCurrentPage();
+            return leftPageC.GetPageSource();
         }
 
         public ImageSource GetCurrentRightPage()
         {
-            return rightPageC.GetCurrentPage();
+            return rightPageC.GetPageSource();
         }
 
         public void TurnLeft(string moduleName)
@@ -186,6 +187,9 @@ namespace Manual_Explorer
 
         public void TurnPage(string turnDirection, string moduleName)
         {
+            leftCanvas.Children.Clear();
+            rightCanvas.Children.Clear();
+
             moduleName = moduleName.ToLower();
             currentManual = moduleName;
 
@@ -198,14 +202,18 @@ namespace Manual_Explorer
             {
                 ImageSource pageToGet = turnDirection.Equals("left") ? rightPageC.PreviousPage() : rightPageC.NextPage();
                 rightPageC.SetPageSource(pageToGet);
+                rightCanvas.Children.Clear();
             }
             else if (rightLockClicked && !leftLockClicked) //only right page locked 
             {
                 ImageSource pageToGet = turnDirection.Equals("left") ? leftPageC.PreviousPage() : leftPageC.NextPage();
                 leftPageC.SetPageSource(pageToGet);
+                leftCanvas.Children.Clear();
             }
             else if (!leftLockClicked && !rightLockClicked) //both free
             {
+                leftCanvas.Children.Clear();
+                rightCanvas.Children.Clear();
                 if (leftPageC.SameManual(rightPageC))
                 {
                     TurnSame(pages, turnDirection);
@@ -216,18 +224,51 @@ namespace Manual_Explorer
                 }
             }
 
+
             //leftCanvas.Children.Clear();
             //rightCanvas.Children.Clear();
-            var childrenLeft = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children;
-            var childrenRight = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children;
-            foreach (var element in childrenLeft)
+
+
+            if (ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children.Count != 0)
             {
-                leftCanvas.Children.Add((UIElement)element);
+                var leftChildrenList = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children.Cast<UIElement>().ToArray();
+                ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children.Clear();
+                if (ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()) != new Canvas())
+                {
+                    foreach (var element in leftChildrenList)
+                    {
+                        leftCanvas.Children.Add(element);
+                    }
+                }
+                else
+                {
+                    leftCanvas = new Canvas();
+                }
+                
             }
-            foreach (var element in childrenRight)
+
+            if (ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children.Count != 0)
             {
-                rightCanvas.Children.Add((UIElement)element);
+                var rightChildrenList = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children.Cast<UIElement>().ToArray();
+                ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children.Clear();
+                if (ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()) != new Canvas())
+                {
+                    foreach (var element in rightChildrenList)
+                    {
+                        rightCanvas.Children.Add(element);
+                    }
+                }
+                else
+                {
+                    rightCanvas = new Canvas();
+                }
+                
             }
+
+            //var childrenLeft = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children;
+            //var childrenRight = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children;
+            //leftCanvas.Children.Clear();
+            //rightCanvas.Children.Clear();
         }
     }
 }

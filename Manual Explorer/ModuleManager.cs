@@ -17,7 +17,7 @@ namespace Manual_Explorer
         private static ModuleManager instance = null;
         DrawingManager drawingManager = new DrawingManager();
         private Dictionary<string, List<BitmapImage>> modules = new Dictionary<string, List<BitmapImage>>();
-        private Dictionary<ImageSource, Canvas> savedDrawings = new Dictionary<ImageSource, Canvas>();
+        public Dictionary<ImageSource, Canvas> savedDrawings = new Dictionary<ImageSource, Canvas>();
 
         private ModuleManager()
         {
@@ -139,6 +139,8 @@ namespace Manual_Explorer
             {
                 SaveDrawing(rightPage, rightCanvas);//ConvertWriteableBitmapToBitmapImage(SaveAsWriteableBitmap(rightCanvas)));
             }
+            //leftCanvas.Children.Clear();
+            //rightCanvas.Children.Clear();
         }
 
         public bool CanvasContentCheck(Canvas canvas) //true if something is drawn
@@ -147,7 +149,7 @@ namespace Manual_Explorer
         }
 
         public Canvas WhichCanvasToUse(ImageSource pageToLoad)
-        {
+        {   
             if (savedDrawings.ContainsKey(pageToLoad))
             {
                 Trace.WriteLine(savedDrawings[pageToLoad].Children.Count);
@@ -155,8 +157,14 @@ namespace Manual_Explorer
             }
             else
             {
+                //Canvas canvas = new Canvas();
+                //canvas.Children.Clear();
+                //savedDrawings[pageToLoad].Children.Clear();
+                //return savedDrawings[pageToLoad];
                 return new Canvas();
             }
         }
+
+
     }
 }

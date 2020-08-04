@@ -159,16 +159,20 @@ namespace Manual_Explorer
         private void PageTurnLeft(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
-            manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
             ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+            //ClearCheck();
+            manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
             //ClearCheck();
         }
 
         private void PageTurnRight(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
-            manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
             ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+            //ClearCheck();
+            manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+            
+
             //ClearCheck();
         }
             
