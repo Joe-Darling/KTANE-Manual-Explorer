@@ -13,7 +13,7 @@ namespace Manual_Explorer
     class DrawingManager
     {
         private Point currentPoint = new Point();
-        private Line currentLine;
+        private Polyline currentLine;
         private double lineThinkness = 3;
         private Canvas currentCanvas;
 
@@ -31,33 +31,41 @@ namespace Manual_Explorer
 
         public void MouseButtonDown(Canvas canvas, MouseButtonEventArgs e)
         {
-            if (e.ButtonState == MouseButtonState.Pressed)
+            if(currentLine != null)
+            {
+                return;
+            }
+
+            if (e.ButtonState == MouseButtonState.Pressed && (e.ChangedButton == MouseButton.Left || e.ChangedButton == MouseButton.Right))
             {
                 currentCanvas = canvas;
                 currentPoint = e.GetPosition(canvas);
+
+                currentLine = new Polyline();
+                currentLine.Stroke = new SolidColorBrush(Colors.Red);
+                currentLine.StrokeThickness = lineThinkness;
+                currentLine.Points.Add(currentPoint);
+                canvas.Children.Add(currentLine);
+
                 if(e.ChangedButton == MouseButton.Right)
                 {
-                    currentLine = new Line();
-                    currentLine.X1 = currentPoint.X;
-                    currentLine.Y1 = currentPoint.Y;
-                    currentLine.StrokeThickness = lineThinkness;
-                    currentLine.Stroke = new SolidColorBrush(Colors.Transparent);
-                    canvas.Children.Add(currentLine);
+                    currentLine.Points.Add(currentPoint);
                 }
             }
         }
 
         public void MouseMove(Canvas canvas, MouseEventArgs e)
         {
-            if (currentCanvas == canvas)
+            if (currentCanvas == canvas && currentLine != null)
             {
+                currentPoint = e.GetPosition(canvas);
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
-                    HandleLeftDrag(canvas, e);
+                    HandleLeftDrag();
                 }
                 else if (e.RightButton == MouseButtonState.Pressed)
                 {
-                    HandleRightDrag(canvas, e);
+                    HandleRightDrag();
                 }
             }
         }
@@ -66,30 +74,19 @@ namespace Manual_Explorer
         {
             if(e.ButtonState == MouseButtonState.Released)
             {
-                currentLine = null;
                 currentCanvas = null;
+                currentLine = null;
             }
         }
 
-        private void HandleLeftDrag(Canvas canvas, MouseEventArgs e)
+        private void HandleLeftDrag()
         {
-            Line line = new Line();
-            line.X1 = currentPoint.X;
-            line.Y1 = currentPoint.Y;
-            line.StrokeThickness = lineThinkness;
-            line.Stroke = new SolidColorBrush(Colors.Red);//SystemColors.WindowFrameBrush;
-            line.X2 = e.GetPosition(canvas).X;
-            line.Y2 = e.GetPosition(canvas).Y;
-            currentPoint = e.GetPosition(canvas);
-
-            canvas.Children.Add(line);
+            currentLine.Points.Add(currentPoint);
         }
 
-        private void HandleRightDrag(Canvas canvas, MouseEventArgs e)
+        private void HandleRightDrag()
         {
-            currentLine.Stroke = new SolidColorBrush(Colors.Red);
-            currentLine.X2 = e.GetPosition(canvas).X;
-            currentLine.Y2 = e.GetPosition(canvas).Y;
+            currentLine.Points[currentLine.Points.Count - 1] = currentPoint;
         }
     }
 }
