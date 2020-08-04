@@ -304,12 +304,14 @@ namespace Manual_Explorer
                 //PageTurnLeft(sender, e);
                 ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
+                manualDisplayHandler.CanvasLoader();
             }
             else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Right)
             {
                 //PageTurnRight(sender, e);
                 ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+                manualDisplayHandler.CanvasLoader();
             }
         }
     }   
