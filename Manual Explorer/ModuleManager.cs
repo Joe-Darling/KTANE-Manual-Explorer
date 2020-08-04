@@ -150,9 +150,15 @@ namespace Manual_Explorer
             {
                 Canvas clonedCanvas = ElementClone<Canvas>(drawing);
                 savedDrawings.Add(currPage, clonedCanvas);
+                drawingManager.ClearPage(drawing);
             }
-            Trace.WriteLine(savedDrawings.Count);
-            //drawingManager.ClearPage(drawing);
+            //else
+            //{
+            //    Canvas clonedCanvas = ElementClone<Canvas>(drawing);
+            //    savedDrawings[currPage] = clonedCanvas;
+            //}
+            //Trace.WriteLine(savedDrawings.Count);
+            
         }
 
         public void CheckToSave(Canvas leftCanvas, Canvas rightCanvas, ImageSource leftPage, ImageSource rightPage)
@@ -179,7 +185,9 @@ namespace Manual_Explorer
             if (savedDrawings.ContainsKey(pageToLoad))
             {
                 Trace.WriteLine(savedDrawings[pageToLoad].Children.Count);
-                return savedDrawings[pageToLoad];
+                Canvas canvasToLoad = savedDrawings[pageToLoad];
+                savedDrawings.Remove(pageToLoad);
+                return canvasToLoad;
             }
             else
             {

@@ -84,7 +84,8 @@ namespace Manual_Explorer
             {
                 ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString(), connectionHandler.GetTcpClient() != null);
-                ClearCheck();
+                manualDisplayHandler.CanvasLoader();
+                //ClearCheck();
             }
         }
 
@@ -93,8 +94,10 @@ namespace Manual_Explorer
             ComboBox comboBox = (ComboBox)sender;
             if(comboBox.SelectedItem != null)
             {
+                ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString(), connectionHandler.GetTcpClient() != null);
-                ClearCheck();
+                manualDisplayHandler.CanvasLoader();
+                //ClearCheck();
             }
         }
 
@@ -175,8 +178,11 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+            //drawingManager.ClearPage(Left_Page_Drawing);
+            //drawingManager.ClearPage(Right_Page_Drawing);
             //ClearCheck();
             manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
+            manualDisplayHandler.CanvasLoader();
             //ClearCheck();
         }
 
@@ -184,8 +190,11 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+            //drawingManager.ClearPage(Left_Page_Drawing);
+            //drawingManager.ClearPage(Right_Page_Drawing);
             //ClearCheck();
             manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+            manualDisplayHandler.CanvasLoader();
             
 
             //ClearCheck();
@@ -292,10 +301,14 @@ namespace Manual_Explorer
         {
             if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Left)
             {
+                //PageTurnLeft(sender, e);
+                ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
             }
             else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Right)
             {
+                //PageTurnRight(sender, e);
+                ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
             }
         }

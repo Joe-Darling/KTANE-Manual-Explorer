@@ -245,17 +245,18 @@ namespace Manual_Explorer
                     TurnDiff(turnDirection);
                 }
             }
+        }
 
+        public void CanvasLoader()
+        {
+            var canvasToLoadLeft = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage());
+            var canvasToLoadRight = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage());
 
-            //leftCanvas.Children.Clear();
-            //rightCanvas.Children.Clear();
-
-
-            if (ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children.Count != 0)
+            if (canvasToLoadLeft.Children.Count != 0)
             {
-                var leftChildrenList = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children.Cast<UIElement>().ToArray();
-                ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children.Clear();
-                if (ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()) != new Canvas())
+                var leftChildrenList = canvasToLoadLeft.Children.Cast<UIElement>().ToArray();
+                canvasToLoadLeft.Children.Clear();
+                if (canvasToLoadLeft != new Canvas())
                 {
                     foreach (var element in leftChildrenList)
                     {
@@ -264,16 +265,16 @@ namespace Manual_Explorer
                 }
                 else
                 {
-                    leftCanvas = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage());
+                    leftCanvas = canvasToLoadLeft;
                 }
-                
+
             }
 
-            if (ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children.Count != 0)
+            if (canvasToLoadRight.Children.Count != 0)
             {
-                var rightChildrenList = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children.Cast<UIElement>().ToArray();
-                ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children.Clear();
-                if (ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()) != new Canvas())
+                var rightChildrenList = canvasToLoadRight.Children.Cast<UIElement>().ToArray();
+                canvasToLoadRight.Children.Clear();
+                if (canvasToLoadRight != new Canvas())
                 {
                     foreach (var element in rightChildrenList)
                     {
@@ -282,15 +283,10 @@ namespace Manual_Explorer
                 }
                 else
                 {
-                    rightCanvas = new Canvas();
+                    rightCanvas = canvasToLoadRight;
                 }
-                
-            }
 
-            //var childrenLeft = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage()).Children;
-            //var childrenRight = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage()).Children;
-            //leftCanvas.Children.Clear();
-            //rightCanvas.Children.Clear();
+            }
         }
     }
 }
