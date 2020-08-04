@@ -33,21 +33,47 @@ namespace Manual_Explorer
             this.rightCanvas = rightCanvas;
         }
 
-        public void DisplayManual(string moduleName)
+        public void DisplayManual(string moduleName, bool connected)
         {
+
             moduleName = moduleName.ToLower();
             currentManual = moduleName;
+            List<BitmapImage> pages = null;
 
-            if (!ModuleManager.GetInstance().DoesModuleExist(moduleName))
+            if (connected)
             {
-                throw new ArgumentException("This module name does not exist in the dictionary");
+                if (ModuleManager.GetInstance().DoesModuleExistInReadInModules(moduleName))
+                {
+                    string location = ModuleManager.GetInstance().GetLookupString(moduleName);
+                    if (location.EndsWith(".html"))
+                    {
+                        Process.Start("C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe", location);
+                    }
+                    else
+                    {
+                        pages = ModuleManager.GetInstance().GetManualPages(location);
+                    }
+                }
             }
 
-            List<BitmapImage> pages = ModuleManager.GetInstance().GetManualPages(currentManual);
+            if (pages == null)
+            {
+                if (!ModuleManager.GetInstance().DoesModuleExist(moduleName))
+                {
+                    leftPage.Source = ModuleManager.GetInstance().GetManualPages("error page")[0];
+                    rightPage.Source = ModuleManager.GetInstance().GetManualPages("error page")[0];
+                    return;
+                }
+                else
+                {
+                    pages = ModuleManager.GetInstance().GetManualPages(currentManual);
+                }
+                
+            }
 
             bool leftLockClicked = leftPageC.Locked();
             bool rightLockClicked = rightPageC.Locked();
-
+            
             if (!leftLockClicked && !rightLockClicked)
             {
                 if (pages.Count == 1)

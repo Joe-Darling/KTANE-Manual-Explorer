@@ -5,16 +5,17 @@ using System.Text;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls.Primitives;
 
 namespace Manual_Explorer
 {
-    class SearchFunctionality
+    public class SearchFunctionality
     {
-        private void TabAction(ComboBox comboBox, KeyEventArgs e, ListBox History)
+        private void TabAction(ComboBox comboBox, KeyEventArgs e, Selector targetFocus)
         {
             comboBox.IsDropDownOpen = false;
             e.Handled = true;
-            History.Focus();
+            targetFocus.Focus();
         }
 
         private void InvalidCharAction(KeyEventArgs e)
@@ -41,11 +42,10 @@ namespace Manual_Explorer
             }
         }
 
-        public void SearchFilter(ComboBox comboBox, string userInput)
+        public void SearchFilter(ComboBox comboBox, string userInput, List<string> keys)
         {
             List<string> contains = new List<string>();
             List<string> wordStarts = new List<string>();
-            Dictionary<string, List<BitmapImage>>.KeyCollection keys = ModuleManager.GetInstance().GetModuleNames();
             foreach (string nameToCheck in keys)
             {
                 // first adding modules whose first word starts with user input
@@ -86,7 +86,7 @@ namespace Manual_Explorer
             // adding modules which name might have been misspelled
             foreach (string item in keys)
             {
-                if (Compute(item, userInput) <= 3)
+                if (Compute(item, userInput) <= 3 && item.Length > 0)
                 {
                     comboBox.Items.Add(CapitilizeItem(item));
                 }
@@ -94,21 +94,21 @@ namespace Manual_Explorer
             }
         }
 
-        public void UpdateComboBox(ComboBox comboBox, KeyEventArgs e, ListBox History)
+        public void UpdateComboBox(ComboBox comboBox, KeyEventArgs e, Selector targetFocus, List<string> keys)
         {
             comboBox.Items.Clear();
 
             if ((e.Key >= Key.A && e.Key <= Key.Z) || (e.Key >= Key.D0 && e.Key <= Key.D9))
             {
                 string userInput = comboBox.Text.ToLower() + e.Key.ToString().ToLower();
-                SearchFilter(comboBox, userInput);
+                SearchFilter(comboBox, userInput, keys);
             }
-            else if (e.Key == Key.LeftShift || e.Key == Key.Space || e.Key == Key.RightShift)
+            else if (e.Key == Key.LeftShift || e.Key == Key.Space || e.Key == Key.RightShift || e.Key == Key.OemMinus || e.Key == Key.OemQuotes)
             {
             }
             else if (e.Key == Key.Tab)
             {
-                TabAction(comboBox, e, History);
+                TabAction(comboBox, e, targetFocus);
             }
             else
             {
@@ -125,17 +125,17 @@ namespace Manual_Explorer
             }
         }
 
-        public void UpdateComboBoxOnBackspace(ComboBox comboBox, KeyEventArgs e, ListBox History)
+        public void UpdateComboBoxOnBackspace(ComboBox comboBox, KeyEventArgs e, Selector targetFocus, List<string> keys)
         {
             if (e.Key == Key.Back)
             {
                 comboBox.Items.Clear();
                 string userInput = comboBox.Text.ToLower();
-                SearchFilter(comboBox, userInput);
+                SearchFilter(comboBox, userInput, keys);
             }
             else if (e.Key == Key.Tab)
             {
-                TabAction(comboBox, e, History);
+                TabAction(comboBox, e, targetFocus);
             }
             else if (e.Key == Key.Enter)
             {

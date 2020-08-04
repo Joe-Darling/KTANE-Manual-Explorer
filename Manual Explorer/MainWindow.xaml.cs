@@ -30,10 +30,13 @@ namespace Manual_Explorer
     public partial class MainWindow : Window
     {
         private ProfileManager profileManager;
+        ConnectionHandler connectionHandler;
         SearchFunctionality search = new SearchFunctionality();
         RightSideBarManager rightSideBarManager;
         ManualDisplayHandler manualDisplayHandler;
         DrawingManager drawingManager;
+        ConnectionWindow connectionWindow;
+        PageConfigWindow pageConfigWindow;
 
         public MainWindow()
         {
@@ -42,6 +45,8 @@ namespace Manual_Explorer
             profileManager = new ProfileManager(History);
             drawingManager = new DrawingManager();
             manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2, Left_Page_Drawing, Right_Page_Drawing);
+            connectionWindow = new ConnectionWindow(this);
+            connectionHandler = new ConnectionHandler(profileManager, Remaining_Time, Total_Modules, null);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
         }
@@ -58,13 +63,13 @@ namespace Manual_Explorer
         private void UpdateQuery(object sender, KeyEventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
-            search.UpdateComboBox(comboBox, e, History);
+            search.UpdateComboBox(comboBox, e, History, ModuleManager.GetInstance().GetModuleNames().ToList());
         }
 
         private void BackspaceUpdate(object sender, KeyEventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
-            search.UpdateComboBoxOnBackspace(comboBox, e, History);
+            search.UpdateComboBoxOnBackspace(comboBox, e, History, ModuleManager.GetInstance().GetModuleNames().ToList());
         }
 
         public string CapitilizeItem(string item)
@@ -77,8 +82,8 @@ namespace Manual_Explorer
             ListBox comboBox = (ListBox)sender;
             if (comboBox.SelectedItem != null)
             {
-                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
                 ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString(), connectionHandler.GetTcpClient() != null);
                 ClearCheck();
             }
         }
@@ -88,7 +93,7 @@ namespace Manual_Explorer
             ComboBox comboBox = (ComboBox)sender;
             if(comboBox.SelectedItem != null)
             {
-                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString());
+                manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString(), connectionHandler.GetTcpClient() != null);
                 ClearCheck();
             }
         }
@@ -101,8 +106,11 @@ namespace Manual_Explorer
 
         private void DeleteCurrentModule(object sender, RoutedEventArgs e)
         {
-            string currentManual = CapitilizeItem(manualDisplayHandler.GetCurrentActiveManual());
-            profileManager.DeleteFromProfile(currentManual);
+            if(History.SelectedItem != null)
+            {
+                string currentManual = History.SelectedItem.ToString();
+                profileManager.DeleteFromProfile(currentManual);
+            }
         }
 
         private void NewProfile(object sender, RoutedEventArgs e)
@@ -124,6 +132,13 @@ namespace Manual_Explorer
         {
             profileManager.SaveProfileAs();
         }
+
+        private void OpenConnectionWindow(object sender, RoutedEventArgs e)
+        {
+            connectionWindow = new ConnectionWindow(this);
+            connectionWindow.Show();
+        }
+
         private void ComboLostFocus(object sender, RoutedEventArgs e)
         {
             User_Query.IsDropDownOpen = false;
@@ -236,6 +251,53 @@ namespace Manual_Explorer
         {
             Button button = (Button)sender;
             manualDisplayHandler.LockRight(button);
+        }
+
+        public void StartConnectionThread()
+        {
+            string roomID = connectionWindow.Room_ID_Text.Text;
+            string password = connectionWindow.Password_Text.Text;
+            TextBlock statusText = connectionWindow.Status_Text;
+            Thread thread = new Thread(() => connectionHandler.ThreadStart(roomID, password, statusText));
+            thread.Start();
+        }
+
+        private bool TryOpenPageConfigWindow()
+        {
+            if (connectionHandler.GetTcpClient() == null)
+            {
+                MessageBox.Show("You need to be connected to a room before you can configure pages.");
+                return false;
+            }
+
+            pageConfigWindow = new PageConfigWindow(search);
+            pageConfigWindow.Show();
+            return true;
+        }
+
+        private void ConfigurePages(object sender, RoutedEventArgs e)
+        {
+            TryOpenPageConfigWindow();
+        }
+
+        private void ConfigureManualPage(object sender, RoutedEventArgs e)
+        {
+            if (TryOpenPageConfigWindow())
+            {
+                pageConfigWindow.SetReadInComboText(History.SelectedItem.ToString());
+            }
+        }
+        
+        private void ArrowControl(object sender, KeyEventArgs e)
+        {
+            if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Left)
+            {
+                manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Right)
+            {
+                manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+            }
         }
     }   
 }

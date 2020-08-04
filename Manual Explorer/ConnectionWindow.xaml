@@ -1,0 +1,17 @@
+﻿<Window x:Class="Manual_Explorer.ConnectionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Manual_Explorer"
+        mc:Ignorable="d"
+        Title="ConnectionWindow" Height="450" Width="400">
+    <Grid>
+        <TextBox x:Name="Room_ID_Text" HorizontalAlignment="Center" Margin="0,142,0,0" Text="Enter room ID: (Required)" TextWrapping="Wrap" VerticalAlignment="Top" Width="150" KeyDown="OnKeyPress" GotFocus="ClearText"/>
+        <TextBox x:Name="Password_Text" HorizontalAlignment="Center" Margin="0,199,0,0" Text="Enter password: (Optional)" TextWrapping="Wrap" VerticalAlignment="Top" Width="150" GotFocus="ClearText"/>
+        <TextBlock x:Name="Title_Text" HorizontalAlignment="Center" Margin="0,48,0,0" Text="Connect to defuser" TextWrapping="Wrap" VerticalAlignment="Top"/>
+        <Button x:Name="Join_Room_Button" Content="Connect" HorizontalAlignment="Center" Margin="0,268,0,0" VerticalAlignment="Top" Click="AttemptToConnect"/>
+        <TextBlock x:Name="Status_Text" HorizontalAlignment="Center" Margin="0,361,0,0" Text="" TextWrapping="Wrap" VerticalAlignment="Top" TextAlignment="Center"/>
+
+    </Grid>
+</Window>
