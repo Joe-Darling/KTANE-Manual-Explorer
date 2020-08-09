@@ -313,6 +313,14 @@ namespace Manual_Explorer
                 manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
                 manualDisplayHandler.CanvasLoader();
             }
+            else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Q) // left lock
+            {
+                manualDisplayHandler.LockLeft(lockLeftBtn);
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.W) // right lock
+            {
+                manualDisplayHandler.LockRight(lockRightBtn);
+            }
         }
     }   
 }
