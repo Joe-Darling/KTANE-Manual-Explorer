@@ -96,7 +96,12 @@ namespace Manual_Explorer
             bool stillRunning = true;
             while (stillRunning)
             {
-                TryReadData(out var response, out var ex);
+                if(!TryReadData(out var response, out Exception ex))
+                {
+                    MessageBox.Show("There was a problem reading in the string. " + ex.Message);
+                    return;
+                }
+                
 
                 string[] serverMessage = response.Split('|');
                 if(serverMessage.Length > 1)
