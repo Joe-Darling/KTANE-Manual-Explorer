@@ -21,8 +21,8 @@
                 <MenuItem Header="Configure Pages" Click="ConfigurePages"/>
             </MenuItem>
         </Menu>
-        
-        <Grid DockPanel.Dock="Left" Margin="10" Background="LightGray" Width="260">
+
+        <Grid DockPanel.Dock="Left" Background="LightGray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -30,12 +30,39 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
-            <ComboBox x:Name="User_Query" Margin="20,20" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
-            <Button Content="Add" Margin="20,20" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="SaveCurrentModule"/>
-            <Button Content="Delete" Margin="20,20" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Click="DeleteCurrentModule"/>
-            <ListBox x:Name="History" Margin="20,20" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" SelectionChanged="History_Selected">
+            <TextBlock Grid.Row="0" Grid.Column="0" Margin="20,20,20,-15">Find manual:</TextBlock>
+            <ComboBox x:Name="User_Query" Margin="20,20" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" Height="25" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
+            <Button  Margin="20,20" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Click="SaveCurrentModule">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Add</TextBlock>
+                    <Image Grid.Row="0" Grid.Column="1" Source="https://cdn4.iconfinder.com/data/icons/ios7-essence/22/add_plus-512.png" Width="20"/>
+                </Grid>
+            </Button>
+            <Button Margin="20,20" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Click="DeleteCurrentModule">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Delete</TextBlock>
+                    <Image Grid.Row="0" Grid.Column="1" Source="https://cdn1.iconfinder.com/data/icons/materia-arrows-symbols-vol-1/24/018_004_minus_remove_substract_dash-512.png" Width="20"/>
+
+                </Grid>
+            </Button>
+            <ListBox x:Name="History" Margin="20,20" Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Width="200" SelectionChanged="History_Selected">
                 <ListBox.Resources>
                     <ContextMenu x:Key="HistoryMenu">
                         <MenuItem Header="Configure Manual" Click="ConfigureManualPage"/>
@@ -47,8 +74,8 @@
             </ListBox>
         </Grid>
 
-        <Grid DockPanel.Dock="Right" Margin="10" Background="Blue" Width="330">
-            <Grid x:Name="Right_Panel" Margin="1686,0,0,0" Background="#FF818181">
+        <Grid DockPanel.Dock="Right" Background="Blue">
+            <Grid x:Name="Right_Panel" Background="#FF818181">
                 <Label Content="Starting Time:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0"/>
                 <TextBox x:Name="Remaining_Time" HorizontalAlignment="Left" Margin="88,12,0,0" Text="0:00" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="22"/>
                 <Label Content="Modules:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,41,0,0"/>
@@ -133,19 +160,71 @@
                 <TextBlock x:Name="Total_Port_Count" HorizontalAlignment="Left" Margin="154,422,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
                 <TextBlock x:Name="Total_Lit_Indicators" HorizontalAlignment="Left" Margin="76,817,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
                 <TextBlock x:Name="Total_Unlit_Indicators" HorizontalAlignment="Left" Margin="109,817,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-                </Grid>
+            </Grid>
         </Grid>
-        <Grid Margin="10" Background="LightGreen">
-            <Image x:Name="Page_1" HorizontalAlignment="Left" Height="900" Margin="235,116,0,0" VerticalAlignment="Top" Width="700"/>
-            <Canvas x:Name="Left_Page_Drawing" HorizontalAlignment="Left" Height="900" Margin="235, 116, 0 ,0" VerticalAlignment="Top" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
-            <Image x:Name="Page_2" HorizontalAlignment="Left" Height="900" Margin="960,116,0,0" VerticalAlignment="Top" Width="700"/>
-            <Canvas x:Name="Right_Page_Drawing" HorizontalAlignment="Left" Height="900" Margin="960, 116, 0 ,0" VerticalAlignment="Top" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
-            <Button Content="3" Height="26" Width="56" FontFamily="Marlett" FontSize="20" Click="PageTurnLeft" x:Name="PageLeft" Margin="-1407,47,1585,991"/>
-            <Button Content="4" Height="28" Width="53" FontFamily="Marlett" FontSize="20" Click="PageTurnRight" x:Name="PageRight" Margin="-124,49,304,987"/>
-            <Button Content="Lock Left" Height="23" x:Name="lockLeftBtn" Margin="-1312,50,1460,991" Click="LockLeftPage" Background="YellowGreen"/>
-            <Button Content="Lock Right" Height="23" x:Name="lockRightBtn" Margin="-250,53,394,988" Click="LockRightPage" Background="YellowGreen"/>
-            <Button x:Name="Left_Clear" Content="Clear" HorizontalAlignment="Left" Margin="566,55,0,0" VerticalAlignment="Top" Click="ClearDrawing"/>
-            <Button x:Name="Right_Clear" Content="Clear" HorizontalAlignment="Left" Margin="1291,55,0,0" VerticalAlignment="Top" Click="ClearDrawing"/>
+        <Grid Background="LightGreen">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <!-- 12 -->
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <!--24-->
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <!--6-->
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <!--11-->
+            </Grid.RowDefinitions>
+
+            <Button Margin="0,-20" Grid.Row="0" Grid.Column="0" Height="25" Width="50" Click="PageTurnLeft" x:Name="PageLeft">
+                <Image Source="http://www.clipartbest.com/cliparts/eTM/E58/eTME58BAc.png"/>
+            </Button>
+            <Button Margin="0,-20" Grid.Row="0" Grid.Column="23" Height="25" Width="50" Click="PageTurnRight" x:Name="PageRight">
+                <Image Source="http://www.clipartbest.com/cliparts/bTy/LdX/bTyLdXy8c.png"/>
+            </Button>
+
+            <Image x:Name="Page_1" Margin="10" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Canvas x:Name="Left_Page_Drawing" Margin="10" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
+
+            <Image x:Name="Page_2" Margin="10" Grid.Column="12" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Canvas x:Name="Right_Page_Drawing" Margin="10" Grid.Column="12" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
+
+            <Button Content="Lock Left" Height="24" x:Name="lockLeftBtn" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="LockLeftPage" Background="YellowGreen"/>
+            <Button Content="Lock Right" Height="24" x:Name="lockRightBtn" Grid.Column="19" Grid.Row="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="LockRightPage" Background="YellowGreen"/>
+            
+            <Button x:Name="Left_Clear" Content="Clear" Grid.Column="5" Grid.Row="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ClearDrawing"/>
+            <Button x:Name="Right_Clear" Content="Clear" Grid.Column="15" Grid.Row="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ClearDrawing"/>
         </Grid>
     </DockPanel>
 
