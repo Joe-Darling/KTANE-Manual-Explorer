@@ -235,7 +235,7 @@ namespace Manual_Explorer
                 response = Encoding.UTF8.GetString(responseBytes, 0, totalBytesRead).Replace("\0", string.Empty);
                 response = response.Substring(response.IndexOf("|") + 1);
                 File.AppendAllText("C:\\Ktane\\Client logs.txt", "Entire message was read in successfully.\nMessage: " + response);
-
+                tcpStream.Flush();
                 return true;
             }
             catch (Exception e)
@@ -243,6 +243,7 @@ namespace Manual_Explorer
                 exception = e;
                 response = string.Empty;
                 File.AppendAllText("C:\\Ktane\\Client logs.txt", "Failed attempt to read message from host at " + DateTime.Now + "\nReason: " + e.Message + "\n\n");
+                tcpStream.Flush();
                 return false;
             }
         }
