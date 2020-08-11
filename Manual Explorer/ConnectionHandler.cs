@@ -93,6 +93,7 @@ namespace Manual_Explorer
 
         public void ThreadLoop()
         {
+            File.WriteAllText("C:\\Ktane\\Client logs.txt", "The client thread loop was started at " + DateTime.Now + "\n\n");
             bool stillRunning = true;
             while (stillRunning)
             {
@@ -204,6 +205,8 @@ namespace Manual_Explorer
 
         public bool TryReadData(out string response, out Exception exception)
         {
+            File.AppendAllText("C:\\Ktane\\Client logs.txt", "Begun attempt to read message from host at " + DateTime.Now + "\n\n");
+
             exception = null;
             try
             {
@@ -214,14 +217,24 @@ namespace Manual_Explorer
                 do
                 {
                     totalBytesRead += tcpStream.Read(responseBytes, totalBytesRead, responseBytes.Length - totalBytesRead);
+                    File.AppendAllText("C:\\Ktane\\Client logs.txt", "We have read in " + totalBytesRead + "/" + messageLength + " so far.\n");
+
                     if (messageLength == -1 && Encoding.UTF8.GetString(responseBytes).Contains("|"))
                     {
                         messageLength = int.Parse(Encoding.UTF8.GetString(responseBytes).Split('|')[0]);
+                        File.AppendAllText("C:\\Ktane\\Client logs.txt", "The total length of this message is: " + messageLength + " bytes.\n");
+                        if (messageLength == 0)
+                        {
+                            File.AppendAllText("C:\\Ktane\\Client logs.txt", "Since the message length is 0, we bail out at " + DateTime.Now + "\n\n");
+                            response = string.Empty;
+                            return false;
+                        }
                         headerBytes = messageLength.ToString().Length + 1;
                     }
                 } while (totalBytesRead - headerBytes < messageLength);
                 response = Encoding.UTF8.GetString(responseBytes, 0, totalBytesRead).Replace("\0", string.Empty);
                 response = response.Substring(response.IndexOf("|") + 1);
+                File.AppendAllText("C:\\Ktane\\Client logs.txt", "Entire message was read in successfully.\nMessage: " + response);
 
                 return true;
             }
@@ -229,6 +242,7 @@ namespace Manual_Explorer
             {
                 exception = e;
                 response = string.Empty;
+                File.AppendAllText("C:\\Ktane\\Client logs.txt", "Failed attempt to read message from host at " + DateTime.Now + "\nReason: " + e.Message + "\n\n");
                 return false;
             }
         }
