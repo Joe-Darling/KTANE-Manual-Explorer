@@ -97,5 +97,8 @@ namespace Manual_Explorer
         {
             currentLine.Points[currentLine.Points.Count - 1] = currentPoint;
         }
+
+        
+
     }
 }

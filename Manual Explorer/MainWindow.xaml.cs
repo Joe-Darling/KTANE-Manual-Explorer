@@ -21,13 +21,14 @@ using PuppeteerSharp;
 using HtmlAgilityPack;
 using System.Threading;
 using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Manual_Explorer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : INotifyPropertyChanged
     {
         private ProfileManager profileManager;
         ConnectionHandler connectionHandler;
@@ -37,6 +38,8 @@ namespace Manual_Explorer
         DrawingManager drawingManager;
         ConnectionWindow connectionWindow;
         PageConfigWindow pageConfigWindow;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public MainWindow()
         {
@@ -322,5 +325,41 @@ namespace Manual_Explorer
                 manualDisplayHandler.LockRight(lockRightBtn);
             }
         }
+
+        
+
+        private int _getHeight;
+        public int GetHeight
+        {
+            get { return _getHeight; }
+            set
+            {
+                if (_getHeight != value)
+                {
+                    _getHeight = 900;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _getWidth;
+        public int GetWidth
+        {
+            get { return _getWidth; }
+            set
+            {
+                if (_getWidth != value)
+                {
+                    _getWidth = 700;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }   
 }
