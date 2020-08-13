@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -18,13 +19,19 @@ namespace Manual_Explorer
         private readonly int port = 8080;
         private TcpClient tcpClient;
         private ProfileManager profileManager;
+        private MainWindow mainWindow;
         private TextBox remainingTime;
         private TextBox totalModules;
         private TextBox strikes;
         private Stream tcpStream;
+        private DispatcherTimer reconnectTimer;
+        private string roomID;
+        private string roomPass;
+        private bool connected;
 
-        public ConnectionHandler(ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
+        public ConnectionHandler(MainWindow mainWindow, ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
         {
+            this.mainWindow = mainWindow;
             this.profileManager = profileManager;
             this.remainingTime = remainingTime;
             this.totalModules = totalModules;
@@ -61,7 +68,18 @@ namespace Manual_Explorer
             }
 
             Trace.WriteLine("Connected, beginning thread loop");
-            ThreadLoop();
+            this.roomID = roomID;
+            roomPass = pass;
+            reconnectTimer = new DispatcherTimer();
+            reconnectTimer.Interval = TimeSpan.FromSeconds(5);
+            reconnectTimer.Tick += ConnectionCheckLoop;
+            while(true)
+            {
+                if (connected)
+                {
+                    ThreadLoop();
+                }
+            }
         }
 
         public bool TryConnectToRoom(string roomID, string pass, out string response, out Exception exception)
@@ -77,7 +95,6 @@ namespace Manual_Explorer
                 TrySendData("join|" + roomID + "|" + pass);
 
                 TryReadData(out response, out exception);
-                exception = null;
                 bool result = response.Split('|')[0].Equals("true");
                 response = response.Split('|')[1];
 
@@ -100,7 +117,7 @@ namespace Manual_Explorer
                 if(!TryReadData(out var response, out Exception ex))
                 {
                     MessageBox.Show("There was a problem reading in the string. " + ex.Message);
-                    return;
+                    continue;
                 }
                 
 
@@ -164,11 +181,16 @@ namespace Manual_Explorer
 
         public void LoadNewLevel(string[] levelParameters)
         {
+            DateTime currentTime = DateTime.UtcNow;
+            DateTime timeOfUpdate = DateTime.Parse(levelParameters[0]);
+            TimeSpan timeLeft = TimeSpan.Parse(levelParameters[2]);
+            timeLeft -= (currentTime - timeOfUpdate);
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 profileManager.NewProfile();
-                remainingTime.Text = levelParameters[1].Split(' ')[1];
-                totalModules.Text = levelParameters[2].Split(' ')[2];
+                mainWindow.SetRemaningTimeText(timeLeft);
+                totalModules.Text = levelParameters[4];
                 int ind = 5;
                 while (ind < levelParameters.Length)
                 {
@@ -244,6 +266,50 @@ namespace Manual_Explorer
                 response = string.Empty;
                 File.AppendAllText("C:\\Ktane\\Client logs.txt", "Failed attempt to read message from host at " + DateTime.Now + "\nReason: " + e.Message + "\n\n");
                 tcpStream.Flush();
+                return false;
+            }
+        }
+
+        private void ConnectionCheckLoop(object sender, EventArgs e)
+        {
+            TcpClient client = new TcpClient(ip, port);
+
+            IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+            TcpConnectionInformation[] tcpConnections = ipProperties.GetActiveTcpConnections().Where(x => x.LocalEndPoint.Equals(client.Client.LocalEndPoint) && x.RemoteEndPoint.Equals(client.Client.RemoteEndPoint)).ToArray();
+
+            if (tcpConnections != null && tcpConnections.Length > 0)
+            {
+                TcpState stateOfConnection = tcpConnections.First().State;
+                if (stateOfConnection != TcpState.Established)
+                {
+                    // We are no longer connected. Attempt to reconnect.
+                    Trace.WriteLine("You have disconnected from the client. Attempting to reconnect");
+                    connected = AttemptToReconnect();
+                    if (connected)
+                    {
+                        Trace.WriteLine("Reconnected successfully");
+                    }
+                }
+
+            }
+            client.Close();
+        }
+
+        private bool AttemptToReconnect()
+        {
+            try
+            {
+                tcpClient = new TcpClient();
+                tcpClient.Connect(ip, port);
+                TrySendData("reconnect|" + roomID + "|" + roomPass + "|false");
+
+                TryReadData(out string response, out Exception exception);
+                bool result = response.Split('|')[0].Equals("true");
+                response = response.Split('|')[1];
+                return result;
+            }
+            catch (Exception e)
+            {
                 return false;
             }
         }

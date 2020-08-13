@@ -322,5 +322,23 @@ namespace Manual_Explorer
                 manualDisplayHandler.LockRight(lockRightBtn);
             }
         }
+
+        public void SetRemaningTimeText(TimeSpan remaningTime)
+        {
+            StringBuilder timeText = new StringBuilder();
+
+            if (remaningTime.Days > 0)
+            {
+                timeText.Append(remaningTime.Days + ":");
+            }
+            if (remaningTime.Hours > 0)
+            {
+                timeText.Append(remaningTime.Hours + ":");
+            }
+
+            timeText.Append(remaningTime.Minutes + ":" + remaningTime.Seconds);
+
+            Remaining_Time.Text = timeText.ToString();
+        }
     }   
 }
