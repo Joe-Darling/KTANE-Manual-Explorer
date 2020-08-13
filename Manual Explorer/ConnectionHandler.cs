@@ -23,6 +23,10 @@ namespace Manual_Explorer
         private TextBox totalModules;
         private TextBox strikes;
         private Stream tcpStream;
+        private DispatcherTimer reconnectTimer;
+        private string roomID;
+        private string roomPass;
+        private bool connected;
 
         public ConnectionHandler(ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
         {
@@ -62,7 +66,18 @@ namespace Manual_Explorer
             }
 
             Trace.WriteLine("Connected, beginning thread loop");
-            ThreadLoop();
+            this.roomID = roomID;
+            roomPass = pass;
+            reconnectTimer = new DispatcherTimer();
+            reconnectTimer.Interval = TimeSpan.FromSeconds(5);
+            reconnectTimer.Tick += ConnectionCheckLoop;
+            while(true)
+            {
+                if (connected)
+                {
+                    ThreadLoop();
+                }
+            }
         }
 
         public bool TryConnectToRoom(string roomID, string pass, out string response, out Exception exception)
@@ -78,7 +93,6 @@ namespace Manual_Explorer
                 TrySendData("join|" + roomID + "|" + pass);
 
                 TryReadData(out response, out exception);
-                exception = null;
                 bool result = response.Split('|')[0].Equals("true");
                 response = response.Split('|')[1];
 
@@ -101,7 +115,7 @@ namespace Manual_Explorer
                 if(!TryReadData(out var response, out Exception ex))
                 {
                     MessageBox.Show("There was a problem reading in the string. " + ex.Message);
-                    return;
+                    continue;
                 }
                 
 
@@ -248,7 +262,7 @@ namespace Manual_Explorer
             }
         }
 
-        private void ConnectionCheckLoop()
+        private void ConnectionCheckLoop(object sender, EventArgs e)
         {
             TcpClient client = new TcpClient(ip, port);
 
@@ -258,17 +272,38 @@ namespace Manual_Explorer
             if (tcpConnections != null && tcpConnections.Length > 0)
             {
                 TcpState stateOfConnection = tcpConnections.First().State;
-                if (stateOfConnection == TcpState.Established)
+                if (stateOfConnection != TcpState.Established)
                 {
-                    // Connection is OK
-                }
-                else
-                {
-                    // No active tcp Connection to hostName:port
+                    // We are no longer connected. Attempt to reconnect.
+                    Trace.WriteLine("You have disconnected from the client. Attempting to reconnect");
+                    connected = AttemptToReconnect();
+                    if (connected)
+                    {
+                        Trace.WriteLine("Reconnected successfully");
+                    }
                 }
 
             }
             client.Close();
+        }
+
+        private bool AttemptToReconnect()
+        {
+            try
+            {
+                tcpClient = new TcpClient();
+                tcpClient.Connect(ip, port);
+                TrySendData("reconnect|" + roomID + "|" + roomPass + "|false");
+
+                TryReadData(out string response, out Exception exception);
+                bool result = response.Split('|')[0].Equals("true");
+                response = response.Split('|')[1];
+                return result;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
         }
     }
 }
