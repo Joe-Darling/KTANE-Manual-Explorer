@@ -19,6 +19,7 @@ namespace Manual_Explorer
         private readonly int port = 8080;
         private TcpClient tcpClient;
         private ProfileManager profileManager;
+        private MainWindow mainWindow;
         private TextBox remainingTime;
         private TextBox totalModules;
         private TextBox strikes;
@@ -28,8 +29,9 @@ namespace Manual_Explorer
         private string roomPass;
         private bool connected;
 
-        public ConnectionHandler(ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
+        public ConnectionHandler(MainWindow mainWindow, ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
         {
+            this.mainWindow = mainWindow;
             this.profileManager = profileManager;
             this.remainingTime = remainingTime;
             this.totalModules = totalModules;
@@ -179,11 +181,16 @@ namespace Manual_Explorer
 
         public void LoadNewLevel(string[] levelParameters)
         {
+            DateTime currentTime = DateTime.UtcNow;
+            DateTime timeOfUpdate = DateTime.Parse(levelParameters[0]);
+            TimeSpan timeLeft = TimeSpan.Parse(levelParameters[2]);
+            timeLeft -= (currentTime - timeOfUpdate);
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 profileManager.NewProfile();
-                remainingTime.Text = levelParameters[1].Split(' ')[1];
-                totalModules.Text = levelParameters[2].Split(' ')[2];
+                mainWindow.SetRemaningTimeText(timeLeft);
+                totalModules.Text = levelParameters[4];
                 int ind = 5;
                 while (ind < levelParameters.Length)
                 {
