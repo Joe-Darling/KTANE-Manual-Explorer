@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Manual_Explorer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="Auto" Width="Auto" KeyDown="ArrowControl" d:DesignWidth="1366" d:DesignHeight="768">
+        Title="MainWindow" Name="MyWindow" Height="{Binding  Path=getHeight, UpdateSourceTrigger=PropertyChanged}" Width="{Binding Path=getWidth, UpdateSourceTrigger=PropertyChanged}" KeyDown="ArrowControl" d:DesignWidth="1920" d:DesignHeight="1080">
+    <Window.Resources>
+        <local:ResolutionWindow x:Key="resolutionWindow"/>
+    </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
@@ -19,6 +22,9 @@
             <MenuItem Header="_Connect">
                 <MenuItem Header="_Connect" Click="OpenConnectionWindow"/>
                 <MenuItem Header="Configure Pages" Click="ConfigurePages"/>
+            </MenuItem>
+            <MenuItem Header="_Settings">
+                <MenuItem Header="_Change Resolution" Click="ChangeResolution"/>
             </MenuItem>
         </Menu>
 

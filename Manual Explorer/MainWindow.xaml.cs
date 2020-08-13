@@ -28,7 +28,7 @@ namespace Manual_Explorer
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : INotifyPropertyChanged
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private ProfileManager profileManager;
         ConnectionHandler connectionHandler;
@@ -38,6 +38,7 @@ namespace Manual_Explorer
         DrawingManager drawingManager;
         ConnectionWindow connectionWindow;
         PageConfigWindow pageConfigWindow;
+        ResolutionWindow resolutionWindow;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -95,7 +96,7 @@ namespace Manual_Explorer
         private void OnSelected(object sender, SelectionChangedEventArgs e)
         {
             ComboBox comboBox = (ComboBox)sender;
-            if(comboBox.SelectedItem != null)
+            if (comboBox.SelectedItem != null)
             {
                 ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString(), connectionHandler.GetTcpClient() != null);
@@ -112,7 +113,7 @@ namespace Manual_Explorer
 
         private void DeleteCurrentModule(object sender, RoutedEventArgs e)
         {
-            if(History.SelectedItem != null)
+            if (History.SelectedItem != null)
             {
                 string currentManual = History.SelectedItem.ToString();
                 profileManager.DeleteFromProfile(currentManual);
@@ -198,16 +199,16 @@ namespace Manual_Explorer
             //ClearCheck();
             manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
             manualDisplayHandler.CanvasLoader();
-            
+
 
             //ClearCheck();
         }
-            
+
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
             //Canvas canvas = drawingManager.WhichCanvasToUse(manualDisplayHandler.GetCurrentLeftPage(), (Canvas)sender);
             drawingManager.MouseButtonDown((Canvas)sender, e);
-            
+
         }
 
         private void CanvasMouseMove(object sender, MouseEventArgs e)
@@ -248,7 +249,7 @@ namespace Manual_Explorer
         }
 
         private void EnterDrawingWindow(object sender, MouseEventArgs e)
-        {   
+        {
             //Canvas canvas = drawingManager.WhichCanvasToUse(manualDisplayHandler.GetCurrentLeftPage(), (Canvas)sender);
             drawingManager.OnMouseEnter((Canvas)sender, e);
         }
@@ -299,7 +300,7 @@ namespace Manual_Explorer
                 pageConfigWindow.SetReadInComboText(History.SelectedItem.ToString());
             }
         }
-        
+
         private void ArrowControl(object sender, KeyEventArgs e)
         {
             if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Left)
@@ -326,40 +327,12 @@ namespace Manual_Explorer
             }
         }
 
+        private void ChangeResolution(object sender, RoutedEventArgs e)
+        {
+            ResolutionWindow changeResolution = new ResolutionWindow();
+            changeResolution.Show();
+        }
+
         
-
-        private int _getHeight;
-        public int GetHeight
-        {
-            get { return _getHeight; }
-            set
-            {
-                if (_getHeight != value)
-                {
-                    _getHeight = 900;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private int _getWidth;
-        public int GetWidth
-        {
-            get { return _getWidth; }
-            set
-            {
-                if (_getWidth != value)
-                {
-                    _getWidth = 700;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-    }   
+    }
 }
