@@ -46,7 +46,7 @@ namespace Manual_Explorer
             drawingManager = new DrawingManager();
             manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2, Left_Page_Drawing, Right_Page_Drawing);
             connectionWindow = new ConnectionWindow(this);
-            connectionHandler = new ConnectionHandler(profileManager, Remaining_Time, Total_Modules, null);
+            connectionHandler = new ConnectionHandler(this, profileManager, Remaining_Time, Total_Modules, null);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
         }
