@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -182,16 +183,16 @@ namespace Manual_Explorer
         public void LoadNewLevel(string[] levelParameters)
         {
             DateTime currentTime = DateTime.UtcNow;
-            DateTime timeOfUpdate = DateTime.Parse(levelParameters[0]);
-            TimeSpan timeLeft = TimeSpan.Parse(levelParameters[2]);
+            DateTime timeOfUpdate = DateTime.Parse(levelParameters[1], CultureInfo.CreateSpecificCulture("ru-RU"));
+            TimeSpan timeLeft = TimeSpan.Parse(levelParameters[3]);
             timeLeft -= (currentTime - timeOfUpdate);
 
             Application.Current.Dispatcher.Invoke(() =>
             {
                 profileManager.NewProfile();
                 mainWindow.SetRemaningTimeText(timeLeft);
-                totalModules.Text = levelParameters[4];
-                int ind = 5;
+                totalModules.Text = levelParameters[5];
+                int ind = 6;
                 while (ind < levelParameters.Length)
                 {
                     string module = levelParameters[ind];
