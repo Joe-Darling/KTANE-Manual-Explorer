@@ -39,6 +39,8 @@ namespace Manual_Explorer
         ConnectionWindow connectionWindow;
         PageConfigWindow pageConfigWindow;
         private DispatcherTimer timer;
+        private TimeSpan remaningTime;
+        private bool shouldDecrement;
 
         public MainWindow()
         {
@@ -296,13 +298,37 @@ namespace Manual_Explorer
 
         private void AdjustRemaningTime(object sender, EventArgs e)
         {
-            TimeSpan remaningTime = TimeSpan.Parse(Remaining_Time.Text);
+            if (!shouldDecrement) // This buffer skips the first call to better sync the in game clock to this programs.
+            {
+                shouldDecrement = true;
+                return;
+            }
+
             remaningTime -= TimeSpan.FromSeconds(1);
             if(remaningTime.TotalSeconds <= 0)
             {
                 timer.Stop();
             }
-            Remaining_Time.Text = remaningTime.Minutes + ":" + remaningTime.Seconds;
+            SetRemaningTimeText(remaningTime);
+        }
+
+        public void SetRemaningTimeText(TimeSpan remaningTime)
+        {
+            StringBuilder timeText = new StringBuilder();
+
+            if (remaningTime.Days > 0)
+            {
+                timeText.Append(remaningTime.Days + ":");
+            }
+            if(remaningTime.Hours > 0)
+            {
+                timeText.Append(remaningTime.Hours + ":");
+            }
+
+            timeText.Append(remaningTime.Minutes + ":" + remaningTime.Seconds);
+
+            this.remaningTime = remaningTime;
+            Remaining_Time.Text = timeText.ToString();
         }
 
         public void AdustTimerSpeed(int milliseconds)
@@ -310,8 +336,14 @@ namespace Manual_Explorer
             timer.Interval = TimeSpan.FromMilliseconds(milliseconds);
             if (!timer.IsEnabled)
             {
+                shouldDecrement = false;
                 timer.Start();
             }
+        }
+
+        public void StopTimer()
+        {
+            timer.Stop();
         }
     }   
 }

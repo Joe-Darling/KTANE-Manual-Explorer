@@ -136,13 +136,13 @@ namespace Manual_Explorer
             TimeSpan timeLeft = TimeSpan.Parse(serverMessage[2]);
             int rateOfChange = int.Parse(serverMessage[3]);
 
-            // Remaning time = base remaning time minus the time it takes to send and recieve the message
-            timeLeft = timeLeft - (currentTime - timeMessageWasGenerated);
-
+            // Remaning time = base remaning time minus the time it takes to send and recieve the message + 1 (rounding up to the nearest second)
+            timeLeft -= (currentTime - timeMessageWasGenerated) + TimeSpan.FromSeconds(1);
+            Trace.WriteLine(timeLeft);
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                remainingTime.Text = timeLeft.Minutes + ":" + timeLeft.Seconds;
+                mainWindow.SetRemaningTimeText(timeLeft);
                 mainWindow.AdustTimerSpeed(rateOfChange);
             });
         }
@@ -157,6 +157,7 @@ namespace Manual_Explorer
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                mainWindow.StopTimer();
                 MessageBox.Show(serverMessage, "Success!");
             });
         }
@@ -165,6 +166,7 @@ namespace Manual_Explorer
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                mainWindow.StopTimer();
                 MessageBox.Show(serverMessage, "Uh-Oh.");
             });
         }
