@@ -25,7 +25,6 @@ namespace Manual_Explorer
         private TextBox totalModules;
         private TextBox strikes;
         private Stream tcpStream;
-        private DispatcherTimer reconnectTimer;
         private string roomID;
         private string roomPass;
         private bool connected;
@@ -69,11 +68,10 @@ namespace Manual_Explorer
             }
 
             Trace.WriteLine("Connected, beginning thread loop");
+            Thread reconnectCheckThread = new Thread(() => ConnectionCheckLoop());
+            reconnectCheckThread.Start();
             this.roomID = roomID;
             roomPass = pass;
-            reconnectTimer = new DispatcherTimer();
-            reconnectTimer.Interval = TimeSpan.FromSeconds(5);
-            reconnectTimer.Tick += ConnectionCheckLoop;
             while(true)
             {
                 if (connected)
@@ -270,29 +268,52 @@ namespace Manual_Explorer
             }
         }
 
-        private void ConnectionCheckLoop(object sender, EventArgs e)
+        private void ConnectionCheckLoop()
         {
-            TcpClient client = new TcpClient(ip, port);
-
-            IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
-            TcpConnectionInformation[] tcpConnections = ipProperties.GetActiveTcpConnections().Where(x => x.LocalEndPoint.Equals(client.Client.LocalEndPoint) && x.RemoteEndPoint.Equals(client.Client.RemoteEndPoint)).ToArray();
-
-            if (tcpConnections != null && tcpConnections.Length > 0)
+            while (true)
             {
-                TcpState stateOfConnection = tcpConnections.First().State;
-                if (stateOfConnection != TcpState.Established)
+                int failedAttempts = 0;
+
+                try
                 {
-                    // We are no longer connected. Attempt to reconnect.
-                    Trace.WriteLine("You have disconnected from the client. Attempting to reconnect");
-                    connected = AttemptToReconnect();
-                    if (connected)
+                    //Trace.WriteLine("Checking your connection");
+                    TcpClient client = new TcpClient(ip, port);
+
+                    IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+                    TcpConnectionInformation[] tcpConnections = ipProperties.GetActiveTcpConnections().Where(x => x.LocalEndPoint.Equals(client.Client.LocalEndPoint) && x.RemoteEndPoint.Equals(client.Client.RemoteEndPoint)).ToArray();
+
+                    if (tcpConnections != null && tcpConnections.Length > 0)
                     {
-                        Trace.WriteLine("Reconnected successfully");
+                        TcpState stateOfConnection = tcpConnections.First().State;
+                        if (stateOfConnection != TcpState.Established)
+                        {
+                            // We are no longer connected. Attempt to reconnect.
+                            Trace.WriteLine("You have disconnected from the client. Attempting to reconnect");
+                            connected = AttemptToReconnect();
+                            if (connected)
+                            {
+                                //Trace.WriteLine("Reconnected successfully");
+                            }
+                        }
+                        else
+                        {
+                            //Trace.WriteLine("You are still connected");
+                        }
+
+                    }
+                    client.Close();
+                }
+                catch(Exception e)
+                {
+                    failedAttempts++;
+                    if(failedAttempts == 10)
+                    {
+                        MessageBox.Show("Unable to reconnect to client. Reason:" + e.Message);
                     }
                 }
 
+                Thread.Sleep(5000);
             }
-            client.Close();
         }
 
         private bool AttemptToReconnect()
