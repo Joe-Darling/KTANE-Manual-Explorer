@@ -24,7 +24,9 @@ namespace Manual_Explorer
 
         double windowWidth;
         double windowHeight;
+
         SetResolution resolutionSetter = new SetResolution();
+
         public ResolutionWindow()
         {
             InitializeComponent();
@@ -39,7 +41,7 @@ namespace Manual_Explorer
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private double getHeight; //getHeight
+        public double getHeight; //getHeight
 
         public double SetHeight //Height
         {
@@ -47,7 +49,7 @@ namespace Manual_Explorer
             set { getHeight = value; } //getHeight
         }
 
-        private double getWidth; //getWIdth
+        public double getWidth; //getWIdth
 
         public double SetWidth
         {

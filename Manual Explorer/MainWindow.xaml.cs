@@ -53,6 +53,7 @@ namespace Manual_Explorer
             connectionHandler = new ConnectionHandler(profileManager, Remaining_Time, Total_Modules, null);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
+            ResolutionWindow resolutionWindow = new ResolutionWindow();
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -327,12 +328,16 @@ namespace Manual_Explorer
             }
         }
 
-        private void ChangeResolution(object sender, RoutedEventArgs e)
+        public void ChangeResolution(object sender, RoutedEventArgs e)
         {
             ResolutionWindow changeResolution = new ResolutionWindow();
             changeResolution.Show();
         }
 
-        
+        public void ResolutionWidth()
+        {
+            resolutionWindow.Height = 200;
+            resolutionWindow.Width = 450;
+        }
     }
 }
