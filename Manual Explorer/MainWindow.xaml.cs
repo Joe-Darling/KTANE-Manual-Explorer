@@ -37,6 +37,7 @@ namespace Manual_Explorer
         DrawingManager drawingManager;
         ConnectionWindow connectionWindow;
         PageConfigWindow pageConfigWindow;
+        Thread connectionThread;
 
         public MainWindow()
         {
@@ -45,7 +46,7 @@ namespace Manual_Explorer
             profileManager = new ProfileManager(History);
             drawingManager = new DrawingManager();
             connectionWindow = new ConnectionWindow(this);
-            connectionHandler = new ConnectionHandler(profileManager, Remaining_Time, Total_Modules, null);
+            connectionHandler = new ConnectionHandler(this, profileManager, Remaining_Time, Total_Modules, null);
             manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
@@ -248,8 +249,8 @@ namespace Manual_Explorer
             string roomID = connectionWindow.Room_ID_Text.Text;
             string password = connectionWindow.Password_Text.Text;
             TextBlock statusText = connectionWindow.Status_Text;
-            Thread thread = new Thread(() => connectionHandler.ThreadStart(roomID, password, statusText));
-            thread.Start();
+            connectionThread = new Thread(() => connectionHandler.ThreadStart(roomID, password, statusText, false));
+            connectionThread.Start();
         }
 
         private bool TryOpenPageConfigWindow()
@@ -288,6 +289,38 @@ namespace Manual_Explorer
             {
                 manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
             }
+            else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && e.Key == Key.R)
+            {
+                if (connectionHandler.GetAlreadyConnected())
+                {
+                    connectionThread = new Thread(() => connectionHandler.ThreadStart(null, null, null, true));
+                    connectionThread.Start();
+                    Trace.WriteLine("Attempting Reconnect");
+                }
+                else
+                {
+                    OpenConnectionWindow(null, null);
+                    Trace.WriteLine("Attempting Inital Connect");
+                }
+            }
+        }
+
+        public void SetRemaningTimeText(TimeSpan remaningTime)
+        {
+            StringBuilder timeText = new StringBuilder();
+
+            if (remaningTime.Days > 0)
+            {
+                timeText.Append(remaningTime.Days + ":");
+            }
+            if (remaningTime.Hours > 0)
+            {
+                timeText.Append(remaningTime.Hours + ":");
+            }
+
+            timeText.Append(remaningTime.Minutes + ":" + remaningTime.Seconds);
+
+            Remaining_Time.Text = timeText.ToString();
         }
     }   
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -18,13 +20,19 @@ namespace Manual_Explorer
         private readonly int port = 8080;
         private TcpClient tcpClient;
         private ProfileManager profileManager;
+        private MainWindow mainWindow;
         private TextBox remainingTime;
         private TextBox totalModules;
         private TextBox strikes;
         private Stream tcpStream;
+        private string roomID;
+        private string roomPass;
+        private bool connected;
+        private bool alreadyConnected;
 
-        public ConnectionHandler(ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
+        public ConnectionHandler(MainWindow mainWindow, ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
         {
+            this.mainWindow = mainWindow;
             this.profileManager = profileManager;
             this.remainingTime = remainingTime;
             this.totalModules = totalModules;
@@ -36,24 +44,45 @@ namespace Manual_Explorer
             return tcpClient;
         }
 
-        public void ThreadStart(string roomID, string pass, TextBlock statusText)
+        public bool GetAlreadyConnected()
+        {
+            return alreadyConnected;
+        }
+
+        public void ThreadStart(string roomID, string pass, TextBlock statusText, bool reconnect)
         {
             Trace.WriteLine("Thread started");
+            if (reconnect)
+            {
+                roomID = this.roomID;
+                pass = roomPass;
+            }
+
             bool connected = TryConnectToRoom(roomID, pass, out string response, out Exception exception);
+            if(connected && reconnect)
+            {
+                return;
+            }
 
             if (response == string.Empty)
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                if (!reconnect)
                 {
-                    statusText.Text = "Could not connect to the server. Please check to ensure the server is online and you are connected to the internet.";
-                });
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        statusText.Text = "Could not connect to the server. Please check to ensure the server is online and you are connected to the internet.";
+                    });
+                }
                 Trace.WriteLine(exception);
                 return;
             }
-            Application.Current.Dispatcher.Invoke(() =>
+            if (!reconnect)
             {
-                statusText.Text = response;
-            });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    statusText.Text = response;
+                });
+            }
                 
             if (!connected)
             {
@@ -61,6 +90,10 @@ namespace Manual_Explorer
             }
 
             Trace.WriteLine("Connected, beginning thread loop");
+            //Thread reconnectCheckThread = new Thread(() => ConnectionCheckLoop());
+            //reconnectCheckThread.Start();
+            this.roomID = roomID;
+            roomPass = pass;
             ThreadLoop();
         }
 
@@ -77,10 +110,9 @@ namespace Manual_Explorer
                 TrySendData("join|" + roomID + "|" + pass);
 
                 TryReadData(out response, out exception);
-                exception = null;
                 bool result = response.Split('|')[0].Equals("true");
                 response = response.Split('|')[1];
-
+                alreadyConnected = result;
                 return result;
             }
             catch(Exception e)
@@ -93,6 +125,7 @@ namespace Manual_Explorer
 
         public void ThreadLoop()
         {
+            File.WriteAllText("C:\\Ktane\\Client logs.txt", "The client thread loop was started at " + DateTime.Now + "\n\n");
             bool stillRunning = true;
             while (stillRunning)
             {
@@ -163,12 +196,17 @@ namespace Manual_Explorer
 
         public void LoadNewLevel(string[] levelParameters)
         {
+            DateTime currentTime = DateTime.UtcNow;
+            DateTime timeOfUpdate = DateTime.Parse(levelParameters[1], CultureInfo.CreateSpecificCulture("ru-RU"));
+            TimeSpan timeLeft = TimeSpan.Parse(levelParameters[3]);
+            timeLeft -= (currentTime - timeOfUpdate);
+
             Application.Current.Dispatcher.Invoke(() =>
             {
                 profileManager.NewProfile();
-                remainingTime.Text = levelParameters[1].Split(' ')[1];
-                totalModules.Text = levelParameters[2].Split(' ')[2];
-                int ind = 5;
+                mainWindow.SetRemaningTimeText(timeLeft);
+                totalModules.Text = levelParameters[5];
+                int ind = 6;
                 while (ind < levelParameters.Length)
                 {
                     string module = levelParameters[ind];
@@ -204,6 +242,8 @@ namespace Manual_Explorer
 
         public bool TryReadData(out string response, out Exception exception)
         {
+            File.AppendAllText("C:\\Ktane\\Client logs.txt", "Begun attempt to read message from host at " + DateTime.Now + "\n\n");
+
             exception = null;
             try
             {
@@ -214,14 +254,24 @@ namespace Manual_Explorer
                 do
                 {
                     totalBytesRead += tcpStream.Read(responseBytes, totalBytesRead, responseBytes.Length - totalBytesRead);
+                    File.AppendAllText("C:\\Ktane\\Client logs.txt", "We have read in " + totalBytesRead + "/" + messageLength + " so far.\n");
+
                     if (messageLength == -1 && Encoding.UTF8.GetString(responseBytes).Contains("|"))
                     {
                         messageLength = int.Parse(Encoding.UTF8.GetString(responseBytes).Split('|')[0]);
+                        File.AppendAllText("C:\\Ktane\\Client logs.txt", "The total length of this message is: " + messageLength + " bytes.\n");
+                        if (messageLength == 0)
+                        {
+                            File.AppendAllText("C:\\Ktane\\Client logs.txt", "Since the message length is 0, we bail out at " + DateTime.Now + "\n\n");
+                            response = string.Empty;
+                            return false;
+                        }
                         headerBytes = messageLength.ToString().Length + 1;
                     }
                 } while (totalBytesRead - headerBytes < messageLength);
                 response = Encoding.UTF8.GetString(responseBytes, 0, totalBytesRead).Replace("\0", string.Empty);
                 response = response.Substring(response.IndexOf("|") + 1);
+                File.AppendAllText("C:\\Ktane\\Client logs.txt", "Entire message was read in successfully.\nMessage: " + response);
 
                 return true;
             }
@@ -229,6 +279,74 @@ namespace Manual_Explorer
             {
                 exception = e;
                 response = string.Empty;
+                File.AppendAllText("C:\\Ktane\\Client logs.txt", "Failed attempt to read message from host at " + DateTime.Now + "\nReason: " + e.Message + "\n\n");
+                return false;
+            }
+        }
+
+        private void ConnectionCheckLoop()
+        {
+            while (true)
+            {
+                int failedAttempts = 0;
+
+                try
+                {
+                    //Trace.WriteLine("Checking your connection");
+                    TcpClient client = new TcpClient(ip, port);
+
+                    IPGlobalProperties ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+                    TcpConnectionInformation[] tcpConnections = ipProperties.GetActiveTcpConnections().Where(x => x.LocalEndPoint.Equals(client.Client.LocalEndPoint) && x.RemoteEndPoint.Equals(client.Client.RemoteEndPoint)).ToArray();
+
+                    if (tcpConnections != null && tcpConnections.Length > 0)
+                    {
+                        TcpState stateOfConnection = tcpConnections.First().State;
+                        if (stateOfConnection != TcpState.Established)
+                        {
+                            // We are no longer connected. Attempt to reconnect.
+                            Trace.WriteLine("You have disconnected from the client. Attempting to reconnect");
+                            connected = AttemptToReconnect();
+                            if (connected)
+                            {
+                                //Trace.WriteLine("Reconnected successfully");
+                            }
+                        }
+                        else
+                        {
+                            //Trace.WriteLine("You are still connected");
+                        }
+
+                    }
+                    client.Close();
+                }
+                catch(Exception e)
+                {
+                    failedAttempts++;
+                    if(failedAttempts == 10)
+                    {
+                        MessageBox.Show("Unable to reconnect to client. Reason:" + e.Message);
+                    }
+                }
+
+                Thread.Sleep(5000);
+            }
+        }
+
+        private bool AttemptToReconnect()
+        {
+            try
+            {
+                tcpClient = new TcpClient();
+                tcpClient.Connect(ip, port);
+                TrySendData("reconnect|" + roomID + "|" + roomPass + "|false");
+
+                TryReadData(out string response, out Exception exception);
+                bool result = response.Split('|')[0].Equals("true");
+                response = response.Split('|')[1];
+                return result;
+            }
+            catch (Exception e)
+            {
                 return false;
             }
         }
