@@ -48,6 +48,7 @@ namespace Manual_Explorer
                     }
                     else
                     {
+                        currentManual = location;
                         pages = ModuleManager.GetInstance().GetManualPages(location);
                         currentManual = location;
                     }

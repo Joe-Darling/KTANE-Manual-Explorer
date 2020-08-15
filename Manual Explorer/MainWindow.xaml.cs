@@ -37,6 +37,7 @@ namespace Manual_Explorer
         DrawingManager drawingManager;
         ConnectionWindow connectionWindow;
         PageConfigWindow pageConfigWindow;
+        Thread connectionThread;
 
         public MainWindow()
         {
@@ -267,8 +268,8 @@ namespace Manual_Explorer
             string roomID = connectionWindow.Room_ID_Text.Text;
             string password = connectionWindow.Password_Text.Text;
             TextBlock statusText = connectionWindow.Status_Text;
-            Thread thread = new Thread(() => connectionHandler.ThreadStart(roomID, password, statusText));
-            thread.Start();
+            connectionThread = new Thread(() => connectionHandler.ThreadStart(roomID, password, statusText, false));
+            connectionThread.Start();
         }
 
         private bool TryOpenPageConfigWindow()
@@ -324,6 +325,20 @@ namespace Manual_Explorer
             else if ((Keyboard.IsKeyDown(Key.LeftCtrl)) && e.Key == Key.R)
             {
                 ReconnectShortcut();
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && e.Key == Key.R)
+            {
+                if (connectionHandler.GetAlreadyConnected())
+                {
+                    connectionThread = new Thread(() => connectionHandler.ThreadStart(null, null, null, true));
+                    connectionThread.Start();
+                    Trace.WriteLine("Attempting Reconnect");
+                }
+                else
+                {
+                    OpenConnectionWindow(null, null);
+                    Trace.WriteLine("Attempting Inital Connect");
+                }
             }
         }
 
