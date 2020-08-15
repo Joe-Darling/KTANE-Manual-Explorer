@@ -322,10 +322,6 @@ namespace Manual_Explorer
             {
                 manualDisplayHandler.LockRight(lockRightBtn);
             }
-            else if ((Keyboard.IsKeyDown(Key.LeftCtrl)) && e.Key == Key.R)
-            {
-                ReconnectShortcut();
-            }
             else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && e.Key == Key.R)
             {
                 if (connectionHandler.GetAlreadyConnected())
@@ -358,15 +354,6 @@ namespace Manual_Explorer
             timeText.Append(remaningTime.Minutes + ":" + remaningTime.Seconds);
 
             Remaining_Time.Text = timeText.ToString();
-        }
-
-        public void ReconnectShortcut()
-        {
-            string roomID = "reconnect";
-            string password = "";
-            TextBlock statusText = DogTextBlock;
-            Thread thread = new Thread(() => connectionHandler.ThreadStart(roomID, password, statusText));
-            thread.Start();
         }
     }   
 }

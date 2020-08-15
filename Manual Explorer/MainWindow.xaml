@@ -22,8 +22,6 @@
                     <MenuItem Header="_Connect" Click="OpenConnectionWindow"/>
                     <MenuItem Header="Configure Pages" Click="ConfigurePages"/>
                 </MenuItem>
-                <TextBlock x:Name="DogTextBlock" TextWrapping="Wrap" Width="120">Pray for all the dogs that didn't get petteted because of corona
-                </TextBlock>
             </Menu>
         </DockPanel>
         <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
