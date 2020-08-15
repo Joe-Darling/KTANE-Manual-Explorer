@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -18,7 +16,6 @@ namespace Manual_Explorer
         private string currentManual;
         private PageHandler leftPageC;
         private PageHandler rightPageC;
-        private DrawingManager drawingManager = new DrawingManager();
         public Canvas leftCanvas;
         public Canvas rightCanvas;
 
@@ -52,6 +49,7 @@ namespace Manual_Explorer
                     else
                     {
                         pages = ModuleManager.GetInstance().GetManualPages(location);
+                        currentManual = location;
                     }
                 }
             }
