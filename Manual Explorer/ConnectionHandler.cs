@@ -28,6 +28,7 @@ namespace Manual_Explorer
         private string roomID;
         private string roomPass;
         private bool connected;
+        private bool alreadyConnected;
 
         public ConnectionHandler(MainWindow mainWindow, ProfileManager profileManager, TextBox remainingTime, TextBox totalModules, TextBox strikes)
         {
@@ -43,24 +44,45 @@ namespace Manual_Explorer
             return tcpClient;
         }
 
-        public void ThreadStart(string roomID, string pass, TextBlock statusText)
+        public bool GetAlreadyConnected()
+        {
+            return alreadyConnected;
+        }
+
+        public void ThreadStart(string roomID, string pass, TextBlock statusText, bool reconnect)
         {
             Trace.WriteLine("Thread started");
+            if (reconnect)
+            {
+                roomID = this.roomID;
+                pass = roomPass;
+            }
+
             bool connected = TryConnectToRoom(roomID, pass, out string response, out Exception exception);
+            if(connected && reconnect)
+            {
+                return;
+            }
 
             if (response == string.Empty)
             {
-                Application.Current.Dispatcher.Invoke(() =>
+                if (!reconnect)
                 {
-                    statusText.Text = "Could not connect to the server. Please check to ensure the server is online and you are connected to the internet.";
-                });
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        statusText.Text = "Could not connect to the server. Please check to ensure the server is online and you are connected to the internet.";
+                    });
+                }
                 Trace.WriteLine(exception);
                 return;
             }
-            Application.Current.Dispatcher.Invoke(() =>
+            if (!reconnect)
             {
-                statusText.Text = response;
-            });
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    statusText.Text = response;
+                });
+            }
                 
             if (!connected)
             {
@@ -68,17 +90,11 @@ namespace Manual_Explorer
             }
 
             Trace.WriteLine("Connected, beginning thread loop");
-            Thread reconnectCheckThread = new Thread(() => ConnectionCheckLoop());
-            reconnectCheckThread.Start();
+            //Thread reconnectCheckThread = new Thread(() => ConnectionCheckLoop());
+            //reconnectCheckThread.Start();
             this.roomID = roomID;
             roomPass = pass;
-            while(true)
-            {
-                if (connected)
-                {
-                    ThreadLoop();
-                }
-            }
+            ThreadLoop();
         }
 
         public bool TryConnectToRoom(string roomID, string pass, out string response, out Exception exception)
@@ -96,7 +112,7 @@ namespace Manual_Explorer
                 TryReadData(out response, out exception);
                 bool result = response.Split('|')[0].Equals("true");
                 response = response.Split('|')[1];
-
+                alreadyConnected = result;
                 return result;
             }
             catch(Exception e)
@@ -116,7 +132,7 @@ namespace Manual_Explorer
                 if(!TryReadData(out var response, out Exception ex))
                 {
                     MessageBox.Show("There was a problem reading in the string. " + ex.Message);
-                    continue;
+                    return;
                 }
                 
 
