@@ -45,9 +45,9 @@ namespace Manual_Explorer
             ModuleManager.GetInstance();
             profileManager = new ProfileManager(History);
             drawingManager = new DrawingManager();
+            manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2, Left_Page_Drawing, Right_Page_Drawing);
             connectionWindow = new ConnectionWindow(this);
             connectionHandler = new ConnectionHandler(this, profileManager, Remaining_Time, Total_Modules, null);
-            manualDisplayHandler = new ManualDisplayHandler(Page_1, Page_2);
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
         }
@@ -83,8 +83,10 @@ namespace Manual_Explorer
             ListBox comboBox = (ListBox)sender;
             if (comboBox.SelectedItem != null)
             {
+                ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString(), connectionHandler.GetTcpClient() != null);
-                ClearCheck();
+                manualDisplayHandler.CanvasLoader();
+                //ClearCheck();
             }
         }
 
@@ -93,10 +95,11 @@ namespace Manual_Explorer
             ComboBox comboBox = (ComboBox)sender;
             if(comboBox.SelectedItem != null)
             {
+                ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.DisplayManual(comboBox.SelectedItem.ToString(), connectionHandler.GetTcpClient() != null);
-                ClearCheck();
+                manualDisplayHandler.CanvasLoader();
+                //ClearCheck();
             }
-            
         }
 
         private void SaveCurrentModule(object sender, RoutedEventArgs e)
@@ -175,24 +178,39 @@ namespace Manual_Explorer
         private void PageTurnLeft(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
+            ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+            //drawingManager.ClearPage(Left_Page_Drawing);
+            //drawingManager.ClearPage(Right_Page_Drawing);
+            //ClearCheck();
             manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
-            ClearCheck();
+            manualDisplayHandler.CanvasLoader();
+            //ClearCheck();
         }
 
         private void PageTurnRight(object sender, RoutedEventArgs e)
         {
             Button button = (Button)sender;
+            ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
+            //drawingManager.ClearPage(Left_Page_Drawing);
+            //drawingManager.ClearPage(Right_Page_Drawing);
+            //ClearCheck();
             manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
-            ClearCheck();
+            manualDisplayHandler.CanvasLoader();
+            
+
+            //ClearCheck();
         }
             
         private void CanvasMouseDown(object sender, MouseButtonEventArgs e)
         {
+            //Canvas canvas = drawingManager.WhichCanvasToUse(manualDisplayHandler.GetCurrentLeftPage(), (Canvas)sender);
             drawingManager.MouseButtonDown((Canvas)sender, e);
+            
         }
 
         private void CanvasMouseMove(object sender, MouseEventArgs e)
         {
+            //Canvas canvas = drawingManager.WhichCanvasToUse(manualDisplayHandler.GetCurrentLeftPage(), (Canvas)sender);
             drawingManager.MouseMove((Canvas)sender, e);
         }
 
@@ -228,7 +246,8 @@ namespace Manual_Explorer
         }
 
         private void EnterDrawingWindow(object sender, MouseEventArgs e)
-        {
+        {   
+            //Canvas canvas = drawingManager.WhichCanvasToUse(manualDisplayHandler.GetCurrentLeftPage(), (Canvas)sender);
             drawingManager.OnMouseEnter((Canvas)sender, e);
         }
 
@@ -283,11 +302,29 @@ namespace Manual_Explorer
         {
             if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Left)
             {
+                //PageTurnLeft(sender, e);
+                ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.TurnLeft(manualDisplayHandler.GetCurrentActiveManual());
+                manualDisplayHandler.CanvasLoader();
             }
             else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Right)
             {
+                //PageTurnRight(sender, e);
+                ModuleManager.GetInstance().CheckToSave(Left_Page_Drawing, Right_Page_Drawing, manualDisplayHandler.GetCurrentLeftPage(), manualDisplayHandler.GetCurrentRightPage());
                 manualDisplayHandler.TurnRight(manualDisplayHandler.GetCurrentActiveManual());
+                manualDisplayHandler.CanvasLoader();
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.Q) // left lock
+            {
+                manualDisplayHandler.LockLeft(lockLeftBtn);
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.W) // right lock
+            {
+                manualDisplayHandler.LockRight(lockRightBtn);
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftCtrl)) && e.Key == Key.R)
+            {
+                ReconnectShortcut();
             }
             else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && e.Key == Key.R)
             {
@@ -321,6 +358,15 @@ namespace Manual_Explorer
             timeText.Append(remaningTime.Minutes + ":" + remaningTime.Seconds);
 
             Remaining_Time.Text = timeText.ToString();
+        }
+
+        public void ReconnectShortcut()
+        {
+            string roomID = "reconnect";
+            string password = "";
+            TextBlock statusText = DogTextBlock;
+            Thread thread = new Thread(() => connectionHandler.ThreadStart(roomID, password, statusText));
+            thread.Start();
         }
     }   
 }

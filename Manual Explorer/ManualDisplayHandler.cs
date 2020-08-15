@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -15,14 +16,18 @@ namespace Manual_Explorer
         private string currentManual;
         private PageHandler leftPageC;
         private PageHandler rightPageC;
+        public Canvas leftCanvas;
+        public Canvas rightCanvas;
 
-        public ManualDisplayHandler(Image leftPage, Image rightPage)
+        public ManualDisplayHandler(Image leftPage, Image rightPage, Canvas leftCanvas, Canvas rightCanvas)
         {
             this.leftPage = leftPage;
             this.rightPage = rightPage;
             currentManual = string.Empty;
             leftPageC = new PageHandler(ModuleManager.GetInstance().GetManualPages("blank page"), 0, leftPage, currentManual);
             rightPageC = new PageHandler(ModuleManager.GetInstance().GetManualPages("blank page"), 0, rightPage, currentManual);
+            this.leftCanvas = leftCanvas;
+            this.rightCanvas = rightCanvas;
         }
 
         public void DisplayManual(string moduleName, bool connected)
@@ -45,6 +50,7 @@ namespace Manual_Explorer
                     {
                         currentManual = location;
                         pages = ModuleManager.GetInstance().GetManualPages(location);
+                        currentManual = location;
                     }
                 }
             }
@@ -109,6 +115,16 @@ namespace Manual_Explorer
         public string GetCurrentActiveManual()
         {
             return currentManual;
+        }
+
+        public ImageSource GetCurrentLeftPage()
+        {
+            return leftPageC.GetPageSource();
+        }
+
+        public ImageSource GetCurrentRightPage()
+        {
+            return rightPageC.GetPageSource();
         }
 
         public void TurnLeft(string moduleName)
@@ -196,6 +212,9 @@ namespace Manual_Explorer
 
         public void TurnPage(string turnDirection, string moduleName)
         {
+            leftCanvas.Children.Clear();
+            rightCanvas.Children.Clear();
+
             moduleName = moduleName.ToLower();
             currentManual = moduleName;
 
@@ -224,6 +243,48 @@ namespace Manual_Explorer
                 {
                     TurnDiff(turnDirection);
                 }
+            }
+        }
+
+        public void CanvasLoader()
+        {
+            var canvasToLoadLeft = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentLeftPage());
+            var canvasToLoadRight = ModuleManager.GetInstance().WhichCanvasToUse(GetCurrentRightPage());
+
+            if (canvasToLoadLeft.Children.Count != 0)
+            {
+                var leftChildrenList = canvasToLoadLeft.Children.Cast<UIElement>().ToArray();
+                canvasToLoadLeft.Children.Clear();
+                if (canvasToLoadLeft != new Canvas())
+                {
+                    foreach (var element in leftChildrenList)
+                    {
+                        leftCanvas.Children.Add(element);
+                    }
+                }
+                else
+                {
+                    leftCanvas = canvasToLoadLeft;
+                }
+
+            }
+
+            if (canvasToLoadRight.Children.Count != 0)
+            {
+                var rightChildrenList = canvasToLoadRight.Children.Cast<UIElement>().ToArray();
+                canvasToLoadRight.Children.Clear();
+                if (canvasToLoadRight != new Canvas())
+                {
+                    foreach (var element in rightChildrenList)
+                    {
+                        rightCanvas.Children.Add(element);
+                    }
+                }
+                else
+                {
+                    rightCanvas = canvasToLoadRight;
+                }
+
             }
         }
     }

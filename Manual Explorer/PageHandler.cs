@@ -18,7 +18,7 @@ namespace Manual_Explorer
         private int pageIndex;
         private bool lockClicked = false; //page is unlocked by default
         private string currManual;
-        //private ImageSource pageSource;
+        private DrawingManager drawingManager = new DrawingManager();
 
         public PageHandler(List<BitmapImage> pages, int pageIndex, Image page, string currManual) //, ImageSource pageSource
         {
@@ -27,12 +27,6 @@ namespace Manual_Explorer
             this.pageIndex = pageIndex;
             page.Source = pages[pageIndex];
             this.currManual = currManual;
-
-            //if (pages.Count == 1)
-            //{
-            //    page.Source = ModuleManager.GetInstance().GetManualPages("blank page")[0];
-            //}
-            //this.pageSource = pageSource;
         }
 
         public ImageSource NextPage()
@@ -137,5 +131,22 @@ namespace Manual_Explorer
         {
             return currManual == otherPage.currManual;
         }
+
+        public BitmapImage GetCurrentPage()
+        {
+            return pages[pageIndex];
+        }
+
+        
+
+
+        //public BitmapImage ChoosePage(Dictionary<BitmapImage, BitmapImage> dictionary)
+        //{
+        //    if (dictionary.ContainsKey(NextPage()))
+        //    {
+
+        //    }
+        //    return ;
+        //}
     }
 }
