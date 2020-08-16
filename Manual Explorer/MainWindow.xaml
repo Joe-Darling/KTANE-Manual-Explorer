@@ -5,9 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Manual_Explorer"
         mc:Ignorable="d"
-        Title="MainWindow" Name="MyWindow" Height="{Binding  resolutionWindow.Height, UpdateSourceTrigger=PropertyChanged}" Width="{Binding resolutionWindow.Width, UpdateSourceTrigger=PropertyChanged}" KeyDown="ArrowControl" d:DesignWidth="1920" d:DesignHeight="1080">
-    <Window.Resources>
+        Title="MainWindow" Name="MyWindow" Height="1080" Width="1920" KeyDown="ArrowControl" d:DesignWidth="1920" d:DesignHeight="1080">
+    <!--<Window.Resources>
         <local:ResolutionWindow x:Key="resolutionWindow"/>
+    </Window.Resources>-->
+    <Window.Resources>
+        <local:MainWindow x:Key="windowHeight"/>
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
@@ -27,7 +30,7 @@
                 <MenuItem Header="_Change Resolution" Click="ChangeResolution"/>
             </MenuItem>
         </Menu>
-        
+
         <Grid DockPanel.Dock="Left" Background="LightGray">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"></ColumnDefinition>
@@ -101,7 +104,7 @@
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
-                
+
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -112,7 +115,7 @@
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
-                
+
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -146,9 +149,9 @@
             <Button Grid.Column="1" Grid.Row="6" x:Name="ADD_D" Content="4" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,10,0" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
             <TextBlock Grid.Column="1" Grid.Row="7" x:Name="Battery_Holder_Count" HorizontalAlignment="Center" Text="0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20"/>
             <TextBlock Grid.Column="1" Grid.Row="8" x:Name="Total_Battery_Count" HorizontalAlignment="Center" Text="0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20"/>
-            
+
             <!-- row 9 skipped for spacing -->
-            
+
             <Label Grid.Column="0" Grid.Row="10" Content="DVI-D:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Label Grid.Column="0" Grid.Row="11" Content="Parallel:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Label Grid.Column="0" Grid.Row="12" Content="PS/2:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -159,7 +162,7 @@
             <Button Grid.Column="1" Grid.Row="10" x:Name="SUB_DVI" Content="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
             <TextBlock Grid.Column="1" Grid.Row="10" x:Name="DVI_Count" HorizontalAlignment="Center" Text="0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20"/>
             <Button Grid.Column="1" Grid.Row="10" x:Name="ADD_DVI" Content="4" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            
+
             <TextBlock Grid.Column="1" Grid.Row="11" x:Name="Parallel_Count" HorizontalAlignment="Center" Text="0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20"/>
             <Button Grid.Column="1" Grid.Row="11" x:Name="SUB_Parallel" Content="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
             <Button Grid.Column="1" Grid.Row="11" x:Name="ADD_Parallel" Content="4" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
@@ -179,13 +182,13 @@
             <Button Grid.Column="1" Grid.Row="15" x:Name="SUB_RCA" Content="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
             <TextBlock Grid.Column="1" Grid.Row="15" x:Name="RCA_Count" HorizontalAlignment="Center" Text="0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20"/>
             <Button Grid.Column="1" Grid.Row="15" x:Name="ADD_RCA" Content="4" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            
+
             <Label Grid.Column="0" Grid.Row="16" Content="Total Ports:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <TextBlock Grid.Column="1" Grid.Row="16" x:Name="Total_Port_Count" HorizontalAlignment="Center" Text="0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20"/>
 
             <Label Grid.Column="0" Grid.Row="17" Content="Total Port Plates:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <TextBlock Grid.Column="1" Grid.Row="17" x:Name="Total_Port_Plates_Count" HorizontalAlignment="Center" Text="0" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="20"/>
-            
+
             <!-- row 18 skipped for spacing -->
 
             <Label Grid.Column="0" Grid.Row="19" Content="Lit:" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -277,6 +280,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <!--24-->
+                <ColumnDefinition Width="*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
@@ -300,175 +304,20 @@
             <Button Margin="0,-20" Grid.Row="0" Grid.Column="23" Height="25" Width="50" Click="PageTurnRight" x:Name="PageRight">
                 <Image Source="http://www.clipartbest.com/cliparts/bTy/LdX/bTyLdXy8c.png"/>
             </Button>
-            <!--
-            <Image x:Name="Page_1" Margin="10" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            <Canvas x:Name="Left_Page_Drawing" Margin="10" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
+            
+            <Image x:Name="Page_1" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="11" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Height="900" Width="700" />
+            <Canvas x:Name="Left_Page_Drawing" Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="11" Grid.RowSpan="10" HorizontalAlignment="Center" VerticalAlignment="Center" Height="900" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
 
-            <Image x:Name="Page_2" Margin="10" Grid.Column="12" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Center"  />
-            <Canvas x:Name="Right_Page_Drawing" Margin="10" Grid.Column="12" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" Height="Auto" Width="Auto" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
-              -->
-            <Image x:Name="Page_1" Margin="10, 10" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" HorizontalAlignment="Left" VerticalAlignment="Top" Height="{Binding Path=GetHeight}" Width="{Binding Path=GetWidth}"/>
-            <Canvas x:Name="Left_Page_Drawing" Margin="10, 10" Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="12" Grid.RowSpan="10" HorizontalAlignment="Left" VerticalAlignment="Top" Height="{Binding Path=GetHeight}" Width="{Binding Path=GetWidth}" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
-            <Image x:Name="Page_2" HorizontalAlignment="Left" Height="900" Margin="960,116,0,0" VerticalAlignment="Top" Width="700"/>
-            <Canvas x:Name="Right_Page_Drawing" HorizontalAlignment="Left" Height="900" Margin="960, 116, 0 ,0" VerticalAlignment="Top" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
+            <Image x:Name="Page_2" Grid.Column="13" Grid.Row="1" Grid.ColumnSpan="11" Grid.RowSpan="10" HorizontalAlignment="Center" Height="900"  VerticalAlignment="Center" Width="700"/>
+            <Canvas x:Name="Right_Page_Drawing" Grid.Column="13" Grid.Row="1" Grid.ColumnSpan="11" Grid.RowSpan="10" HorizontalAlignment="Center" Height="900" VerticalAlignment="Center" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
 
 
             <Button Content="Lock Left" Height="24" x:Name="lockLeftBtn" Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="LockLeftPage" Background="YellowGreen"/>
             <Button Content="Lock Right" Height="24" x:Name="lockRightBtn" Grid.Column="19" Grid.Row="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="LockRightPage" Background="YellowGreen"/>
-            
+
             <Button x:Name="Left_Clear" Content="Clear" Grid.Column="5" Grid.Row="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ClearDrawing"/>
             <Button x:Name="Right_Clear" Content="Clear" Grid.Column="15" Grid.Row="0" Grid.ColumnSpan="4" HorizontalAlignment="Center" VerticalAlignment="Center" Click="ClearDrawing"/>
         </Grid>
-        
-    </DockPanel>
 
-    <!--    <Grid>
-        
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition Width="2*"></ColumnDefinition>
-            <ColumnDefinition Width="*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <TextBlock Text="Row0 Column0" Grid.Row="0" Grid.Column="0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Text="Row0 Column1" Grid.Row="0" Grid.Column="1" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Text="Row0 Column2" Grid.Row="0" Grid.Column="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Text="Row1 Column0" Grid.Row="1" Grid.Column="0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Text="Row1 Column1" Grid.Row="1" Grid.Column="1" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Text="Row1 Column2" Grid.Row="1" Grid.Column="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Text="Row2 Column0" Grid.Row="2" Grid.Column="0" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Text="Row2 Column1" Grid.Row="2" Grid.Column="1" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        <TextBlock Text="Row2 Column2" Grid.Row="2" Grid.Column="2" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"></TextBlock>
-        <DockPanel>
-            <Menu DockPanel.Dock="Top">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_New" Click="NewProfile"/>
-                    <MenuItem Header="_Open" Click="OpenProfile"/>
-                    <MenuItem Header="_Save" Click="SaveProfile"/>
-                    <MenuItem Header="Save As" Click="SaveProfileAs"/>
-                    <Separator/>
-                    <MenuItem Header="_Exit"/>
-                </MenuItem>
-                <MenuItem Header="_Connect">
-                    <MenuItem Header="_Connect" Click="OpenConnectionWindow"/>
-                    <MenuItem Header="Configure Pages" Click="ConfigurePages"/>
-                </MenuItem>
-            </Menu>
-        </DockPanel>
-        <ComboBox x:Name="User_Query" HorizontalAlignment="Left" Margin="10,44,0,0" VerticalAlignment="Top" Width="195" Height="26" IsEditable="True" KeyDown="UpdateQuery" IsSynchronizedWithCurrentItem="False" IsTextSearchEnabled="False" SelectionChanged="OnSelected" KeyUp="BackspaceUpdate"/>
-        <Image x:Name="Page_1" HorizontalAlignment="Left" Height="900" Margin="235,116,0,0" VerticalAlignment="Top" Width="700"/>
-        <Canvas x:Name="Left_Page_Drawing" HorizontalAlignment="Left" Height="900" Margin="235, 116, 0 ,0" VerticalAlignment="Top" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
-        <Button Content="Add" HorizontalAlignment="Left" Margin="46,150,0,0" VerticalAlignment="Top" Click="SaveCurrentModule"/>
-        <Image x:Name="Page_2" HorizontalAlignment="Left" Height="900" Margin="960,116,0,0" VerticalAlignment="Top" Width="700"/>
-        <Canvas x:Name="Right_Page_Drawing" HorizontalAlignment="Left" Height="900" Margin="960, 116, 0 ,0" VerticalAlignment="Top" Width="700" Background="Transparent" MouseMove="CanvasMouseMove" MouseDown="CanvasMouseDown" MouseUp="CanvasMouseUp" MouseEnter="EnterDrawingWindow"/>
-        <ListBox x:Name="History" Margin="10,200,1709,40" SelectionChanged="History_Selected">
-            <ListBox.Resources>
-                <ContextMenu x:Key="HistoryMenu">
-                    <MenuItem Header="Configure Manual" Click="ConfigureManualPage"/>
-                </ContextMenu>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="ContextMenu" Value="{StaticResource HistoryMenu}"/>
-                </Style>
-            </ListBox.Resources>
-        </ListBox>
-        <Button Content="Delete" HorizontalAlignment="Left" Margin="142,150,0,0" VerticalAlignment="Top" Click="DeleteCurrentModule"/>
-        <Grid x:Name="Right_Panel" Margin="1686,0,0,0" Background="#FF818181">
-            <Label Content="Starting Time:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,10,0,0"/>
-            <TextBox x:Name="Remaining_Time" HorizontalAlignment="Left" Margin="88,12,0,0" Text="0:00" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="22"/>
-            <Label Content="Modules:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,41,0,0"/>
-            <TextBox x:Name="Total_Modules" HorizontalAlignment="Left" Margin="88,43,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Height="22"/>
-            <Label Content="AA Batteries:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,115,0,0"/>
-            <Label Content="D Batteries:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,146,0,0"/>
-            <Label Content="Battery Holders:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,177,0,0"/>
-            <Label Content="Total Batteries:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,208,0,0"/>
-            <Label Content="DVI-D:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,239,0,0"/>
-            <Label Content="Parallel:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,270,0,0"/>
-            <Label Content="PS/2:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,301,0,0"/>
-            <Label Content="RJ-45:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,332,0,0"/>
-            <Label Content="Serial:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,363,0,0"/>
-            <Label Content="RCA:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,394,0,0"/>
-            <Label Content="Lit:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="69,454,0,0"/>
-            <Label Content="Unlit:" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,454,0,0"/>
-            <Label Content="BOB:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="33,480,0,0"/>
-            <Label Content="CAR:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="33,511,0,0"/>
-            <Label Content="CLR:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,542,0,0"/>
-            <Label Content="FRK:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,573,0,0"/>
-            <Label Content="FRQ:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,604,0,0"/>
-            <Label Content="IND:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,635,0,0"/>
-            <Label Content="MSA:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,666,0,0"/>
-            <Label Content="NSA:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,697,0,0"/>
-            <Label Content="SIG:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="34,728,0,0"/>
-            <Label Content="SND:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,759,0,0"/>
-            <Label Content="TRN:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,790,0,0"/>
-            <CheckBox x:Name="LIT_BOB" Content="" HorizontalAlignment="Left" Margin="72,485,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_BOB" Content="" HorizontalAlignment="Center" Margin="0,485,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_CAR" Content="" HorizontalAlignment="Left" Margin="72,516,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_CAR" Content="" HorizontalAlignment="Center" Margin="0,516,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_CLR" Content="" HorizontalAlignment="Left" Margin="72,548,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_CLR" Content="" HorizontalAlignment="Center" Margin="0,548,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_FRK" Content="" HorizontalAlignment="Left" Margin="72,579,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_FRK" Content="" HorizontalAlignment="Center" Margin="0,579,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_FRQ" Content="" HorizontalAlignment="Left" Margin="72,609,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_FRQ" Content="" HorizontalAlignment="Center" Margin="0,609,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_IND" Content="" HorizontalAlignment="Left" Margin="72,640,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_IND" Content="" HorizontalAlignment="Center" Margin="0,640,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_MSA" Content="" HorizontalAlignment="Left" Margin="72,672,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_MSA" Content="" HorizontalAlignment="Center" Margin="0,672,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_NSA" Content="" HorizontalAlignment="Left" Margin="72,703,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_NSA" Content="" HorizontalAlignment="Center" Margin="0,703,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_SIG" Content="" HorizontalAlignment="Left" Margin="72,734,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_SIG" Content="" HorizontalAlignment="Center" Margin="0,734,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_SND" Content="" HorizontalAlignment="Left" Margin="72,765,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_SND" Content="" HorizontalAlignment="Center" Margin="0,765,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="LIT_TRN" Content="" HorizontalAlignment="Left" Margin="72,797,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <CheckBox x:Name="UNLIT_TRN" Content="" HorizontalAlignment="Center" Margin="0,797,0,0" VerticalAlignment="Top" Checked="ToggleIndicator" Unchecked="ToggleIndicator"/>
-            <Label Content="Total Ports:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="1,425,0,0"/>
-            <Label Content="Total:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="35,821,0,0"/>
-            <TextBox HorizontalAlignment="Center" Margin="0,852,0,0" Text="Notes" TextWrapping="Wrap" VerticalAlignment="Top" Width="214" Height="267" AcceptsReturn="true"/>
-            <Button Content="Reset" HorizontalAlignment="Left" Margin="191,70,0,0" VerticalAlignment="Top" Click="ResetRightSideBar"/>
-            <Button x:Name="SUB_AA" Content="3" HorizontalAlignment="Left" Margin="115,117,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="AA_Count" HorizontalAlignment="Left" Margin="154,114,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Button x:Name="ADD_AA" Content="4" HorizontalAlignment="Left" Margin="181,117,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <Button x:Name="SUB_D" Content="3" HorizontalAlignment="Left" Margin="115,147,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="D_Count" HorizontalAlignment="Left" Margin="154,144,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Button x:Name="ADD_D" Content="4" HorizontalAlignment="Left" Margin="181,147,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="Battery_Holder_Count" HorizontalAlignment="Left" Margin="154,173,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <TextBlock x:Name="Total_Battery_Count" HorizontalAlignment="Left" Margin="154,204,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Label Content="Serial:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,84,0,0"/>
-            <TextBox x:Name="Serial_Number" HorizontalAlignment="Left" Margin="51,85,0,0" Text="######" TextWrapping="Wrap" VerticalAlignment="Top" Width="88" Height="24" FontSize="14" FontFamily="Consolas" GotFocus="SelectedSerialNumberBox" CharacterCasing="Upper"/>
-            <Button x:Name="SUB_DVI" Content="3" HorizontalAlignment="Left" Margin="115,240,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="DVI_Count" HorizontalAlignment="Left" Margin="154,237,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Button x:Name="ADD_DVI" Content="4" HorizontalAlignment="Left" Margin="181,240,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="Parallel_Count" HorizontalAlignment="Left" Margin="154,268,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Button x:Name="SUB_PS2" Content="3" HorizontalAlignment="Left" Margin="115,302,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="PS2_Count" HorizontalAlignment="Left" Margin="154,299,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Button x:Name="ADD_PS2" Content="4" HorizontalAlignment="Left" Margin="181,302,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <Button x:Name="SUB_RJ45" Content="3" HorizontalAlignment="Left" Margin="115,333,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="RJ45_Count" HorizontalAlignment="Left" Margin="154,330,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Button x:Name="ADD_RJ45" Content="4" HorizontalAlignment="Left" Margin="181,333,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <Button x:Name="SUB_Serial" Content="3" HorizontalAlignment="Left" Margin="115,364,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="Serial_Count" HorizontalAlignment="Left" Margin="154,361,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Button x:Name="ADD_Serial" Content="4" HorizontalAlignment="Left" Margin="181,364,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <Button x:Name="SUB_RCA" Content="3" HorizontalAlignment="Left" Margin="115,395,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="RCA_Count" HorizontalAlignment="Left" Margin="154,392,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Button x:Name="ADD_RCA" Content="4" HorizontalAlignment="Left" Margin="181,395,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <Button x:Name="SUB_Parallel" Content="3" HorizontalAlignment="Left" Margin="115,271,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <Button x:Name="ADD_Parallel" Content="4" HorizontalAlignment="Left" Margin="181,271,0,0" VerticalAlignment="Top" FontFamily="Marlett" FontSize="20" Click="ChangeQuantity"/>
-            <TextBlock x:Name="Total_Port_Count" HorizontalAlignment="Left" Margin="154,422,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <TextBlock x:Name="Total_Lit_Indicators" HorizontalAlignment="Left" Margin="76,817,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <TextBlock x:Name="Total_Unlit_Indicators" HorizontalAlignment="Left" Margin="109,817,0,0" Text="0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="20"/>
-            <Button Content="3" Height="26" Width="56" FontFamily="Marlett" FontSize="20" Click="PageTurnLeft" x:Name="PageLeft" Margin="-1407,47,1585,991"/>
-            <Button Content="4" Height="28" Width="53" FontFamily="Marlett" FontSize="20" Click="PageTurnRight" x:Name="PageRight" Margin="-124,49,304,987"/>
-            <Button Content="Lock Left" Height="23" x:Name="lockLeftBtn" Margin="-1312,50,1460,991" Click="LockLeftPage" Background="YellowGreen"/>
-            <Button Content="Lock Right" Height="23" x:Name="lockRightBtn" Margin="-250,53,394,988" Click="LockRightPage" Background="YellowGreen"/>
-        </Grid>
-        <Button x:Name="Left_Clear" Content="Clear" HorizontalAlignment="Left" Margin="566,55,0,0" VerticalAlignment="Top" Click="ClearDrawing"/>
-        <Button x:Name="Right_Clear" Content="Clear" HorizontalAlignment="Left" Margin="1291,55,0,0" VerticalAlignment="Top" Click="ClearDrawing"/>
-    
-    </Grid> -->
+    </DockPanel>
 </Window>

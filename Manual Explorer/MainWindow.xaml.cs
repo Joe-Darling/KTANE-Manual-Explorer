@@ -39,6 +39,7 @@ namespace Manual_Explorer
         ConnectionWindow connectionWindow;
         PageConfigWindow pageConfigWindow;
         ResolutionWindow resolutionWindow;
+        int windowHeight;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -54,6 +55,7 @@ namespace Manual_Explorer
             rightSideBarManager = new RightSideBarManager(Serial_Number, AA_Count, D_Count, Battery_Holder_Count, Total_Battery_Count, DVI_Count, Parallel_Count, PS2_Count, RJ45_Count, Serial_Count,
                 RCA_Count, Total_Port_Count, Total_Lit_Indicators, Total_Unlit_Indicators, Right_Panel);
             ResolutionWindow resolutionWindow = new ResolutionWindow();
+            windowHeight = 1080;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -325,6 +327,15 @@ namespace Manual_Explorer
             else if ((Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) && e.Key == Key.W) // right lock
             {
                 manualDisplayHandler.LockRight(lockRightBtn);
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && e.Key == Key.T)
+            {
+                this.Left_Page_Drawing.SetResourceReference(HeightProperty, "windowHeight");
+                windowHeight += 50;
+            }
+            else if ((Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) && e.Key == Key.G)
+            {
+                windowHeight -= 50;
             }
         }
 

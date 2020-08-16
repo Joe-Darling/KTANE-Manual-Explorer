@@ -70,7 +70,7 @@ namespace Manual_Explorer
             screenHeight = Int16.Parse(Get_Screen_Height.Text);
 
 
-            windowWidth = (900 * screenWidth) / 1920;
+            windowWidth = (900 * screenWidth) / 1920; //canvas not window
             windowHeight = (700 * screenHeight) / 1080;
 
             //resolutionSetter.Width = windowWidth;
