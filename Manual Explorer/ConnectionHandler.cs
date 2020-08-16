@@ -59,10 +59,10 @@ namespace Manual_Explorer
             }
 
             bool connected = TryConnectToRoom(roomID, pass, out string response, out Exception exception);
-            if(connected && reconnect)
-            {
-                return;
-            }
+            //if(connected && reconnect)
+            //{
+            //    return;
+            //}
 
             if (response == string.Empty)
             {
